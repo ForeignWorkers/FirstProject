@@ -13,13 +13,14 @@ public class FrameBase extends JFrame {
         setTitle("FrameBase");
         setSize(AppConstants.FRAME_WIDTH, AppConstants.FRAME_HEIGHT);
         setLocationRelativeTo(null);
+        setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // MainPanel 생성
+        //MainStaticPanel 생성 및 추가
         mainPanel = new MainStaticPanel();
         setContentPane(mainPanel);
 
-        setVisible(true);
+        setVisible(true); // setContentPane 설정 후 호출
     }
 
     public static FrameBase getInstance() {
