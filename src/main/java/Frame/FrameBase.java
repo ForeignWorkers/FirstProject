@@ -20,7 +20,11 @@ public class FrameBase extends JFrame {
         //기본 JfFrame프레임 구조
         setTitle("");
         setLayout(null);
-        setBounds(screenSize.width / 2 - 300, frameWidth / 2 - frameHeight, frameWidth, frameHeight);
+        setBounds(
+                (screenSize.width - frameWidth) / 2,
+                (screenSize.height - frameHeight) / 2,
+                frameWidth,
+                frameHeight);
 
         add(e);
         setVisible(true);
