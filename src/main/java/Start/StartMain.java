@@ -7,27 +7,26 @@ import java.awt.*;
 
 public class StartMain {
     public static void main(String[] args) {
-        // FrameBase 싱글턴 생성
-        FrameBase frame = FrameBase.getInstance();
+        // FrameBase 생성
+        FrameBase frameBase = FrameBase.getInstance();
 
-        // 🔥 새로운 내부 패널 1 (upPanel 내부에 추가)
-        JPanel newUpPanel = new JPanel();
-        newUpPanel.setBackground(Color.YELLOW);
-        newUpPanel.add(new JLabel("새로운 상단 패널"));
+        // 3초 후 새로운 패널로 교체하는 테스트
+        new Timer(3000, e -> {
+            System.out.println("3초 뒤에 upPanel에 새로운 컨텐츠 패널이 들어감!");
 
-        // 🔥 새로운 내부 패널 2 (midPanel 내부에 추가)
-        JPanel newMidPanel = new JPanel();
-        newMidPanel.setBackground(Color.CYAN);
-        newMidPanel.add(new JLabel("새로운 중앙 패널"));
+            //새로운 패널 만들어주기 -> 님들은 이제 이게 각자 만든 클래스 임 ㅋ
+            JPanel newUpPanel = new JPanel();
+            newUpPanel.setLayout(null);
+            newUpPanel.setBackground(Color.YELLOW);
+            newUpPanel.setSize(300, 400);
+            newUpPanel.setLocation(0, 0); // upPanel 내부에서 위치 고정
+            newUpPanel.setVisible(true);
+            JButton btn = new JButton("로그인");
+            btn.setBounds(0, 0, 100, 50);
+            newUpPanel.add(btn);
 
-        // 🔥 새로운 내부 패널 3 (downPanel 내부에 추가)
-        JPanel newDownPanel = new JPanel();
-        newDownPanel.setBackground(Color.MAGENTA);
-        newDownPanel.add(new JLabel("새로운 하단 패널"));
-
-        // 특정 위치에 새로운 내부 패널 추가
-        frame.setInnerPanel(newUpPanel, "up");
-        frame.setInnerPanel(newMidPanel, "mid");
-        frame.setInnerPanel(newDownPanel, "down");
+            //** 패널 교체 핵심 메서드 **
+            frameBase.setInnerPanel(newUpPanel, "up");
+        }).start();
     }
 }

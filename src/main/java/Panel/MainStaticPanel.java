@@ -6,60 +6,66 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainStaticPanel extends JPanel {
-    private JPanel upPanel, upContentPanel;
-    private JPanel midPanel, midContentPanel;
-    private JPanel downPanel, downContentPanel;
+    private JPanel upPanel;
+    private JPanel midPanel;
+    private JPanel downPanel;
 
     public MainStaticPanel() {
-        setLayout(new BorderLayout()); // 전체 레이아웃 설정
+        setLayout(null); // 전체 레이아웃 설정
 
         // 🔴 상단 패널 (고정)
-        upPanel = new JPanel(new BorderLayout());
-        upPanel.setPreferredSize(new Dimension(AppConstants.PANEL_UP_WIDTH, AppConstants.PANEL_UP_HEIGHT));
-        upPanel.setBackground(Color.RED);
-        upContentPanel = new JPanel(new BorderLayout()); // 내부 변경 가능 패널
-        upPanel.add(upContentPanel, BorderLayout.CENTER);
+        upPanel = new JPanel();
+        upPanel.setLayout(null);
+        upPanel.setBackground(new Color(182,231,33,20));
+        upPanel.setSize(AppConstants.PANEL_UP_WIDTH,AppConstants.PANEL_UP_HEIGHT);
+        upPanel.setLocation(0,0);
 
         // 🔵 중앙 패널 (고정)
-        midPanel = new JPanel(new BorderLayout());
-        midPanel.setPreferredSize(new Dimension(AppConstants.PANEL_MID_WIDTH, AppConstants.PANEL_MID_HEIGHT));
-        midPanel.setBackground(Color.BLUE);
-        midContentPanel = new JPanel(new BorderLayout()); // 내부 변경 가능 패널
-        midPanel.add(midContentPanel, BorderLayout.CENTER);
+        midPanel = new JPanel();
+        midPanel.setLayout(null);
+        midPanel.setBackground(Color.GRAY);
+        midPanel.setSize(AppConstants.PANEL_MID_WIDTH,AppConstants.PANEL_MID_HEIGHT);
+        midPanel.setLocation(0,83);
 
         // 🟢 하단 패널 (고정)
-        downPanel = new JPanel(new BorderLayout());
-        downPanel.setPreferredSize(new Dimension(AppConstants.PANEL_DOWN_WIDTH, AppConstants.PANEL_DOWN_HEIGHT));
-        downPanel.setBackground(Color.GREEN);
-        downContentPanel = new JPanel(new BorderLayout()); // 내부 변경 가능 패널
-        downPanel.add(downContentPanel, BorderLayout.CENTER);
+        downPanel = new JPanel();
+        downPanel.setLayout(null);
+        downPanel.setBackground(Color.BLUE);
+        downPanel.setSize(AppConstants.PANEL_DOWN_WIDTH,AppConstants.PANEL_DOWN_HEIGHT);
+        downPanel.setLocation(0,632);
 
-        // 고정 패널 추가
-        add(upPanel, BorderLayout.NORTH);
-        add(midPanel, BorderLayout.CENTER);
-        add(downPanel, BorderLayout.SOUTH);
+        add(upPanel);
+        add(midPanel);
+        add(downPanel);
     }
 
-    // 특정 위치의 내부 패널을 교체하는 메서드
+    // 특정 위치의 내부 패널을 교체하는 메서드 - TO DO : position -> enum으로 변경
     public void setInnerPanel(JPanel panel, String position) {
         switch (position.toLowerCase()) {
             case "up":
-                upContentPanel.removeAll();
-                upContentPanel.add(panel, BorderLayout.CENTER);
+                System.out.println("여기도 탐!");
+                upPanel.removeAll();
+                upPanel.add(panel);
                 break;
             case "mid":
-                midContentPanel.removeAll();
-                midContentPanel.add(panel, BorderLayout.CENTER);
+                midPanel.removeAll();
+                midPanel.add(panel);
                 break;
             case "down":
-                downContentPanel.removeAll();
-                downContentPanel.add(panel, BorderLayout.CENTER);
+                downPanel.removeAll();
+                downPanel.add(panel);
                 break;
             default:
                 throw new IllegalArgumentException("Position must be 'up', 'mid', or 'down'");
         }
 
-        // 업데이트
+        // 🔥 UI 업데이트
+        updateMainPanel();
+    }
+
+
+    //업데이트
+    public void updateMainPanel(){
         revalidate();
         repaint();
     }
