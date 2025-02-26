@@ -8,4 +8,13 @@ public final class AppConstants {
 
     public static final int FRAME_HEIGHT = 735;
     public static final int FRAME_WIDTH = 595;
+
+    public static final int PANEL_UP_WIDTH = 595;
+    public static final int PANEL_UP_HEIGHT = 83;
+
+    public static final int PANEL_MID_WIDTH = 595;
+    public static final int PANEL_MID_HEIGHT = 549;
+
+    public static final int PANEL_DOWN_WIDTH = 595;
+    public static final int PANEL_DOWN_HEIGHT = 99;
 }
