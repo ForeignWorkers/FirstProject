@@ -6,6 +6,6 @@ public final class AppConstants {
         throw new UnsupportedOperationException("상수는 private 만들수 없습니다.");
     }
 
-    public static final int FRAME_HEIGHT = 566;
-    public static final int FRAME_WIDTH = 458;
+    public static final int FRAME_HEIGHT = 735;
+    public static final int FRAME_WIDTH = 595;
 }
