@@ -1,15 +1,15 @@
-package Managers;
+package DAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import TESTVO.TestReviewVO;
 
-public class ReviewManager {
+public class ReviewDAO{
 
 	private List<TestReviewVO> reviewList; // 리뷰 목록 저장
 
-    public ReviewManager() {
+    public ReviewDAO() {
         reviewList = new ArrayList<>();
     }
 
