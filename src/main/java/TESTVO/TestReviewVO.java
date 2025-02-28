@@ -3,7 +3,7 @@ package TESTVO;
 public class TestReviewVO {
     private double reviewScore;  // 리뷰 점수
     private double reviewTotal;  // 리뷰 점수 총합
-    private int iineCount;       // 좋아요 수
+    private int iineCount;       // 좋아요 수~
     private int personNum;       // 평점 등록자 수
     private String reviewContent; // 리뷰 내용
     private String reviewName;   // 리뷰 작성자명
