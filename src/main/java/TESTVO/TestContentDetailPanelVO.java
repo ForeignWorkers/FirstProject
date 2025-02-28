@@ -1,7 +1,6 @@
 package TESTVO;
 
-public class TestContentDetailPanelVO {
-	
+public class TestContentDetailPanelVO {	
 	private int itemID; //작품번호
     private String title; //제목
     private String genre; //장르
