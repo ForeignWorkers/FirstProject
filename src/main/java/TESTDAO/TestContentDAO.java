@@ -6,12 +6,12 @@ import java.util.Random;
 
 import TESTVO.TestContentVO;
 
-public class TestConentDAO {
+public class TestContentDAO {
 	//list 내 컨텐츠 정보 vo 할당
 	List<TestContentVO> contentList;
 	
 	//TestContentVO 새로운 객체 생성
-	public TestConentDAO() {
+	public TestContentDAO() {
 	  contentList = new ArrayList<TestContentVO>();
 	  testContentData(); 
 	}

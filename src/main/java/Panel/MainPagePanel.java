@@ -12,15 +12,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
-import TESTDAO.TestConentDAO;
+import TESTDAO.TestContentDAO;
 import TESTVO.TestContentVO;
 
 
 // 컨텐츠 패널
 public class MainPagePanel extends JPanel {
     private TestContentVO content; // 현재 패널이 표시하는 컨텐츠 정보
-    private static TestConentDAO contentDAO = new TestConentDAO(); //DAO 객체 생성
+    private TestContentDAO contentDAO = new TestContentDAO(); //DAO 객체 생성
     private JPanel contentPanel;
+    private int countContent = 4;
     
     public MainPagePanel() {
     	
@@ -95,7 +96,7 @@ public class MainPagePanel extends JPanel {
        int margin = -3; // 아이템 간격
        int panelWidth = 600; // 부모 패널의 너비
        
-       for (int i = 0; i < 4; i++) { //4개의 컨텐츠 추가
+       for (int i = 0; i < countContent; i++) { //4개의 컨텐츠 추가
            TestContentVO smallContent = contentDAO.getRandomContent(); // 랜덤 컨텐츠 가져오기
            JPanel contentItem = createContentItem(smallContent);
 
