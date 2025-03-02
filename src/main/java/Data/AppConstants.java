@@ -17,4 +17,8 @@ public final class AppConstants {
 
     public static final int PANEL_DOWN_WIDTH = 595;
     public static final int PANEL_DOWN_HEIGHT = 99;
+
+    public static final int STAR_MAX_SCORE = 5;
+    public static final int MAXIMUM_REVIEW_TEXT = 120;
+    public static final int MINUMUM_REVIEW_TEXT = 1;
 }
