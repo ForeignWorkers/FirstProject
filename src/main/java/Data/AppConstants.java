@@ -21,4 +21,8 @@ public final class AppConstants {
     public static final int STAR_MAX_SCORE = 5;
     public static final int MAXIMUM_REVIEW_TEXT = 120;
     public static final int MINUMUM_REVIEW_TEXT = 1;
+
+    public static final String FOLDER_ID = "1aVfkmsLg7lMD5Znk7Fh9669nGn21s_R9"; // 특정 폴더 ID
+    public static final String USER_FILE_NAME = "users_v01.json";
+    public static final String REVIEW_FILE_NAME = "reviews_v01.json";
 }

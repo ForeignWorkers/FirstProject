@@ -29,6 +29,7 @@ import javax.swing.text.DocumentFilter;
 import DAO.ReviewDAO;
 import Data.AppConstants;
 import TESTVO.TestReviewVO;
+import VO.ReviewVO;
 
 public class ReviewPanelLast extends JPanel {
     private JPanel reviewListPanel;
@@ -245,7 +246,7 @@ public class ReviewPanelLast extends JPanel {
 
     // 기존 리뷰 데이터 로드
     private void loadReviews() {
-        for (TestReviewVO review : reviewDAO.getReviews()) {
+        for (ReviewVO review : reviewDAO.getReviews()) {
             displayReview(review.getReviewName(), review.getReviewContent(), review.getReviewScore());
         }
     }
