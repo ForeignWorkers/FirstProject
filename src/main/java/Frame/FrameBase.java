@@ -3,16 +3,21 @@ package Frame;
 import javax.swing.*;
 
 import Data.AppConstants;
+import Managers.DBDataManagers;
 import Managers.DataManagers;
 import Panel.MainStaticPanel;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class FrameBase extends JFrame {
     private static FrameBase instance;
     private static MainStaticPanel mainPanel;
 
-    private FrameBase() {
+    private FrameBase() throws IOException {
+    	System.out.println("DB 초기화 실시");
+    	DBDataManagers.getInstance().InitDBDataManagers();
+    	
         setTitle("FrameBase");
         setSize(AppConstants.FRAME_WIDTH, AppConstants.FRAME_HEIGHT);
         setLocationRelativeTo(null);
@@ -47,7 +52,7 @@ public class FrameBase extends JFrame {
         setVisible(true);
     }
 
-    public static FrameBase getInstance() {
+    public static FrameBase getInstance() throws IOException {
         if (instance == null) {
             instance = new FrameBase();
         }

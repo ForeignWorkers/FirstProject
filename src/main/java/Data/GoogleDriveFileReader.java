@@ -39,9 +39,6 @@ public class GoogleDriveFileReader {
         String fileId = findFileId(fileName, folderId);
         ByteArrayContent content = new ByteArrayContent("application/json", jsonData.getBytes());
 
-        //파일 공유 받기 - 메일추가히믄 됩니다.
-        shareFileWithMyGoogleAccount(fileId,"minquu@gmail.com");
-
         if (fileId == null) {
             // 📤 새 파일 업로드 (폴더에 저장)
             File fileMetadata = new File();
@@ -66,6 +63,10 @@ public class GoogleDriveFileReader {
                     .execute();
             System.out.println("✅ JSON 파일이 업데이트됨: " + fileName);
         }
+        
+        //파일 공유 받기 - 메일추가히믄 됩니다.
+        if(fileId != null)
+        	shareFileWithMyGoogleAccount(fileId,"minquu@gmail.com");
     }
 
     public <T> List<T> getListFromJson(String fileName, String folderId, TypeToken<List<T>> typeToken) throws IOException {
