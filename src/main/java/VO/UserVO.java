@@ -8,7 +8,8 @@ public class UserVO {
     private boolean gender;     // 1 = 남자 / 2 = 여자
     private String phoneNumber;
     private String nickName;
-
+    private String nation;
+    
     public String getId() {
         return id;
     }
@@ -63,5 +64,13 @@ public class UserVO {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+    
+    public void setnation(String nation) {
+    	this.nation = nation;
+    }
+    
+    public String getnation() {
+    	return nation;
     }
 }

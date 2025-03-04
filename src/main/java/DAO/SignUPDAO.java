@@ -1,92 +1,76 @@
 package DAO;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import Data.AppConstants;
+import Data.GoogleDriveFileReader;
+import Managers.DBDataManagers;
+import VO.UserVO;
 
 public class SignUPDAO {
-	private static HashSet<String> storedIDs = new HashSet<>();
-	private static HashSet<String> storedNicknames = new HashSet<>();
-	private static HashMap<String,String> userPasswords = new HashMap<>();
 	
 	// ✅ ID 중복 확인
-	public static boolean isIDExists(String ID) {
-		return storedIDs.contains(ID);
+	public boolean isIDExists(String ID) {
+		for(UserVO vo : DBDataManagers.getInstance().getDbUsersData()) 
+		{
+			return vo.getId().equals(ID);
+		}
+		return false;
 	}
-
 	
 	// ✅ 닉네임 중복 확인
-		public static boolean isNicknameExists(String nickname) {
-			return storedNicknames.contains(nickname);
+		public boolean isNicknameExists(String nickname) {
+			for(UserVO von : DBDataManagers.getInstance().getDbUsersData())
+			{
+				return von.getNickName().equals(nickname);
+			}
+			return false;
 		}
-		
-		
-	// ✅ ID 저장
-	public static boolean registerID(String ID) {
-		if (isIDExists(ID)) {
-			return false; // 이미 존재하는 ID
-		}
-		storedIDs.add(ID);
-		return true; // 저장 성공
-	}
-
-	
-
-	// ✅ 닉네임 저장
-	public static boolean registerNickname(String nickname) {
-		if (isNicknameExists(nickname)) {
-			return false; // 이미 존재하는 닉네임
-		}
-		storedNicknames.add(nickname);
-		return true; // 저장 성공
-	}
-	
-	// ✅ 비밀번호 저장
-	public static void storePassword(String ID, String password) {
-        userPasswords.put(ID, password);
-    }
 	
 	// ✅ 회원 가입 (ID & 닉네임 저장 추가)
-	public static void registerUser(String ID, String password, String email, String mynum, String mynum7,
-			String phoneNum, String nickname, String nationality) {
-		// ID와 닉네임 저장
-		registerID(ID);
-		registerNickname(nickname);
-		storePassword(ID, password); // 비밀번호 저장
-		// 실제로 데이터를 저장하는 기능 (DB 사용 시 여기에 추가)
-		System.out.println("회원가입 완료: " + ID + ", " + nickname);
+	public void registerUser(UserVO user) throws IOException {
+		addUserToJson(user,AppConstants.USER_FILE_NAME, AppConstants.FOLDER_ID);
 	}
 	
     // ✅ 로그인 기능 (ID와 비밀번호 검증 후 오류 메시지 리턴)
-    public static String loginUser(String ID, String password) {
+    public boolean loginUser(String ID, String password) {
         if (!isIDExists(ID)) {
-            return "잘못된 아이디를 입력하셨습니다."; // ID가 없으면
+    		System.out.println("존재 하지 않는 아이디입니다. 실패");
+            return false;// ID가 없으면
         }
 
-        String findPw = userPasswords.get(ID);
-        if (findPw != null && findPw.equals(password)) {
-            return "로그인 성공"; // 비밀번호 일치 시 로그인 성공
-        } else {
-            return "잘못된 비밀번호를 입력하셨습니다."; // 비밀번호 틀리면
+        for(UserVO vo : DBDataManagers.getInstance().getDbUsersData()) 
+        {
+        	if(vo.getId().equals(ID) && vo.getPassword().equals(password)) 
+        	{
+        		System.out.println("로그인 성공");
+        		return true;
+        	}
         }
+        
+		System.out.println("로그인 실패 찾는 아이디나 비번이 없습니다.");
+		return false;
     }
-	  /*public static boolean loginUser(String ID, String password) {
-		  boolean idchecking = false;
-		  boolean pwchecking = false;
-		  
-	        for(String a : storedIDs) 
-	        {
-	        	a.equals(ID);
-	        	idchecking = true;
-	        }
-	        
-	        String findPw = userPasswords.get(ID);
+    
+    public void addUserToJson(UserVO newUser, String fileName, String folderId) throws IOException {
+        TypeToken<List<UserVO>> typeToken = new TypeToken<>() {};
+        List<UserVO> userList = GoogleDriveFileReader.getInstance().getListFromJson(fileName, folderId, typeToken);
+        
+        // 🆕 새 유저 추가
+        userList.add(newUser);
+        
+        // 📤 기존 데이터를 유지하면서 새로운 JSON 업로드
+        String updatedJson = new GsonBuilder().setPrettyPrinting().create().toJson(userList);
+        GoogleDriveFileReader.getInstance().uploadJson(fileName, updatedJson, folderId);
+        System.out.println("✅ 새로운 유저가 추가되었습니다: " + newUser.getId());
 
-	        if(!findPw.isEmpty()) 
-	        {	       
-	        	pwchecking = findPw.equals(password);
-	        }
-	        
-	        System.out.println("B : " + pwchecking);
-	        return idchecking && pwchecking;
-	    }*/
+        //새로운 유저 로컬 디비 리스트에 추가
+        DBDataManagers.getInstance().getDbUsersData().add(newUser);
+    }
 }

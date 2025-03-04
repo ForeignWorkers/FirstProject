@@ -45,6 +45,7 @@ public class DBDataManagers {
         List<UserVO> userDatas = GoogleDriveFileReader.getInstance().getListFromJson(AppConstants.USER_FILE_NAME, AppConstants.FOLDER_ID,userListToken);
         if(userDatas != null)
         {
+        	System.out.println("유저 데이터를 셋업했습니다.");
             dbUsersData.addAll(userDatas);
         }
 
@@ -53,6 +54,7 @@ public class DBDataManagers {
         List<ReviewVO> reviewDatas = GoogleDriveFileReader.getInstance().getListFromJson(AppConstants.REVIEW_FILE_NAME, AppConstants.FOLDER_ID, reviewListToken);
         if(userDatas != null)
         {
+        	System.out.println("리뷰 데이터를 셋업했습니다.");
             dbReviewsData.addAll(reviewDatas);
         }
 
