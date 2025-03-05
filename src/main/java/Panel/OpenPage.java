@@ -5,6 +5,8 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import Frame.FrameBase;
+import Managers.DBDataManagers;
+import Managers.DataManagers;
 import Managers.LoginConfrimManager;
 
 public class OpenPage {
@@ -17,6 +19,7 @@ public class OpenPage {
 	// 임시 로그인 페이지 이동 확인
 	public void openLoginPage() throws IOException {
 		FrameBase.getInstance().setInnerPanel(new LoginPanel(), "mid");
+		FrameBase.getInstance().setInnerPanel(new BottomNavBar("mypage"), "down");
 	}
 
 	// 임시 홈 페이지 이동 확인
@@ -58,7 +61,7 @@ public class OpenPage {
 			openSearchPage();
 			break;
 		case "mypage":
-			if (LoginConfrimManager.loginConfrim("ddd", "ddd")) { // 무조건 false 로그인으로 이동
+			if (DataManagers.getInstance().getMyUser() != null) { // 무조건 false 로그인으로 이동
 				openMyPage();
 			} else {
 				openLoginPage();

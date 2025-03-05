@@ -134,8 +134,9 @@ public class MainPagePanel extends JPanel {
 		ratingTextLabel.setBounds(ratingX + 30, titleStandardY + 5, 50, 30);
 
 		// 장르 텍스트가 7글자 초과시 .. 처리
+		int overNum = 7;//제한될 글자 수
 		String bigGenreText = content.getGenres();
-		if (bigGenreText.length() > 7) {
+		if (bigGenreText.length() > overNum) {
 			bigGenreText = bigGenreText.substring(0, 7) + "..";
 		}
 
@@ -267,7 +268,8 @@ public class MainPagePanel extends JPanel {
 
 		// 장르 텍스트가 7글자 초과시 .. 처리
 		String smallGenreText = content.getGenres();
-		if (smallGenreText.length() > 7) {
+		int overNum = 7;//초과 제한 될 글자 개수
+		if (smallGenreText.length() > overNum) {
 			smallGenreText = smallGenreText.substring(0, 7) + "..";
 		}
 
