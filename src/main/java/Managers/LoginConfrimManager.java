@@ -7,7 +7,7 @@ import java.io.IOException;
 public class LoginConfrimManager {
   
 	//text 파일 넣기
-	private static final String fileName = "accounts.txt"; // 외부에서 넣을 파일
+	private static final String fileName = "src/main/java/TESTVO/accounts.txt"; // 외부에서 넣을 파일
 	
 	//로그인 확인 매서드
     public static boolean loginConfrim(String userId, String passWord) {
@@ -35,10 +35,10 @@ public class LoginConfrimManager {
         return false;
     }
     
-    /*
+/*
     public static void main(String[] args) {
         // 테스트용 실행
     	loginConfrim("ABC", "123");
     }
-    */
+*/
 }

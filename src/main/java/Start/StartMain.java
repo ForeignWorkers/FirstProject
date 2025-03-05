@@ -1,32 +1,64 @@
 package Start;
 
+import Component.CustomButton;
+import Data.AppConstants;
 import Frame.FrameBase;
+import Managers.DataManagers;
+import Panel.BottomNavBar;
+import Panel.MainPagePanel;
+import Panel.TopNavBar;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class StartMain {
     public static void main(String[] args) {
         // FrameBase 생성
         FrameBase frameBase = FrameBase.getInstance();
 
-        // 3초 후 새로운 패널로 교체하는 테스트
-        new Timer(3000, e -> {
-            System.out.println("3초 뒤에 upPanel에 새로운 컨텐츠 패널이 들어감!");
+        //Start Panel (재연님 추가해주세요.)
+        //Main Panel Load!
+        MainPagePanel mainPagePanel = new MainPagePanel();
+        frameBase.setInnerPanel(mainPagePanel, "mid");
+        
+        //하단 네비 바 시작할 경로 "home"
+        BottomNavBar bottomNavBar = new BottomNavBar("home");
+        frameBase.setInnerPanel(bottomNavBar, "down");
+        
+        //상단 바
+        TopNavBar topNavBar = new TopNavBar();
+        frameBase.setInnerPanel(topNavBar, "up");
 
-            //새로운 패널 만들어주기 -> 님들은 이제 이게 각자 만든 클래스 임 ㅋ
-            JPanel newUpPanel = new JPanel();
-            newUpPanel.setLayout(null);
-            newUpPanel.setBackground(Color.YELLOW);
-            newUpPanel.setSize(300, 400);
-            newUpPanel.setLocation(0, 0); // upPanel 내부에서 위치 고정
-            newUpPanel.setVisible(true);
-            JButton btn = new JButton("로그인");
-            btn.setBounds(0, 0, 100, 50);
-            newUpPanel.add(btn);
+        //---------------------------------
+        //Test 및 사용법 숙지를 위한 테스트 코드임!
+        //지울 예정임!
+        /*
+        JPanel testPanel = new JPanel();
+        testPanel.setLayout(null);
+        testPanel.setOpaque(false);
+        testPanel.setBounds(0, 0, AppConstants.PANEL_UP_WIDTH, AppConstants.PANEL_UP_HEIGHT);
 
-            //** 패널 교체 핵심 메서드 **
-            frameBase.setInnerPanel(newUpPanel, "up");
-        }).start();
+        //테스트를 위한 버튼 추가임
+        //아이콘 별 네임은 파일 resources/ 각 파일별 이름이고, 패쓰는 폴더 이름임!
+        ImageIcon getIcon = DataManagers.getInstance().getIcon("logo","panel_UP");
+        CustomButton customButton = new CustomButton(getIcon);
+        customButton.setClickEffect(true, 0.3f);
+        //위치랑 사이즈는 피그마에서 상세 확인!
+        customButton.setBounds(31, 30, 75, 36);
+
+        //테스트를 위한 폰트 추가임!
+        JLabel fontLabel = new JLabel("WatchThis");
+        fontLabel.setFont(DataManagers.getInstance().getFont("",24));
+        fontLabel.setForeground(Color.white);
+        fontLabel.setBounds(68, 36, 148, 36);
+        fontLabel.setHorizontalTextPosition(JLabel.RIGHT);
+        fontLabel.setVerticalTextPosition(JLabel.CENTER);
+
+        testPanel.add(fontLabel);
+        testPanel.add(customButton);
+        frameBase.setInnerPanel(testPanel,"up");
+        */
     }
 }

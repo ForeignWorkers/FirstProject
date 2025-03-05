@@ -3,7 +3,10 @@ package Frame;
 import javax.swing.*;
 
 import Data.AppConstants;
+import Managers.DataManagers;
 import Panel.MainStaticPanel;
+
+import java.awt.*;
 
 public class FrameBase extends JFrame {
     private static FrameBase instance;
@@ -13,14 +16,35 @@ public class FrameBase extends JFrame {
         setTitle("FrameBase");
         setSize(AppConstants.FRAME_WIDTH, AppConstants.FRAME_HEIGHT);
         setLocationRelativeTo(null);
-        setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //MainStaticPanel 생성 및 추가
-        mainPanel = new MainStaticPanel();
-        setContentPane(mainPanel);
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(AppConstants.FRAME_WIDTH, AppConstants.FRAME_HEIGHT));
 
-        setVisible(true); // setContentPane 설정 후 호출
+        // 배경 이미지 로드
+        ImageIcon backgroundIcon = DataManagers.getInstance().getIcon("mainFrame", "panel_MID");
+        Image backgroundImage = backgroundIcon.getImage().getScaledInstance(
+                AppConstants.FRAME_WIDTH, AppConstants.FRAME_HEIGHT, Image.SCALE_SMOOTH);
+        ImageIcon resizedIcon = new ImageIcon(backgroundImage);
+
+        // 배경 JLabel 추가 (Z-Index: 1)
+        JLabel label = new JLabel(resizedIcon);
+        label.setOpaque(false);
+        label.setBackground(new Color(0, 0, 0, 0));
+        label.setBounds(0, 0, AppConstants.FRAME_WIDTH, AppConstants.FRAME_HEIGHT);
+        layeredPane.add(label, Integer.valueOf(1)); // 낮은 숫자가 뒤쪽에 위치함
+
+        // 메인 패널 추가 (Z-Index: 2)
+        mainPanel = new MainStaticPanel();
+        mainPanel.setOpaque(false);
+        mainPanel.setBounds(0, 0, AppConstants.FRAME_WIDTH, AppConstants.FRAME_HEIGHT);
+        layeredPane.add(mainPanel, Integer.valueOf(2)); // 높은 숫자가 앞쪽에 위치함
+
+        layeredPane.setOpaque(false);
+        layeredPane.setBackground(new Color(0, 0, 0, 0));
+
+        setContentPane(layeredPane);
+        setVisible(true);
     }
 
     public static FrameBase getInstance() {
