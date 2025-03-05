@@ -8,7 +8,6 @@ import java.awt.Insets;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -53,22 +52,22 @@ public class MainPagePanel extends JPanel {
 
 		add(mainPageScroll);
 
-		// 큰 추천 컨텐츠 라벨 추가
-		JLabel bigLabel = bigRecommendContentLabel();
-		bigLabel.setBounds(150, 10, 282, 400); // 큰 패널 위치 크기 컨트롤
-		contentPanel.add(bigLabel);
+		// 큰 추천 컨텐츠 패널 추가
+		JLabel bigPanel = bigRecommendContentLabel();
+		bigPanel.setBounds(150, 10, 282, 400); // 큰 패널 위치 크기 컨트롤
+		contentPanel.add(bigPanel);
 
 		// 작은 추천 컨텐츠 제목 TEXT
-		JLabel smallLabelTitle = new JLabel("오늘의 추천 컨텐츠", SwingConstants.LEFT);
-		smallLabelTitle.setBounds(16, 495, 250, 40); // 제목 위치 설정
-		smallLabelTitle.setForeground(new Color(0x78DBA6));
-		smallLabelTitle.setFont(DataManagers.getInstance().getFont("bold", 20));
-		contentPanel.add(smallLabelTitle);
+		JLabel smallPanelTitle = new JLabel("오늘의 추천 컨텐츠", SwingConstants.LEFT);
+		smallPanelTitle.setBounds(16, 495, 250, 40); // 제목 위치 설정
+		smallPanelTitle.setForeground(new Color(0x78DBA6));
+		smallPanelTitle.setFont(DataManagers.getInstance().getFont("bold", 20));
+		contentPanel.add(smallPanelTitle);
 
-		// 작은 추천 컨텐츠 라벨 추가
-		JLabel smallLabel = smallRecommendContentLabel();
-		smallLabel.setBounds(15, 537, 550, 288); // 작은 추천 컨텐츠 라벨 위치 크기 컨트롤
-		contentPanel.add(smallLabel);
+		// 작은 추천 컨텐츠 패널 추가
+		JPanel smallPanel = smallRecommendContentPanel();
+		smallPanel.setBounds(15, 537, 550, 232); // 작은 패널 위치 크기 컨트롤
+		contentPanel.add(smallPanel);
 
 		// 검색 바 추가
 		JPanel searchBar = createSearchBar();
@@ -99,7 +98,6 @@ public class MainPagePanel extends JPanel {
 		int labelWidth = 200; // 제목과 장르 라벨 너비 센터 배치에 사용
 
 		int thumbX = (bigLabelWidth - thumbWidth) / 2; // 썸네일 중앙 정렬
-		int thumbY = 10;
 		int labelX = (bigLabelWidth - labelWidth) / 2; // 제목과 장르 라벨 중앙 정렬
 
 		// 썸네일 이미지를 버튼 크기에 맞게 리사이징
@@ -107,9 +105,9 @@ public class MainPagePanel extends JPanel {
 		Image scaledthumbnailImage = thumbnailIcon.getImage().getScaledInstance(thumbWidth, thumbHeight,
 				Image.SCALE_SMOOTH);
 		ImageIcon resizedthumbnailIcon = new ImageIcon(scaledthumbnailImage);
-		
+
 		JButton thumbnailButton = new JButton(resizedthumbnailIcon);
-		thumbnailButton.setBounds(thumbX, thumbY, thumbWidth, thumbHeight);
+		thumbnailButton.setBounds(thumbX, 10, thumbWidth, thumbHeight);
 		thumbnailButton.setBorderPainted(false); // 테두리 없음
 		thumbnailButton.setContentAreaFilled(false); // 버튼 배경색 제거
 		thumbnailButton.setFocusPainted(false); // 클릭 시 테두리 없음
@@ -131,25 +129,36 @@ public class MainPagePanel extends JPanel {
 		JLabel ratingTextLabel = new JLabel(String.valueOf(content.getRating()), SwingConstants.LEFT);
 		ratingTextLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
 		ratingTextLabel.setForeground(new Color(0x78DBA6));
-		
-		int ratingTitleX = ratingX + 30;// ratingX + n 평점 아이콘 기준으로 x값 + 좌측으로 이동
-		ratingTextLabel.setBounds(ratingTitleX, titleStandardY + 5, 50, 30);
+
+		// ratingX + n 평점 아이콘 기준으로 x값 + 좌측으로 이동
+		ratingTextLabel.setBounds(ratingX + 30, titleStandardY + 5, 50, 30);
+
+		// 장르 텍스트가 7글자 초과시 .. 처리
+		String bigGenreText = content.getGenres();
+		if (bigGenreText.length() > 7) {
+			bigGenreText = bigGenreText.substring(0, 7) + "..";
+		}
 
 		// 중앙 하단 (장르 텍스트 데이터)
 		int genreX = labelX;
-		JLabel genreTextLabel = new JLabel(content.getGenres(), SwingConstants.CENTER);
-		genreTextLabel.setFont(DataManagers.getInstance().getFont("regular", 13));
+		JLabel genreTextLabel = new JLabel(bigGenreText, SwingConstants.CENTER);
+		genreTextLabel.setFont(DataManagers.getInstance().getFont("regular", 11));
 		genreTextLabel.setForeground(new Color(0x78DBA6));
 		genreTextLabel.setBounds(genreX, titleStandardY + 4, labelWidth, 35);
 
+		// 장르 라벨 아이콘 리사이징
+		ImageIcon bigGenreLabelIcon = DataManagers.getInstance().getIcon("bigCategory", "main_Page");
+		Image scaledBigGenreLabelImage = bigGenreLabelIcon.getImage().getScaledInstance(72, 23, Image.SCALE_SMOOTH);
+		ImageIcon resizedBigGenreLabelIcon = new ImageIcon(scaledBigGenreLabelImage);
+
 		// 중앙 하단 (장르 이미지 데이터)
-		JLabel genreIconLabel = new JLabel(DataManagers.getInstance().getIcon("bigCategory", "main_Page"));
+		JLabel genreIconLabel = new JLabel(resizedBigGenreLabelIcon);
 		genreIconLabel.setBounds(genreX, titleStandardY, labelWidth, 35);
 
 		// 우측 하단 (찜하기 버튼)
 		int favoriteX = labelX + 203; // 장르 라벨 기준 오른쪽 +
 		JButton favoriteButton = new JButton(DataManagers.getInstance().getIcon("bigWishBtnOff", "main_Page"));
-		favoriteButton.setBounds(favoriteX, 361, 30, 30);
+		favoriteButton.setBounds(favoriteX, 362, 30, 30);
 		favoriteButton.setBorderPainted(false);
 		favoriteButton.setContentAreaFilled(false);
 		favoriteButton.setFocusPainted(false);
@@ -174,16 +183,17 @@ public class MainPagePanel extends JPanel {
 	}
 
 	// 작은 추천 컨텐츠 패널 (4개 가로 배치, setLayout(null) 사용)
-	private JLabel smallRecommendContentLabel() {
+	private JPanel smallRecommendContentPanel() {
 
-		// small패널 -> small라벨로 수정 , contenstBG이미지 설정
-		JLabel smallLabel = new JLabel(DataManagers.getInstance().getIcon("contenstBG", "main_Page"));
+		JPanel smallPanel = new RoundedPanel(20, 20); // 라운드 모서리 적용
 
 		// 변경이 잦을 수 있는 위치,크기는 mainpage쪽으로 이동
+		smallPanel.setLayout(null); // null 레이아웃 유지
+		smallPanel.setBackground(new Color(0xCBCBCB));
 
 		int itemWidth = 150; // 아이템 넓이
 		int margin = 10; // 아이템 간격
-		int y = 20; // 아이템의 기본 Y 좌표
+		int y = -10; // 아이템의 기본 Y 좌표
 
 		int leftPadding = 10; // 좌측 아이템 패널과의 여백 설정
 
@@ -196,14 +206,14 @@ public class MainPagePanel extends JPanel {
 			int x = leftPadding + i * (itemWidth + margin);
 
 			// 컨텐츠 아이템 매개변수 전달
-			createContentItem(smallContent, smallLabel, x, y);
+			createContentItem(smallContent, smallPanel, x, y);
 		}
 
-		return smallLabel;
+		return smallPanel;
 	}
 
 	// 기존 방식 유지: createContentItem()에 JPanel을 반환하지 않음
-	private void createContentItem(TestContentVO content, JLabel smallLabel, int x, int y) {
+	private void createContentItem(TestContentVO content, JPanel smallPanel, int x, int y) {
 
 		int itemWidth = 148; // 개별 아이템이 들어갈 넓이 무조건 thumbWidth,labelWidth 보다 커야함
 		int thumbWidth = 148; // 썸네일 넓이
@@ -214,13 +224,13 @@ public class MainPagePanel extends JPanel {
 
 		// 프레임 이미지를 라벨로 설정
 		ImageIcon smallIcon = DataManagers.getInstance().getIcon("smallContentBG", "main_Page");
-		JLabel smallContentLabel = new JLabel(smallIcon);
+		JLabel smallLabel = new JLabel(smallIcon);
 		smallLabel.setLayout(null); // 내부 요소 배치 가능
-		smallLabel.setBounds(x, y + 15, itemWidth, 250); // 프레임 크기 조정
+		smallLabel.setBounds(x, y, itemWidth, 250); // 프레임 크기 조정
 
 		// 찜하기 버튼 (썸네일 위에 배치)
 		JButton favoriteButton = new JButton(DataManagers.getInstance().getIcon("smallWishBtnOff", "main_Page"));
-		favoriteButton.setBounds(x + thumbX + 110, y + 10, 30, 30);
+		favoriteButton.setBounds(x + thumbX + 120, y + 205, 30, 30);
 		favoriteButton.setBorderPainted(false);
 		favoriteButton.setContentAreaFilled(false);
 		favoriteButton.setFocusPainted(false);
@@ -232,14 +242,18 @@ public class MainPagePanel extends JPanel {
 		});
 
 		// 작은 썸네일 이미지를 버튼 크기에 맞게 리사이징
-		ImageIcon smallThumbnailIcon = new ImageIcon(content.getThumbnailFile());
-		Image scaledSmallThumbnailImage = smallThumbnailIcon.getImage().getScaledInstance(thumbWidth, 181,
-				Image.SCALE_SMOOTH);
-		ImageIcon resizedSmallThumbnailIcon = new ImageIcon(scaledSmallThumbnailImage);
+		/*
+		 * ImageIcon smallThumbnailIcon = new ImageIcon(content.getThumbnailFile());
+		 * Image scaledSmallThumbnailImage =
+		 * smallThumbnailIcon.getImage().getScaledInstance(thumbWidth, 181,
+		 * Image.SCALE_SMOOTH); ImageIcon resizedSmallThumbnailIcon = new
+		 * ImageIcon(scaledSmallThumbnailImage);
+		 */
 
 		// 썸네일 이미지 버튼
-		JButton thumbnail = new JButton(resizedSmallThumbnailIcon);
-		thumbnail.setBounds(x, y, thumbWidth, 181);
+		// JButton thumbnail = new JButton(resizedSmallThumbnailIcon);
+		JButton thumbnail = new JButton(DataManagers.getInstance().getIcon("toystoryPoster", "main_Page"));
+		thumbnail.setBounds(x, y + 20, thumbWidth, 181);
 		thumbnail.setBorderPainted(false);
 		thumbnail.setContentAreaFilled(false);
 		thumbnail.setFocusPainted(false);
@@ -247,45 +261,56 @@ public class MainPagePanel extends JPanel {
 
 		// 제목 라벨
 		JLabel titleLabel = new JLabel(content.getTitle(), SwingConstants.CENTER);
-		titleLabel.setFont(DataManagers.getInstance().getFont("bold", 16));
-		int titleLabelY = y + 182;
-		titleLabel.setBounds(x, titleLabelY, labelWidth, 30);
+		titleLabel.setFont(DataManagers.getInstance().getFont("bold", 13));
+		int titleLabelY = y + 188;
+		titleLabel.setBounds(x, titleLabelY + 3, labelWidth, 30);
+
+		// 장르 텍스트가 7글자 초과시 .. 처리
+		String smallGenreText = content.getGenres();
+		if (smallGenreText.length() > 7) {
+			smallGenreText = smallGenreText.substring(0, 7) + "..";
+		}
 
 		// 장르 텍스트
 		int genreY = titleLabelY + 22; // 타이틀 라벨 기준 y+
-		JLabel genreTextLabel = new JLabel(content.getGenres(), SwingConstants.CENTER);
-		genreTextLabel.setFont(DataManagers.getInstance().getFont("regular", 13));
+		JLabel genreTextLabel = new JLabel(smallGenreText, SwingConstants.CENTER);
+		genreTextLabel.setFont(DataManagers.getInstance().getFont("bold", 7));
 		genreTextLabel.setForeground(new Color(0x78DBA6));
-		genreTextLabel.setBounds(x, genreY + 4, labelWidth, 20);
+		genreTextLabel.setBounds(x, genreY + 2, labelWidth, 20);
+
+		ImageIcon smallGenreLabelIcon = DataManagers.getInstance().getIcon("smallCategory", "main_Page");
+		Image scaledsmallGenreLabelImage = smallGenreLabelIcon.getImage().getScaledInstance(46, 13, Image.SCALE_SMOOTH);
+		ImageIcon resizedsmallGenreLabelIcon = new ImageIcon(scaledsmallGenreLabelImage);
 
 		// 장르 이미지
-		JLabel genreIconLabel = new JLabel(DataManagers.getInstance().getIcon("smallCategory", "main_Page"));
+		JLabel genreIconLabel = new JLabel(resizedsmallGenreLabelIcon);
+
 		int genreIconWidth = 160; // 장르 아이콘 크기
 		int genreIconX = x + (itemWidth - genreIconWidth) / 2; // 장르 이미지 중앙 정렬
 		genreIconLabel.setBounds(genreIconX, genreY, genreIconWidth, 20);
 
 		// 평점 아이콘
-		int ratingY = genreY + 22;// 장르 라벨 아래에 위치
+		int ratingY = genreY; // 목적에 맞게 변수이름 변경
 		JLabel ratingIconLabel = new JLabel(DataManagers.getInstance().getIcon("smallRatingIcon", "main_Page"));
 		int ratingIconWidth = 100; // 별점 아이콘 크기
 		int ratingIconX = x + (itemWidth - ratingIconWidth - 30) / 2; // 별점 아이콘 중앙 정렬
-		ratingIconLabel.setBounds(ratingIconX, ratingY, ratingIconWidth, 20);
+		ratingIconLabel.setBounds(ratingIconX - 47, ratingY, ratingIconWidth, 20);
 
 		// 평점 텍스트
 		JLabel ratingValueLabel = new JLabel(String.valueOf(content.getRating()), SwingConstants.LEFT);
-		ratingValueLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
+		ratingValueLabel.setFont(DataManagers.getInstance().getFont("bold", 8));
 		ratingValueLabel.setForeground(new Color(0x78DBA6));
-		ratingValueLabel.setBounds(ratingIconX + 60, ratingY + 4, 40, 20); // 별점 아이콘 오른쪽 정렬
+		ratingValueLabel.setBounds(ratingIconX + 10, ratingY + 3, 40, 20); // 별점 아이콘 오른쪽 정렬
 
 		// UI 배치
-		smallLabel.add(favoriteButton);
-		smallLabel.add(thumbnail);
-		smallLabel.add(titleLabel);
-		smallLabel.add(genreTextLabel);
-		smallLabel.add(genreIconLabel);
-		smallLabel.add(ratingIconLabel);
-		smallLabel.add(ratingValueLabel);
-		smallLabel.add(smallContentLabel);
+		smallPanel.add(favoriteButton);
+		smallPanel.add(thumbnail);
+		smallPanel.add(titleLabel);
+		smallPanel.add(genreTextLabel);
+		smallPanel.add(genreIconLabel);
+		smallPanel.add(ratingIconLabel);
+		smallPanel.add(ratingValueLabel);
+		smallPanel.add(smallLabel);
 	}
 
 	private JPanel createSearchBar() {
