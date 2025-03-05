@@ -47,6 +47,6 @@ public class LoginORMypageButton extends JPanel {
     	mypageButton.addActionListener(e -> openPage.openMyPage());
         add(mypageButton);
     }
-
     
+   
 }

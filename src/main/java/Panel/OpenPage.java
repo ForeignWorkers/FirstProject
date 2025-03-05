@@ -26,17 +26,12 @@ public class OpenPage {
     
     //임시 검색 페이지 이동 확인
     public void openSearchPage() {
-    	JOptionPane.showMessageDialog(null,"검색 페이지로 이동");
+    	JOptionPane.showMessageDialog(null,"랭킹 페이지로 이동");
     }
     
     //임시 메인 컨텐츠 세부 페이지 이동 확인
     public void openMainContentPage() {
     	JOptionPane.showMessageDialog(null,"메인 컨텐츠 세부 페이지 이동 확인");
-    }
-    
-    //임시 메인 컨텐츠 세부 페이지 이동 확인
-    public void openContentPage(String contentTitle) {
-        JOptionPane.showMessageDialog(null, contentTitle + " 상세 페이지 이동");
     }
     
 }
