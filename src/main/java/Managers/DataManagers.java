@@ -1,5 +1,7 @@
 package Managers;
 
+import VO.UserVO;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -9,10 +11,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+//Local Data 위주 클래스
 public class DataManagers {
     private static DataManagers dataManagers;
     //로드된 아이콘 맵 데이터
     private Map<String,ImageIcon> icons = new HashMap<>();
+    private UserVO myUser;
 
     //싱글턴 생성 로직
     public static DataManagers getInstance() {
@@ -20,6 +24,10 @@ public class DataManagers {
             dataManagers = new DataManagers();
         }
         return dataManagers;
+    }
+
+    public void setMyUser(UserVO myUser) {
+        this.myUser = myUser;
     }
 
     public ImageIcon getIcon(String iconName, String iconPath) {
@@ -43,7 +51,7 @@ public class DataManagers {
     private void setLoadedIcon(String iconName, String iconPath) {
         // 원본 이미지 로드 (PNG가 알파 채널을 포함할 수 있음)
         BufferedImage originalImage = null;
-        
+
         try {
             originalImage = ImageIO.read(new File("resources/" + iconPath + "/" + iconName + ".png"));
         } catch (IOException ex) {
@@ -63,7 +71,7 @@ public class DataManagers {
         icons.put(iconName, resizedIcon);
     }
 
-    public static BufferedImage getSmoothScaledImage(BufferedImage image, int targetWidth, int targetHeight) {
+    private static BufferedImage getSmoothScaledImage(BufferedImage image, int targetWidth, int targetHeight) {
         int currentWidth = image.getWidth();
         int currentHeight = image.getHeight();
 
@@ -97,7 +105,7 @@ public class DataManagers {
 
         return resizedImage;
     }
-    
+
     private Boolean isLoadedIcon(String iconName) {
         return icons.containsKey(iconName);
     }

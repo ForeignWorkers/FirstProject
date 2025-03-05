@@ -5,6 +5,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,6 +20,7 @@ import javax.swing.text.PlainDocument;
 
 import DAO.SignUPDAO;
 import Data.AppConstants;
+import VO.UserVO;
 
 public class SignUPPanel extends JPanel {
 	private JTextField id, email, myNum, myNum7, phoneNum, nickName;
@@ -34,6 +36,7 @@ public class SignUPPanel extends JPanel {
 	}
 
 	public SignUPPanel() {
+		SignUPDAO signUPDAO = new SignUPDAO();
 		setLayout(null);
 		setBackground(Color.GRAY);
 		setSize(600, 600);
@@ -90,7 +93,7 @@ public class SignUPPanel extends JPanel {
 			}
 			if (inputID.isEmpty() || inputID.equals("ID")) {
 				JOptionPane.showMessageDialog(null, "ID를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-			} else if (SignUPDAO.isIDExists(inputID)) {
+			} else if (signUPDAO.isIDExists(inputID)) {
 				JOptionPane.showMessageDialog(null, "중복된 ID입니다!", "경고", JOptionPane.WARNING_MESSAGE);
 				id.setText("");
 			} else {
@@ -113,7 +116,7 @@ public class SignUPPanel extends JPanel {
 			}
 			if (inputNickname.isEmpty() || inputNickname.equals("닉네임")) {
 				JOptionPane.showMessageDialog(null, "닉네임을 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-			} else if (SignUPDAO.isNicknameExists(inputNickname)) {
+			} else if (signUPDAO.isNicknameExists(inputNickname)) {
 				JOptionPane.showMessageDialog(null, "중복된 닉네임입니다!", "경고", JOptionPane.WARNING_MESSAGE);
 				nickName.setText("");
 			} else {
@@ -166,10 +169,24 @@ public class SignUPPanel extends JPanel {
 				return;
 			}
 
+			UserVO user = new UserVO();
+			user.setId(id.getText().trim());
+			user.setPassword(new String(pw.getPassword()));
+			user.setEmail(email.getText().trim());
+			user.setMyNumber(Integer.parseInt(myNum.getText().trim()));
+			user.setGender(Boolean.parseBoolean(myNum7.getText().trim()));
+			user.setPhoneNumber(phoneNum.getText().trim());
+			user.setNickName(nickName.getText().trim());
+			user.setnation((String) nationalityBox.getSelectedItem());
+			
+			
 			// 회원 정보 저장
-			SignUPDAO.registerUser(id.getText().trim(), new String(pw.getPassword()), email.getText().trim(),
-					myNum.getText().trim(), myNum7.getText().trim(), phoneNum.getText().trim(),
-					nickName.getText().trim(), (String) nationalityBox.getSelectedItem());
+			try {
+				signUPDAO.registerUser(user);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 			JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
 			// 입력 필드 초기화

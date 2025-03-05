@@ -4,9 +4,6 @@ import Component.CustomButton;
 import Data.AppConstants;
 import Frame.FrameBase;
 import Managers.DataManagers;
-import Panel.BottomNavBar;
-import Panel.MainPagePanel;
-import Panel.TopNavBar;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,21 +17,10 @@ public class StartMain {
 
         //Start Panel (재연님 추가해주세요.)
         //Main Panel Load!
-        MainPagePanel mainPagePanel = new MainPagePanel();
-        frameBase.setInnerPanel(mainPagePanel, "mid");
-        
-        //하단 네비 바 시작할 경로 "home"
-        BottomNavBar bottomNavBar = new BottomNavBar("home");
-        frameBase.setInnerPanel(bottomNavBar, "down");
-        
-        //상단 바
-        TopNavBar topNavBar = new TopNavBar();
-        frameBase.setInnerPanel(topNavBar, "up");
 
         //---------------------------------
         //Test 및 사용법 숙지를 위한 테스트 코드임!
         //지울 예정임!
-        /*
         JPanel testPanel = new JPanel();
         testPanel.setLayout(null);
         testPanel.setOpaque(false);
@@ -59,6 +45,5 @@ public class StartMain {
         testPanel.add(fontLabel);
         testPanel.add(customButton);
         frameBase.setInnerPanel(testPanel,"up");
-        */
     }
 }

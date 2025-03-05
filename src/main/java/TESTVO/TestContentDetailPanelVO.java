@@ -26,7 +26,7 @@ public class TestContentDetailPanelVO {
 		this.personNum = personNum;
 		this.reviewTotal = reviewTotal;
 	}
-	
+
 	public int getId() {
 		return this.itemID;
 	}
@@ -36,7 +36,7 @@ public class TestContentDetailPanelVO {
 		this.reviewTotal /= this.personNum;
 		System.out.printf("리뷰 평점 : %.1f\n", this.reviewTotal);
 	}
-	
+
 	public String getTitle() {
 		return title;
 	}
@@ -90,5 +90,5 @@ public class TestContentDetailPanelVO {
 		return "TestVO [title=" + title + ", genre=" + genre + ", promotionYear=" + promotionYear + ", rating=" + rating
 				+ ", personNum=" + personNum + ", reviewTotal=" + reviewTotal + "]";
 	}
-	
-}//class
+
+}// class
