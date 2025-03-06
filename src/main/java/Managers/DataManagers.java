@@ -25,12 +25,16 @@ public class DataManagers {
         }
         return dataManagers;
     }
-
+    
+    public UserVO getMyUser() {
+		return myUser;
+	}
+    
     public void setMyUser(UserVO myUser) {
         this.myUser = myUser;
     }
 
-    public ImageIcon getIcon(String iconName, String iconPath) {
+	public ImageIcon getIcon(String iconName, String iconPath) {
         if(!isLoadedIcon(iconName))
             setLoadedIcon(iconName, iconPath);
 

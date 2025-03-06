@@ -7,6 +7,7 @@ import javax.swing.*;
 import Managers.LoginConfrimManager;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class LoginORMypageButton extends JPanel {
     private JButton loginButton, mypageButton;
@@ -32,7 +33,13 @@ public class LoginORMypageButton extends JPanel {
     public void addLoginButton() {
     	//비로그인 상태: 로그인 버튼 추가
         loginButton = new JButton("로그인");
-        loginButton.addActionListener(e -> openPage.openLoginPage());
+        loginButton.addActionListener(e -> {
+			try {
+				openPage.openLoginPage();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		});
         add(loginButton);
     }
    
