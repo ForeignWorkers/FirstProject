@@ -1,10 +1,14 @@
 package Panel;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -13,13 +17,17 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+import Component.CustomButton;
 import DAO.SignUPDAO;
 import Data.AppConstants;
+import Managers.DataManagers;
 import VO.UserVO;
 
 public class SignUPPanel extends JPanel {
@@ -36,27 +44,214 @@ public class SignUPPanel extends JPanel {
 	}
 
 	public SignUPPanel() {
+
 		SignUPDAO signUPDAO = new SignUPDAO();
 		setLayout(null);
-		setBackground(Color.GRAY);
-		setSize(600, 600);
+		setBackground(Color.decode("#404153"));
+		setPreferredSize(new Dimension(700, 900));
+		// addNationalityDropdown();
 
-		// 입력 필드 설정
-		id = createPlaceholderTextField("ID", 90, 80, 200, 30);
-		pw = createPlaceholderPasswordField("password", 90, 130, 260, 30);
-		pwCheck = createPlaceholderPasswordField("password 확인", 90, 180, 260, 30);
-		email = createPlaceholderTextField("email", 90, 230, 260, 30);
-		myNum = createPlaceholderTextField("주민번호 앞자리", 90, 280, 130, 30);
-		myNum7 = createMynum7Field(230, 280, 20, 30);
-		phoneNum = createPlaceholderTextField("전화번호", 90, 330, 130, 30);
-		nickName = createPlaceholderTextField("닉네임", 90, 430, 200, 30);
+		JLabel SignUp = new JLabel("회원가입");
+		SignUp.setBounds(83, 28, 461, 85);
+		SignUp.setFont(DataManagers.getInstance().getFont("", 30));
+		SignUp.setForeground(Color.decode("#78DBA6"));
+		add(SignUp);
 
-		addNationalityDropdown();
+		// id입력라벨
+		JLabel idBG = new JLabel();
+		idBG.setBounds(83, 110, 361, 37);
+		idBG.setIcon(DataManagers.getInstance().getIcon("textBox01", "signUp_Page"));
 
-		JLabel pwErrorLabel = new JLabel("비밀번호는 8자이상의 영문, 숫자, 특수문자를 포함해야 합니다.");
-		pwErrorLabel.setForeground(Color.RED);
-		pwErrorLabel.setBounds(360, 130, 300, 30); // PW 필드 옆에 배치
+		// id텍스트필드
+		id = createPlaceholderTextField("아이디 또는 이메일을 입력해주세요.", 110, 115, 361, 37);
+		id.setFont(DataManagers.getInstance().getFont("", 13));
+		id.setForeground(Color.decode("#CBCBCB"));
+		id.setOpaque(false);
+		id.setBorder(null);
+		add(id);
+		add(idBG);
+
+		// ID중복 확인 버튼 라벨 JLabel
+		JLabel checkIDButtonBG = new JLabel("중복확인");
+		checkIDButtonBG.setBounds(484, 114, 101, 37);
+		checkIDButtonBG.setFont(DataManagers.getInstance().getFont("", 14));
+		checkIDButtonBG.setForeground(Color.decode("#595959"));
+
+		// ID 중복 확인 버튼
+		CustomButton checkIDButton = new CustomButton(
+				DataManagers.getInstance().getIcon("signUpCheckBtn", "signUp_Page"));
+		checkIDButton.setBounds(455, 110, 101, 37);
+		checkIDButton.setOpaque(false);
+		checkIDButton.setBorder(null);
+
+		add(checkIDButtonBG);
+		add(checkIDButton);
+		checkIDButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				String inputID = id.getText().trim();
+				if (!inputID.matches("^[a-zA-Z0-9]+$")) {
+					JOptionPane.showMessageDialog(null, "ID에는 특수문자를 포함할 수 없습니다!", "오류", JOptionPane.ERROR_MESSAGE);
+					id.setText(""); // 입력 필드 초기화
+					return;
+				}
+				if (inputID.isEmpty() || inputID.equals("ID")) {
+					JOptionPane.showMessageDialog(null, "ID를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
+				} else if (signUPDAO.isIDExists(inputID)) {
+					JOptionPane.showMessageDialog(null, "중복된 ID입니다!", "경고", JOptionPane.WARNING_MESSAGE);
+					id.setText("");
+				} else {
+					JOptionPane.showMessageDialog(null, "사용 가능한 ID입니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
+					isIdChecked = true;
+				}
+			}
+		});
+
+		// pw입력라벨
+		JLabel pwBG = new JLabel();
+		pwBG.setBounds(83, 170, 361, 37);
+		pwBG.setIcon(DataManagers.getInstance().getIcon("textBox01", "signUp_Page"));
+
+		// pw텍스트 필드
+		pw = createPlaceholderPasswordField("비밀번호를 입력해주세요", 110, 175, 361, 37);
+		pw.setFont(DataManagers.getInstance().getFont("", 13));
+		pw.setForeground(Color.decode("#CBCBCB"));
+		pw.setOpaque(false);
+		pw.setBorder(null);
+		add(pw);
+		add(pwBG);
+
+		// pw체크 입력라벨
+		JLabel pwCheckBG = new JLabel();
+		pwCheckBG.setBounds(83, 227, 361, 37);
+		pwCheckBG.setIcon(DataManagers.getInstance().getIcon("textBox01", "signUp_Page"));
+
+		// pw체크텍스트 필드
+		pwCheck = createPlaceholderPasswordField("다시 한 번 비밀번호를 입력해주세요", 110, 235, 260, 30);
+		pwCheck.setFont(DataManagers.getInstance().getFont("", 13));
+		pwCheck.setForeground(Color.decode("#CBCBCB"));
+		pwCheck.setOpaque(false);
+		pwCheck.setBorder(null);
+		add(pwCheck);
+		add(pwCheckBG);
+
+		// pw체크 테스트 밑에 뜨는 경고문구
+		JLabel pwErrorLabel = new JLabel("• 비밀번호는 8자이상의 영문, 숫자, 특수문자를 포함해야 합니다.");
+		pwErrorLabel.setForeground(Color.decode("#CBCBCB"));
+		pwErrorLabel.setFont(DataManagers.getInstance().getFont("", 9));
+		pwErrorLabel.setBounds(110, 260, 260, 30); // PW 필드 옆에 배치
 		add(pwErrorLabel);
+
+		// email입력라벨
+		JLabel emailBG = new JLabel();
+		emailBG.setBounds(83, 299, 361, 37);
+		emailBG.setIcon(DataManagers.getInstance().getIcon("textBox01", "signUp_Page"));
+
+		// email텍스트 필드
+		email = createPlaceholderTextField("이메일을 입력해주세요", 110, 307, 260, 30);
+		email.setFont(DataManagers.getInstance().getFont("", 13));
+		email.setForeground(Color.decode("#CBCBCB"));
+		email.setOpaque(false);
+		email.setBorder(null);
+		add(email);
+		add(emailBG);
+
+		// 주민번호 앞자리 입력라벨
+		JLabel myNumBG = new JLabel();
+		myNumBG.setBounds(83, 359, 161, 37);
+		myNumBG.setIcon(DataManagers.getInstance().getIcon("textBox02", "signUp_Page"));
+
+		// 주민번호 앞자리 텍스트 필드
+		myNum = createPlaceholderTextField("주민번호 앞 6자리", 110, 367, 130, 30);
+		myNum.setFont(DataManagers.getInstance().getFont("", 13));
+		myNum.setForeground(Color.decode("#CBCBCB"));
+		myNum.setOpaque(false);
+		myNum.setBorder(null);
+		add(myNum);
+		add(myNumBG);
+
+		JLabel myNumSL = new JLabel();
+		myNumSL.setBounds(253, 375, 23, 7);
+		myNumSL.setIcon(DataManagers.getInstance().getIcon("textBoxIntervalBar", "signUp_Page"));
+		add(myNumSL);
+		// 주민번호 7번째자리 입력라벨 배경
+		JLabel myNum7BG = new JLabel();
+		myNum7BG.setBounds(283, 359, 161, 37);
+		myNum7BG.setIcon(DataManagers.getInstance().getIcon("myNum7BG", "signUp_Page"));
+
+		// 주민번호 7번째자리 입력하는 곳 라벨 배경
+		JLabel myNum7BG7 = new JLabel();
+		myNum7BG7.setBounds(283, 359, 51, 37);
+		myNum7BG7.setIcon(DataManagers.getInstance().getIcon("textBox03", "signUp_Page"));
+
+		// 주민번호 7번째 자리의 뒤의 **** 라벨
+		JLabel myNum7B7G7 = new JLabel();
+		myNum7B7G7.setBounds(336, 359, 107, 37);
+		myNum7B7G7.setIcon(DataManagers.getInstance().getIcon("textBox04", "signUp_Page"));
+
+		// 주민번호 7번째 자리의 뒤의 **** 텍스트 라벨
+		JLabel myNum7B7G77 = new JLabel("******");
+		myNum7B7G77.setBounds(355, 373, 80, 30);
+		myNum7B7G77.setFont(DataManagers.getInstance().getFont("", 22)); // 폰트 크기 조정
+		myNum7B7G77.setForeground(Color.decode("#CBCBCB"));
+		myNum7B7G77.setOpaque(false);
+
+		// 주민번호 한자리 텍스트필드
+		myNum7 = createMynum7Field("한자리", 290, 368, 40, 28);
+		myNum7.setFont(DataManagers.getInstance().getFont("", 13));
+		myNum7.setForeground(Color.decode("#CBCBCB"));
+		myNum7.setBorder(null);
+		myNum7.setVisible(true);
+		myNum7.setOpaque(false);
+
+		add(myNum7B7G77);
+		add(myNum7BG7);
+		add(myNum7B7G7);
+		add(myNum7BG);
+		add(myNum7);
+		setComponentZOrder(myNum7, 0);
+
+		// 전번 라벨
+		JLabel phoneNumBG = new JLabel();
+		phoneNumBG.setBounds(83, 419, 361, 37);
+		phoneNumBG.setIcon(DataManagers.getInstance().getIcon("textBox01", "signUp_Page"));
+
+		// 전번 텍스트 필드
+		phoneNum = createPlaceholderTextField("전화번호를 입력해주세요", 110, 427, 130, 30);
+		phoneNum.setFont(DataManagers.getInstance().getFont("", 13));
+		phoneNum.setForeground(Color.decode("#CBCBCB"));
+		phoneNum.setOpaque(false);
+		phoneNum.setBorder(null);
+		add(phoneNum);
+		add(phoneNumBG);
+
+		// 국적 선택 라벨
+		JLabel nationalitiesBG = new JLabel();
+		nationalitiesBG.setBounds(83, 479, 232, 37);
+		nationalitiesBG.setIcon(DataManagers.getInstance().getIcon("textBox05", "signUp_Page"));
+
+		JLabel nationalityLabel = new JLabel("국적 선택");
+		nationalityLabel.setFont(DataManagers.getInstance().getFont("", 13));
+		nationalityLabel.setForeground(Color.decode("#CBCBCB"));
+		nationalityLabel.setBounds(110, 483, 232, 37);
+
+		// 국적선택 버튼
+		JLabel nationalitiesDropBox = new JLabel();
+		nationalitiesDropBox.setBounds((int) 275.34, 479, (int) 39.66, 37);
+		nationalitiesDropBox.setIcon(DataManagers.getInstance().getIcon("dropBoxBtn", "signUp_Page"));
+		add(nationalityLabel);
+		add(nationalitiesDropBox);
+		add(nationalitiesBG);
+
+		JComboBox<String> nationDrop = addNationalityDropdown();
+
+		nationDrop.addActionListener(e -> {
+			// 선택된 값 가져오기
+			String selectedNationality = nationalityBox.getSelectedItem().toString();
+			System.out.println("선택된 국적: " + selectedNationality);
+			nationalityLabel.setText(selectedNationality);
+		});
 
 		myNum.addKeyListener(new KeyAdapter() {
 			@Override
@@ -67,6 +262,56 @@ public class SignUPPanel extends JPanel {
 				}
 			}
 		});
+		// 닉네임 라벨
+		JLabel nickNameBG = new JLabel();
+		nickNameBG.setBounds(83, 539, 232, 37);
+		nickNameBG.setIcon(DataManagers.getInstance().getIcon("textBox05", "signUp_Page"));
+
+		// 닉네임 텍스트 필드
+		nickName = createPlaceholderTextField("닉네임을 입력해주세요", 110, 547, 200, 30);
+		nickName.setFont(DataManagers.getInstance().getFont("", 13));
+		nickName.setForeground(Color.decode("#CBCBCB"));
+		nickName.setOpaque(false);
+		nickName.setBorder(null);
+		add(nickName);
+		add(nickNameBG);
+
+		// 닉네임 중복 확인 버튼 라벨 JLabel
+		JLabel checkNicknameButtonBG = new JLabel("중복확인");
+		checkNicknameButtonBG.setBounds(359, 543, 101, 37);
+		checkNicknameButtonBG.setFont(DataManagers.getInstance().getFont("", 14));
+		checkNicknameButtonBG.setForeground(Color.decode("#595959"));
+
+		// 닉네임 커스텀 버튼
+		CustomButton checkNicknameButton = new CustomButton(
+				DataManagers.getInstance().getIcon("signUpCheckBtn", "signUp_Page"));
+		checkNicknameButton.setBounds(330, 539, 101, 37);
+		checkNicknameButton.setOpaque(false);
+		checkNicknameButton.setBorder(null);
+		add(checkNicknameButtonBG);
+		add(checkNicknameButton);
+
+		checkNicknameButton.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				String inputNickname = nickName.getText().trim();
+				if (!inputNickname.matches("^[a-zA-Z0-9가-힣]+$")) {
+					JOptionPane.showMessageDialog(null, "닉네임에는 특수문자를 포함할 수 없습니다!", "오류", JOptionPane.ERROR_MESSAGE);
+					nickName.setText(""); // 입력 필드 초기화
+					return;
+				}
+				if (inputNickname.isEmpty() || inputNickname.equals("닉네임")) {
+					JOptionPane.showMessageDialog(null, "닉네임을 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
+				} else if (signUPDAO.isNicknameExists(inputNickname)) {
+					JOptionPane.showMessageDialog(null, "중복된 닉네임입니다!", "경고", JOptionPane.WARNING_MESSAGE);
+					nickName.setText("");
+				} else {
+					JOptionPane.showMessageDialog(null, "사용 가능한 닉네임입니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
+					isNicknameChecked = true;
+				}
+
+			}
+		});
+
 		// 비밀번호 입력 시 조건 검사 이벤트 추가
 		pw.addKeyListener(new KeyAdapter() {
 			@Override
@@ -79,135 +324,102 @@ public class SignUPPanel extends JPanel {
 				}
 			}
 		});
-		// ID 중복 확인 버튼
-		JButton checkIDButton = new JButton("ID확인");
-		checkIDButton.setBounds(300, 80, 100, 30);
-		add(checkIDButton);
 
-		checkIDButton.addActionListener(e -> {
-			String inputID = id.getText().trim();
-			if (!inputID.matches("^[a-zA-Z0-9]+$")) {
-				JOptionPane.showMessageDialog(null, "ID에는 특수문자를 포함할 수 없습니다!", "오류", JOptionPane.ERROR_MESSAGE);
-				id.setText(""); // 입력 필드 초기화
-				return;
+		// 닉네임 커스텀 버튼
+		CustomButton finaljoinButton = new CustomButton(DataManagers.getInstance().getIcon("signUpBtn", "signUp_Page"));
+		finaljoinButton.setBounds(83, 599, 461, 43);
+		finaljoinButton.setOpaque(false);
+		finaljoinButton.setBorder(null);
+
+		JLabel finalll = new JLabel("회원가입");
+		finalll.setBounds(280, 605, 461, 43);
+		finalll.setFont(DataManagers.getInstance().getFont("", 17));
+		finalll.setForeground(Color.decode("#595959"));
+
+		finaljoinButton.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+
+				String password = new String(pw.getPassword());
+
+				String emailText = email.getText().trim();
+				if (!isValidEmail(emailText)) {
+					JOptionPane.showMessageDialog(null, "올바른 이메일 형식이 아닙니다!", "오류", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (!isIdChecked || !isNicknameChecked) {
+					JOptionPane.showMessageDialog(null, "ID 및 닉네임 중복 확인을 완료하세요!", "오류", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				if (id.getText().trim().isEmpty() || new String(pw.getPassword()).trim().isEmpty()
+						|| new String(pwCheck.getPassword()).trim().isEmpty() || email.getText().strip().isEmpty()
+						|| myNum.getText().trim().isEmpty() || myNum7.getText().trim().isEmpty()
+						|| phoneNum.getText().trim().isEmpty() || nickName.getText().trim().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "모든 필드를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				if (email.getText().trim().isEmpty() || email.getText().equals("email")) {
+					JOptionPane.showMessageDialog(null, "이메일을 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (phoneNum.getText().trim().isEmpty() || phoneNum.getText().equals("전화번호")) {
+					JOptionPane.showMessageDialog(null, "전화번호를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				if (!new String(pw.getPassword()).equals(new String(pwCheck.getPassword()))) {
+					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다!", "오류", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				if (!isValidPassword(password)) {
+					JOptionPane.showMessageDialog(null, "비밀번호가 형식에 어긋납니다", "오류", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				UserVO user = new UserVO();
+				user.setId(id.getText().trim());
+				user.setPassword(new String(pw.getPassword()));
+				user.setEmail(email.getText().trim());
+				user.setMyNumber(Integer.parseInt(myNum.getText().trim()));
+				user.setGender(Boolean.parseBoolean(myNum7.getText().trim()));
+				user.setPhoneNumber(phoneNum.getText().trim());
+				user.setNickName(nickName.getText().trim());
+				user.setnation((String) nationalityBox.getSelectedItem());
+
+				// 회원 정보 저장
+				try {
+					signUPDAO.registerUser(user);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
+				// 입력 필드 초기화
+				id.setText("ID");
+
+				pw.setText("password");
+				pw.setForeground(Color.GRAY);
+				pw.setEchoChar((char) 0);
+
+				pwCheck.setText("password 확인");
+				pw.setForeground(Color.GRAY);
+				pw.setEchoChar((char) 0);
+				email.setText("email");
+				myNum.setText("주민번호 앞자리");
+				myNum7.setText("");
+				phoneNum.setText("전화번호");
+				nickName.setText("닉네임");
+
+				isIdChecked = false;
+				isNicknameChecked = false;
 			}
-			if (inputID.isEmpty() || inputID.equals("ID")) {
-				JOptionPane.showMessageDialog(null, "ID를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-			} else if (signUPDAO.isIDExists(inputID)) {
-				JOptionPane.showMessageDialog(null, "중복된 ID입니다!", "경고", JOptionPane.WARNING_MESSAGE);
-				id.setText("");
-			} else {
-				JOptionPane.showMessageDialog(null, "사용 가능한 ID입니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
-				isIdChecked = true;
-			}
+
 		});
-
-		// 닉네임 중복 확인 버튼 추가
-		JButton checkNicknameButton = new JButton("닉네임확인");
-		checkNicknameButton.setBounds(300, 430, 100, 30);
-		add(checkNicknameButton);
-
-		checkNicknameButton.addActionListener(e -> {
-			String inputNickname = nickName.getText().trim();
-			if (!inputNickname.matches("^[a-zA-Z0-9가-힣]+$")) {
-				JOptionPane.showMessageDialog(null, "닉네임에는 특수문자를 포함할 수 없습니다!", "오류", JOptionPane.ERROR_MESSAGE);
-				nickName.setText(""); // 입력 필드 초기화
-				return;
-			}
-			if (inputNickname.isEmpty() || inputNickname.equals("닉네임")) {
-				JOptionPane.showMessageDialog(null, "닉네임을 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-			} else if (signUPDAO.isNicknameExists(inputNickname)) {
-				JOptionPane.showMessageDialog(null, "중복된 닉네임입니다!", "경고", JOptionPane.WARNING_MESSAGE);
-				nickName.setText("");
-			} else {
-				JOptionPane.showMessageDialog(null, "사용 가능한 닉네임입니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
-				isNicknameChecked = true;
-			}
-		});
-
-		// 회원가입 버튼
-		JButton finaljoinButton = new JButton("회원가입");
-		finaljoinButton.setBounds(AppConstants.FRAME_WIDTH / 2, 500, 100, 30);
+		add(finalll);
 		add(finaljoinButton);
 
-		finaljoinButton.addActionListener(e -> {
-			String password = new String(pw.getPassword());
-
-			String emailText = email.getText().trim();
-			if (!isValidEmail(emailText)) {
-				JOptionPane.showMessageDialog(null, "올바른 이메일 형식이 아닙니다!", "오류", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			if (!isIdChecked || !isNicknameChecked) {
-				JOptionPane.showMessageDialog(null, "ID 및 닉네임 중복 확인을 완료하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			if (id.getText().trim().isEmpty() || new String(pw.getPassword()).trim().isEmpty()
-					|| new String(pwCheck.getPassword()).trim().isEmpty() || email.getText().strip().isEmpty()
-					|| myNum.getText().trim().isEmpty() || myNum7.getText().trim().isEmpty()
-					|| phoneNum.getText().trim().isEmpty() || nickName.getText().trim().isEmpty()) {
-				JOptionPane.showMessageDialog(null, "모든 필드를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			if (email.getText().trim().isEmpty() || email.getText().equals("email")) {
-				JOptionPane.showMessageDialog(null, "이메일을 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			if (phoneNum.getText().trim().isEmpty() || phoneNum.getText().equals("전화번호")) {
-				JOptionPane.showMessageDialog(null, "전화번호를 입력하세요!", "오류", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			if (!new String(pw.getPassword()).equals(new String(pwCheck.getPassword()))) {
-				JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다!", "오류", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			if (!isValidPassword(password)) {
-				JOptionPane.showMessageDialog(null, "비밀번호가 형식에 어긋납니다", "오류", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			UserVO user = new UserVO();
-			user.setId(id.getText().trim());
-			user.setPassword(new String(pw.getPassword()));
-			user.setEmail(email.getText().trim());
-			user.setMyNumber(Integer.parseInt(myNum.getText().trim()));
-			user.setGender(Boolean.parseBoolean(myNum7.getText().trim()));
-			user.setPhoneNumber(phoneNum.getText().trim());
-			user.setNickName(nickName.getText().trim());
-			user.setnation((String) nationalityBox.getSelectedItem());
-			
-			
-			// 회원 정보 저장
-			try {
-				signUPDAO.registerUser(user);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-			JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
-			// 입력 필드 초기화
-			id.setText("ID");
-
-			pw.setText("password");
-			pw.setForeground(Color.GRAY);
-			pw.setEchoChar((char) 0);
-
-			pwCheck.setText("password 확인");
-			pw.setForeground(Color.GRAY);
-			pw.setEchoChar((char) 0);
-			email.setText("email");
-			myNum.setText("주민번호 앞자리");
-			myNum7.setText("");
-			phoneNum.setText("전화번호");
-			nickName.setText("닉네임");
-
-			isIdChecked = false;
-			isNicknameChecked = false;
-		});
 	}
 
 	private boolean isValidPassword(String password) {
@@ -271,17 +483,39 @@ public class SignUPPanel extends JPanel {
 		return field;
 	}
 
-	private JTextField createMynum7Field(int x, int y, int width, int height) {
-		JTextField field = new JTextField();
+	private JTextField createMynum7Field(String placeholder, int x, int y, int width, int height) {
+		JTextField field = new JTextField(placeholder);
 		field.setBounds(x, y, width, height);
-		field.setDocument(new LimitDocument(1));
+		field.setForeground(Color.GRAY); // 기본 텍스트 색상을 회색으로 설정
 		add(field);
 
+		field.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				if (field.getText().equals(placeholder)) {
+					field.setDocument(new LimitDocument(1));
+					field.setText(""); // 포커스를 얻으면 텍스트 지우기
+					field.setForeground(Color.BLACK); // 텍스트 색상 변경
+				}
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (field.getText().isEmpty()) {
+					field.setDocument(new PlainDocument());
+					field.setText(placeholder); // 포커스를 잃으면 텍스트를 다시 기본값으로 설정
+					field.setForeground(Color.GRAY); // 텍스트 색상 변경
+				}
+			}
+		});
+
+		// 오류 메시지 라벨
 		errorLabel = new JLabel();
 		errorLabel.setForeground(Color.RED);
 		errorLabel.setBounds(x + 30, y, 200, 30);
 		add(errorLabel);
 
+		// 입력된 값 검사
 		field.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -297,11 +531,14 @@ public class SignUPPanel extends JPanel {
 		return field;
 	}
 
-	private void addNationalityDropdown() {
-		String[] nationalities = { "국가","대한민국", "미국", "일본", "중국", "캐나다", "영국", "프랑스", "독일", "호주", "브라질", "러시아" };
+	private JComboBox<String> addNationalityDropdown() {
+		String[] nationalities = { "국가", "대한민국", "미국", "일본", "중국", "캐나다", "영국", "프랑스", "독일", "호주", "브라질", "러시아" };
 		nationalityBox = new JComboBox<>(nationalities);
-		nationalityBox.setBounds(90, 380, 200, 30);
+		nationalityBox.setBounds(95, 479, 200, 31);
+		nationalityBox.setOpaque(false);
 		add(nationalityBox);
+
+		return nationalityBox;
 	}
 }
 

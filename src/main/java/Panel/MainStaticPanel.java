@@ -43,7 +43,7 @@ public class MainStaticPanel extends JPanel {
     }
 
     // 특정 위치의 내부 패널을 교체하는 메서드 - TO DO : position -> enum으로 변경
-    public void setInnerPanel(JPanel panel, String position) {
+    public void setInnerPanel(JComponent panel, String position) {
         switch (position.toLowerCase()) {
             case "up":
                 System.out.println("여기도 탐!");
