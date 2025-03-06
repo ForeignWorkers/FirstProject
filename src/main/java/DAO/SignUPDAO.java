@@ -17,20 +17,24 @@ public class SignUPDAO {
 	
 	// ✅ ID 중복 확인
 	public boolean isIDExists(String ID) {
-		for(UserVO vo : DBDataManagers.getInstance().getDbUsersData()) 
+		boolean isExist = false;
+		for(UserVO von : DBDataManagers.getInstance().getDbUsersData())
 		{
-			return vo.getId().equals(ID);
+			if(von.getId().equals(ID))
+				isExist = true;
 		}
-		return false;
+		return isExist;
 	}
 	
 	// ✅ 닉네임 중복 확인
 		public boolean isNicknameExists(String nickname) {
+			boolean isExist = false;
 			for(UserVO von : DBDataManagers.getInstance().getDbUsersData())
 			{
-				return von.getNickName().equals(nickname);
+				if(von.getNickName().equals(nickname))
+					isExist = true;
 			}
-			return false;
+			return isExist;
 		}
 	
 	// ✅ 회원 가입 (ID & 닉네임 저장 추가)

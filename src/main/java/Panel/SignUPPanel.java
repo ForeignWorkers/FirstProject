@@ -27,6 +27,7 @@ import javax.swing.text.PlainDocument;
 import Component.CustomButton;
 import DAO.SignUPDAO;
 import Data.AppConstants;
+import Frame.FrameBase;
 import Managers.DataManagers;
 import VO.UserVO;
 
@@ -214,11 +215,11 @@ public class SignUPPanel extends JPanel {
 
 		// 전번 라벨
 		JLabel phoneNumBG = new JLabel();
-		phoneNumBG.setBounds(83, 419, 361, 37);
+		phoneNumBG.setBounds(83, 429, 361, 37);
 		phoneNumBG.setIcon(DataManagers.getInstance().getIcon("textBox01", "signUp_Page"));
 
 		// 전번 텍스트 필드
-		phoneNum = createPlaceholderTextField("전화번호를 입력해주세요", 110, 427, 130, 30);
+		phoneNum = createPlaceholderTextField("전화번호를 입력해주세요", 110, 437, 130, 30);
 		phoneNum.setFont(DataManagers.getInstance().getFont("", 13));
 		phoneNum.setForeground(Color.decode("#CBCBCB"));
 		phoneNum.setOpaque(false);
@@ -228,17 +229,17 @@ public class SignUPPanel extends JPanel {
 
 		// 국적 선택 라벨
 		JLabel nationalitiesBG = new JLabel();
-		nationalitiesBG.setBounds(83, 479, 232, 37);
+		nationalitiesBG.setBounds(83, 489, 232, 37);
 		nationalitiesBG.setIcon(DataManagers.getInstance().getIcon("textBox05", "signUp_Page"));
 
 		JLabel nationalityLabel = new JLabel("국적 선택");
 		nationalityLabel.setFont(DataManagers.getInstance().getFont("", 13));
 		nationalityLabel.setForeground(Color.decode("#CBCBCB"));
-		nationalityLabel.setBounds(110, 483, 232, 37);
+		nationalityLabel.setBounds(110, 493, 232, 37);
 
 		// 국적선택 버튼
 		JLabel nationalitiesDropBox = new JLabel();
-		nationalitiesDropBox.setBounds((int) 275.34, 479, (int) 39.66, 37);
+		nationalitiesDropBox.setBounds((int) 275.34, 489, (int) 39.66, 37);
 		nationalitiesDropBox.setIcon(DataManagers.getInstance().getIcon("dropBoxBtn", "signUp_Page"));
 		add(nationalityLabel);
 		add(nationalitiesDropBox);
@@ -264,11 +265,11 @@ public class SignUPPanel extends JPanel {
 		});
 		// 닉네임 라벨
 		JLabel nickNameBG = new JLabel();
-		nickNameBG.setBounds(83, 539, 232, 37);
+		nickNameBG.setBounds(83, 549, 232, 37);
 		nickNameBG.setIcon(DataManagers.getInstance().getIcon("textBox05", "signUp_Page"));
 
 		// 닉네임 텍스트 필드
-		nickName = createPlaceholderTextField("닉네임을 입력해주세요", 110, 547, 200, 30);
+		nickName = createPlaceholderTextField("닉네임을 입력해주세요", 110, 557, 200, 30);
 		nickName.setFont(DataManagers.getInstance().getFont("", 13));
 		nickName.setForeground(Color.decode("#CBCBCB"));
 		nickName.setOpaque(false);
@@ -278,14 +279,14 @@ public class SignUPPanel extends JPanel {
 
 		// 닉네임 중복 확인 버튼 라벨 JLabel
 		JLabel checkNicknameButtonBG = new JLabel("중복확인");
-		checkNicknameButtonBG.setBounds(359, 543, 101, 37);
+		checkNicknameButtonBG.setBounds(359, 553, 101, 37);
 		checkNicknameButtonBG.setFont(DataManagers.getInstance().getFont("", 14));
 		checkNicknameButtonBG.setForeground(Color.decode("#595959"));
 
 		// 닉네임 커스텀 버튼
 		CustomButton checkNicknameButton = new CustomButton(
 				DataManagers.getInstance().getIcon("signUpCheckBtn", "signUp_Page"));
-		checkNicknameButton.setBounds(330, 539, 101, 37);
+		checkNicknameButton.setBounds(330, 549, 101, 37);
 		checkNicknameButton.setOpaque(false);
 		checkNicknameButton.setBorder(null);
 		add(checkNicknameButtonBG);
@@ -327,18 +328,20 @@ public class SignUPPanel extends JPanel {
 
 		// 닉네임 커스텀 버튼
 		CustomButton finaljoinButton = new CustomButton(DataManagers.getInstance().getIcon("signUpBtn", "signUp_Page"));
-		finaljoinButton.setBounds(83, 599, 461, 43);
+		finaljoinButton.setBounds(83, 609, 461, 43);
 		finaljoinButton.setOpaque(false);
 		finaljoinButton.setBorder(null);
 
 		JLabel finaljoinButtonLabel = new JLabel("회원가입");
-		finaljoinButtonLabel.setBounds(280, 605, 461, 43);
+		finaljoinButtonLabel.setBounds(280, 615, 461, 43);
 		finaljoinButtonLabel.setFont(DataManagers.getInstance().getFont("", 17));
 		finaljoinButtonLabel.setForeground(Color.decode("#595959"));
 
 		finaljoinButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 
+
+				
 				String password = new String(pw.getPassword());
 
 				String emailText = email.getText().trim();
@@ -396,6 +399,23 @@ public class SignUPPanel extends JPanel {
 				}
 
 				JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
+				
+				//로그인 페이지로 넘기기
+				LoginPanel loginpanel = new LoginPanel();
+                //스크롤 추가
+                JScrollPane loginsignUpScroll = new JScrollPane(loginpanel);
+                loginsignUpScroll.setBounds(0, 0, 600, 800);
+                loginsignUpScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+                loginsignUpScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+              
+                try {
+                    FrameBase frameBase = FrameBase.getInstance();
+                    frameBase.setInnerPanel(loginsignUpScroll, "mid");
+                }
+                catch(Exception t) {
+                	System.out.println("로그인 페이지 로드 실패 :" + t.getMessage());
+                }
+				
 				// 입력 필드 초기화
 				id.setText("ID");
 
@@ -421,7 +441,7 @@ public class SignUPPanel extends JPanel {
 		add(finaljoinButton);
 
 	}
-
+	
 	private boolean isValidPassword(String password) {
 		return password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$");
 	}
@@ -429,7 +449,7 @@ public class SignUPPanel extends JPanel {
 	private JTextField createPlaceholderTextField(String placeholder, int x, int y, int width, int height) {
 		JTextField field = new JTextField(placeholder);
 		field.setBounds(x, y, width, height);
-		field.setForeground(Color.GRAY);
+		field.setForeground(Color.decode("#CBCBCB"));
 
 		field.addFocusListener(new FocusAdapter() {
 			@Override
@@ -444,7 +464,7 @@ public class SignUPPanel extends JPanel {
 			public void focusLost(FocusEvent e) {
 				if (field.getText().isEmpty()) {
 					field.setText(placeholder);
-					field.setForeground(Color.GRAY);
+					field.setForeground(Color.decode("#CBCBCB"));
 				}
 			}
 		});
@@ -456,7 +476,7 @@ public class SignUPPanel extends JPanel {
 	private JPasswordField createPlaceholderPasswordField(String placeholder, int x, int y, int width, int height) {
 		JPasswordField field = new JPasswordField(placeholder);
 		field.setBounds(x, y, width, height);
-		field.setForeground(Color.GRAY);
+		field.setForeground(Color.decode("#CBCBCB"));
 		field.setEchoChar((char) 0);
 
 		field.addFocusListener(new FocusAdapter() {
@@ -473,7 +493,7 @@ public class SignUPPanel extends JPanel {
 			public void focusLost(FocusEvent e) {
 				if (field.getPassword().length == 0) {
 					field.setText(placeholder);
-					field.setForeground(Color.GRAY);
+					field.setForeground(Color.decode("#CBCBCB"));;
 					field.setEchoChar((char) 0);
 				}
 			}
@@ -486,7 +506,7 @@ public class SignUPPanel extends JPanel {
 	private JTextField createMynum7Field(String placeholder, int x, int y, int width, int height) {
 		JTextField field = new JTextField(placeholder);
 		field.setBounds(x, y, width, height);
-		field.setForeground(Color.GRAY); // 기본 텍스트 색상을 회색으로 설정
+		field.setForeground(Color.decode("#CBCBCB")); // 기본 텍스트 색상을 회색으로 설정
 		add(field);
 
 		field.addFocusListener(new FocusAdapter() {
@@ -504,15 +524,16 @@ public class SignUPPanel extends JPanel {
 				if (field.getText().isEmpty()) {
 					field.setDocument(new PlainDocument());
 					field.setText(placeholder); // 포커스를 잃으면 텍스트를 다시 기본값으로 설정
-					field.setForeground(Color.GRAY); // 텍스트 색상 변경
+					field.setForeground(Color.decode("#CBCBCB")); // 텍스트 색상 변경
 				}
 			}
 		});
 
 		// 오류 메시지 라벨
 		errorLabel = new JLabel();
-		errorLabel.setForeground(Color.RED);
-		errorLabel.setBounds(x + 30, y, 200, 30);
+		errorLabel.setForeground(Color.decode("#CBCBCB"));
+		errorLabel.setFont(DataManagers.getInstance().getFont("", 9));
+		errorLabel.setBounds(110, 390, 200, 30);
 		add(errorLabel);
 
 		// 입력된 값 검사
@@ -523,7 +544,7 @@ public class SignUPPanel extends JPanel {
 				if (!text.isEmpty() && text.matches("[1-4]")) {
 					errorLabel.setText("");
 				} else {
-					errorLabel.setText("잘못된 주민번호 형식입니다.");
+					errorLabel.setText("•잘못된 주민번호 형식입니다.");
 				}
 			}
 		});
@@ -534,7 +555,7 @@ public class SignUPPanel extends JPanel {
 	private JComboBox<String> addNationalityDropdown() {
 		String[] nationalities = { "국가", "대한민국", "미국", "일본", "중국", "캐나다", "영국", "프랑스", "독일", "호주", "브라질", "러시아" };
 		nationalityBox = new JComboBox<>(nationalities);
-		nationalityBox.setBounds(95, 479, 200, 31);
+		nationalityBox.setBounds(95, 489, 200, 31);
 		nationalityBox.setOpaque(false);
 		add(nationalityBox);
 
