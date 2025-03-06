@@ -60,7 +60,7 @@ public class FrameBase extends JFrame {
     }
 
     // 특정 위치의 내부 패널을 변경하는 메서드
-    public void setInnerPanel(JPanel panel, String position) {
+    public void setInnerPanel(JComponent panel, String position) {
         mainPanel.setInnerPanel(panel, position);
     }
 }
