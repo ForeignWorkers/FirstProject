@@ -331,10 +331,10 @@ public class SignUPPanel extends JPanel {
 		finaljoinButton.setOpaque(false);
 		finaljoinButton.setBorder(null);
 
-		JLabel finalll = new JLabel("회원가입");
-		finalll.setBounds(280, 605, 461, 43);
-		finalll.setFont(DataManagers.getInstance().getFont("", 17));
-		finalll.setForeground(Color.decode("#595959"));
+		JLabel finaljoinButtonLabel = new JLabel("회원가입");
+		finaljoinButtonLabel.setBounds(280, 605, 461, 43);
+		finaljoinButtonLabel.setFont(DataManagers.getInstance().getFont("", 17));
+		finaljoinButtonLabel.setForeground(Color.decode("#595959"));
 
 		finaljoinButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
