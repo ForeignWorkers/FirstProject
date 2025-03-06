@@ -1,21 +1,32 @@
 package Managers;
 
+import Data.AppConstants;
+import VO.ItemVO;
 import VO.UserVO;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //Local Data 위주 클래스
 public class DataManagers {
     private static DataManagers dataManagers;
+
+    private boolean isInitialized = false;
     //로드된 아이콘 맵 데이터
     private Map<String,ImageIcon> icons = new HashMap<>();
+    //로드된 영화 데이터
+    private Map<Integer, ItemVO> items = new HashMap<>();
     private UserVO myUser;
 
     //싱글턴 생성 로직
@@ -24,6 +35,18 @@ public class DataManagers {
             dataManagers = new DataManagers();
         }
         return dataManagers;
+    }
+
+    public void InitDataManagers() {
+        if(isInitialized)
+        {
+            System.out.println("Data Manager is already initialized");
+            return;
+        }
+
+        loadItemsFromJson(AppConstants.ITEM_FILE_PATH);
+
+        isInitialized = true;
     }
     
     public UserVO getMyUser() {
@@ -49,6 +72,34 @@ public class DataManagers {
         } catch (IOException | FontFormatException e) {
             return new Font("Arial", Font.BOLD, 18); // 오류 시 기본 폰트 사용
         }
+    }
+
+    public Map<Integer, ItemVO> getItems() {
+        return items;
+    }
+
+    public ItemVO FindItemFromTitle(String itemName) {
+        for(ItemVO item : items.values()) {
+            if(item.getTitle().equals(itemName)) {
+                System.out.println("\uD83D\uDC4D 아이템을 찾았습니다 : " + itemName);
+                return item;
+            }
+        }
+
+        System.out.println("\uD83E\uDD72 아이템을 못 찾았습니다 : " + itemName);
+        return null;
+    }
+
+    public ItemVO FindItemFromId(Integer itemId) {
+        for(ItemVO item : items.values()) {
+            if(item.getId() == itemId) {
+                System.out.println("\uD83D\uDC4D 아이템을 찾았습니다 : " + itemId);
+                return item;
+            }
+        }
+
+        System.out.println("\uD83E\uDD72 아이템을 못 찾았습니다 : " + itemId);
+        return null;
     }
 
     //아이콘, 페이지(패스) 매개변수로 받음
@@ -112,5 +163,27 @@ public class DataManagers {
 
     private Boolean isLoadedIcon(String iconName) {
         return icons.containsKey(iconName);
+    }
+
+    private void loadItemsFromJson(String filePath) {
+        try {
+            Gson gson = new Gson();
+            FileReader reader = new FileReader(filePath);
+
+            // JSON을 List<ItemVO>로 변환
+            Type listType = new TypeToken<List<ItemVO>>() {}.getType();
+            List<ItemVO> itemList = gson.fromJson(reader, listType);
+            reader.close();
+
+            // items Map에 저장 (id를 키로 저장)
+            items.clear();
+            for (ItemVO item : itemList) {
+                items.put(item.getId(), item);
+            }
+
+            System.out.println("✅ JSON 데이터 로드 완료! 총 " + items.size() + "개의 항목이 저장되었습니다.");
+        } catch (IOException e) {
+            System.err.println("❌ JSON 파일 읽기 오류: " + e.getMessage());
+        }
     }
 }

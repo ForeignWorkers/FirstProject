@@ -17,6 +17,8 @@ public class FrameBase extends JFrame {
     private FrameBase() throws IOException {
     	System.out.println("DB 초기화 실시");
     	DBDataManagers.getInstance().InitDBDataManagers();
+        System.out.println("LocalData 초기화 실시");
+        DataManagers.getInstance().InitDataManagers();
     	
         setTitle("FrameBase");
         setSize(AppConstants.FRAME_WIDTH, AppConstants.FRAME_HEIGHT);
