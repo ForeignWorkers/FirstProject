@@ -417,7 +417,7 @@ public class SignUPPanel extends JPanel {
 			}
 
 		});
-		add(finalll);
+		add(finaljoinButtonLabel);
 		add(finaljoinButton);
 
 	}
