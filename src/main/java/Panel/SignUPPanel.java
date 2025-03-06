@@ -340,8 +340,6 @@ public class SignUPPanel extends JPanel {
 		finaljoinButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 
-
-				
 				String password = new String(pw.getPassword());
 
 				String emailText = email.getText().trim();
@@ -399,23 +397,22 @@ public class SignUPPanel extends JPanel {
 				}
 
 				JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
-				
-				//로그인 페이지로 넘기기
+
+				// 로그인 페이지로 넘기기
 				LoginPanel loginpanel = new LoginPanel();
-                //스크롤 추가
-                JScrollPane loginsignUpScroll = new JScrollPane(loginpanel);
-                loginsignUpScroll.setBounds(0, 0, 600, 800);
-                loginsignUpScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-                loginsignUpScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-              
-                try {
-                    FrameBase frameBase = FrameBase.getInstance();
-                    frameBase.setInnerPanel(loginsignUpScroll, "mid");
-                }
-                catch(Exception t) {
-                	System.out.println("로그인 페이지 로드 실패 :" + t.getMessage());
-                }
-				
+				// 스크롤 추가
+				JScrollPane loginsignUpScroll = new JScrollPane(loginpanel);
+				loginsignUpScroll.setBounds(0, 0, 600, 800);
+				loginsignUpScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				loginsignUpScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+				try {
+					FrameBase frameBase = FrameBase.getInstance();
+					frameBase.setInnerPanel(loginsignUpScroll, "mid");
+				} catch (Exception t) {
+					System.out.println("로그인 페이지 로드 실패 :" + t.getMessage());
+				}
+
 				// 입력 필드 초기화
 				id.setText("ID");
 
@@ -441,7 +438,7 @@ public class SignUPPanel extends JPanel {
 		add(finaljoinButton);
 
 	}
-	
+
 	private boolean isValidPassword(String password) {
 		return password.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$");
 	}
@@ -493,7 +490,8 @@ public class SignUPPanel extends JPanel {
 			public void focusLost(FocusEvent e) {
 				if (field.getPassword().length == 0) {
 					field.setText(placeholder);
-					field.setForeground(Color.decode("#CBCBCB"));;
+					field.setForeground(Color.decode("#CBCBCB"));
+					;
 					field.setEchoChar((char) 0);
 				}
 			}
