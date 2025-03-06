@@ -24,7 +24,7 @@ public class LoginPanel extends JPanel {
 	
 	public LoginPanel() {
 		
-		SignUPDAO.registerUser("min", "1234", "www", "1234", "1", "1231431", "srtta", "korean");	
+		
 		setBackground(Color.decode("#404153"));
 		setLayout(null);
 		setBounds(0,0,595,575);
@@ -52,13 +52,14 @@ public class LoginPanel extends JPanel {
 		idBG.setIcon(DataManagers.getInstance().getIcon("loginIdTextBox", "login_Page"));
 		idBG.setBounds(63,206,461,43);
 		
-		JTextField idTextField = new JTextField("아이디 또는 이메일을 입력해주세요.");
+		JTextField idTextField = new JTextField("아이디를 입력해주세요.");
 		idTextField.setBounds(20,8,350,35);
 		idTextField.setFont(DataManagers.getInstance().getFont("",13));
 		idTextField.setForeground(Color.decode("#CBCBCB"));
-		
 		idTextField.setOpaque(false);
 		idTextField.setBorder(null);
+		
+		
 		// 입력하면 글자 색 바꾸기 입력한 텍스트는 원래 색상 복구
 		idTextField.addFocusListener(new java.awt.event.FocusListener() {
 		    @Override
