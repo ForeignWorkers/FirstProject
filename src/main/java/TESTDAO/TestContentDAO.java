@@ -1,40 +1,56 @@
 package TESTDAO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import Managers.DataManagers;
 import TESTVO.TestContentVO;
+import VO.ItemVO;
 
 public class TestContentDAO {
 	// list 내 컨텐츠 정보 vo 할당
-	List<TestContentVO> contentList;
+	List<ItemVO> contentList;
 
 	// TestContentVO 새로운 객체 생성
 	public TestContentDAO() {
-		contentList = new ArrayList<TestContentVO>();
+		contentList = new ArrayList<ItemVO>();
 		testContentData();
 	}
 
 	public void testContentData() {
-		contentList.add(new TestContentVO("라라랜드", "뮤지컬,로맨스", 9.0, true, "resources/main_Page/avergensPoster.png"));
-		contentList.add(new TestContentVO("당신거기있어줄래요", "판타지,드라마", 9.9, true, "resources/main_Page/toystoryPoster.png"));
-		contentList.add(new TestContentVO("겨울왕국", "애니메이션,뮤지컬", 10.0, true, "resources/main_Page/avergensPoster.png"));
-		contentList.add(new TestContentVO("부산행", "액션,스릴러", 6.0, true, "resources/main_Page/avergensPoster.png"));
-		contentList.add(new TestContentVO("스파이더맨", "액션,슈퍼히어로", 8.0, true, "resources/main_Page/toystoryPoster.png"));
-		contentList.add(new TestContentVO("어벤져스", "액션,슈퍼히어로", 7.9, true, "resources/main_Page/toystoryPoster.png"));
-		contentList.add(new TestContentVO("인사이드아웃", "애니메이션,가족", 8.0, true, "resources/main_Page/avergensPoster.png"));
-	}
+		int count = 10;
+
+		for (int i = 0; i < count; i++) {
+			contentList.add(DataManagers.getInstance().FindItemFromId(i));
+		}
+    }
+
 
 	// 전체 컨텐츠 목록 반환
-	public List<TestContentVO> getAllContents() {
+	public List<ItemVO> getAllContents() {
 		return contentList;
 	}
+	
+	// 특정 OTT 필터링 메서드 추가
+    public List<ItemVO> getFilteredContents(String ottPlatform) {
+        // 전체 보기 옵션 처리
+        if (ottPlatform.equals("전체")) {
+            return contentList;
+        }
 
+        // 특정 OTT에 해당하는 콘텐츠 필터링
+        List<ItemVO> filteredList = new ArrayList<>();
+        for (ItemVO content : contentList) {
+        }
+        return filteredList;
+    }
+	
 	// 랜덤 컨텐츠 가져오기
-	public TestContentVO getRandomContent() {
+	public ItemVO getRandomContent() {
 		Random random = new Random();
 		return contentList.get(random.nextInt(contentList.size()));
 	}
-
 }

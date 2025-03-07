@@ -20,10 +20,10 @@ public class ReviewDAO{
     }
 
     // 리뷰 추가- TO DO -> 리뷰 추가 할때 리뷰 ID와 어떤 작품에 대한 리뷰인지 추가적으로 받아주세요.
-    public void addReview(String name, String content, double score) {
-        ReviewVO newReview = new ReviewVO(name, content, score);
-        reviewList.add(newReview);
-    }
+//    public void addReview(String name, String content, double score) {
+//        ReviewVO newReview = new ReviewVO(name, content, score);
+//        reviewList.add(newReview);
+//    }
 
     // 저장된 리뷰 리스트 반환
     public List<ReviewVO> getReviews() {

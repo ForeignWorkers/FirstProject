@@ -8,6 +8,7 @@ import Frame.FrameBase;
 import Managers.DBDataManagers;
 import Managers.DataManagers;
 import Managers.LoginConfrimManager;
+import VO.ItemVO;
 
 public class OpenPage {
 
@@ -21,16 +22,23 @@ public class OpenPage {
 		FrameBase.getInstance().setInnerPanel(new LoginPanel(), "mid");
 		FrameBase.getInstance().setInnerPanel(new BottomNavBar("mypage"), "down");
 	}
-
-	// 임시 홈 페이지 이동 확인
+	
+	//회원 가입 페이지 이동
+	public void openSignupPage() throws IOException{
+		FrameBase.getInstance().setInnerPanel(new SignUPPanel(), "mid");
+		//FrameBase.getInstance().setInnerPanel(new BottomNavBar("mypage"), "down");
+	}
+	
+	//홈 페이지 이동 확인
 	public void openHomePage() throws IOException {
 		FrameBase.getInstance().setInnerPanel(new MainPagePanel(), "mid");
 		FrameBase.getInstance().setInnerPanel(new BottomNavBar("home"), "down");
 	}
-
-	// 임시 랭킹 페이지 이동 확인
-	public void openRankingPage() {
-		JOptionPane.showMessageDialog(null, "랭킹 페이지로 이동");
+	
+	//랭킹 페이지 이동 확인
+	public void openRankingPage() throws IOException {
+		FrameBase.getInstance().setInnerPanel(new RankingPagePanel(), "mid");
+		FrameBase.getInstance().setInnerPanel(new BottomNavBar("ranking"), "down");
 	}
 
 	// 임시 검색 페이지 이동 확인
@@ -38,15 +46,21 @@ public class OpenPage {
 		JOptionPane.showMessageDialog(null, "검색 페이지로 이동");
 	}
 
-	// 임시 메인 컨텐츠 세부 페이지 이동 확인
+	//메인 컨텐츠 세부 페이지 이동 확인
 	public void openMainContentPage() {
 		JOptionPane.showMessageDialog(null, "메인 컨텐츠 세부 페이지 이동 확인");
 	}
 
 	// 임시 메인 컨텐츠 세부 페이지 이동 확인
-	public void openContentPage(String contentTitle) {
-		JOptionPane.showMessageDialog(null, contentTitle + " 상세 페이지 이동");
+	public void openContentPage(ItemVO content) {
+	    try {
+	        //클릭한 콘텐츠 정보를 ContentsDetailImagePanel에 전달
+	        FrameBase.getInstance().setInnerPanel(new ContentsDetailImagePanel(content), "mid");
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 	}
+
 
 	// 하단 네비를 위한 공통 메서드
 	public void navigateToPage(String pageName) throws IOException {
