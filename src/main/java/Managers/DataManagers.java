@@ -51,8 +51,6 @@ public class DataManagers {
     }
     
     public UserVO getMyUser() {
-    	//ItemVO aa = items.get(72);
-    	//aa.getTitle();
 		return myUser;
 	}
     
