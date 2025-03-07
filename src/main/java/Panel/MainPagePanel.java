@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Insets;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -12,13 +13,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import DAO.FavoriteDAO;
+import Data.AppConstants;
+import Helper.GenericFinder;
+import Helper.ImageHelper;
+import Managers.DBDataManagers;
 import Managers.DataManagers;
 import TESTDAO.TestContentDAO;
-import TESTVO.TestContentVO;
+import VO.FavoriteVO;
+import VO.ItemVO;
 
 // 컨텐츠 패널
 public class MainPagePanel extends JPanel {
-	private TestContentVO content; // 현재 패널이 표시하는 컨텐츠 정보
+	private ItemVO content; // 현재 패널이 표시하는 컨텐츠 정보
 	private TestContentDAO contentDAO = new TestContentDAO(); // DAO 객체 생성
 	private JPanel contentPanel; // 스크롤될 전체 컨텐츠 패널
 	private int countContent = 4; // 작은 추천 컨텐츠 개수
@@ -34,16 +41,22 @@ public class MainPagePanel extends JPanel {
 		contentPanel = new JPanel();
 		contentPanel.setLayout(null);
 		contentPanel.setBackground(new Color(0x404153));
-
-		// updateContentPanelSize 메소드에서 사이즈 컨트롤
-		// 컨텐츠 패널 높이 자동 조정
-		updateContentPanelSize();
+		// 스크롤 적용 패널 사이즈 조정
+		contentPanel.setPreferredSize(new Dimension(600, 825));
 
 		// 스크롤 추가
 		JScrollPane mainPageScroll = new JScrollPane(contentPanel);
 		mainPageScroll.setBounds(0, 0, 600, 600); // 스크롤 영역 설정
 		mainPageScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		mainPageScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		mainPageScroll.getVerticalScrollBar().setUnitIncrement(10); // 스크롤 속도 증가
+
+		// 스크롤바를 숨김
+		mainPageScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+		mainPageScroll.getVerticalScrollBar().setOpaque(false);
+
+		// 테두리 영역 제거
+		mainPageScroll.setBorder(null);
 
 		// JScrollPane이 변경 사항을 인식하도록 설정
 		mainPageScroll.setViewportView(contentPanel);
@@ -101,7 +114,7 @@ public class MainPagePanel extends JPanel {
 		int labelX = (bigLabelWidth - labelWidth) / 2; // 제목과 장르 라벨 중앙 정렬
 
 		// 썸네일 이미지를 버튼 크기에 맞게 리사이징
-		ImageIcon thumbnailIcon = new ImageIcon(content.getThumbnailFile());
+		ImageIcon thumbnailIcon = ImageHelper.getResizedImageIconFromUrl(content.getThumbnail(), 222, 271);
 		Image scaledthumbnailImage = thumbnailIcon.getImage().getScaledInstance(thumbWidth, thumbHeight,
 				Image.SCALE_SMOOTH);
 		ImageIcon resizedthumbnailIcon = new ImageIcon(scaledthumbnailImage);
@@ -121,20 +134,29 @@ public class MainPagePanel extends JPanel {
 		int titleStandardY = titleLableY + 30; // 제목의 아래 평점, 장르, 찜하기 높이 간격 설정
 
 		// 좌측 하단 (평점 아이콘)
-		int ratingX = labelX - 35; // 장르 라벨 기준 왼쪽 -
+		int ratingX = labelX - 35; // 장르 라벨 기준 왼쪽
 		JLabel ratingIconLabel = new JLabel(DataManagers.getInstance().getIcon("bigRatingIcon", "main_Page"));
 		ratingIconLabel.setBounds(ratingX, titleStandardY, 30, 30);
-
-		// 좌측 하단 (평점 덱스트 데이터)
-		JLabel ratingTextLabel = new JLabel(String.valueOf(content.getRating()), SwingConstants.LEFT);
+		
+		// 평점 데이터 가져옴
+		String rating = GenericFinder.findInList(DBDataManagers.getInstance().getDbRatingData(),
+				item -> item.getItemId() == content.getId(), // 조건: contentId가 일치하는지 확인
+				item -> Double.toString(item.getRatingPoint()) // 변환: double -> String
+		);
+		
+		//평점 정보가 없을 경우 평점 라벨 텍스트 0.0으로 처리
+		if (rating == null) {
+			rating = "0.0";
+		}
+		
+		JLabel ratingTextLabel = new JLabel(rating, SwingConstants.LEFT);
 		ratingTextLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
 		ratingTextLabel.setForeground(new Color(0x78DBA6));
-
 		// ratingX + n 평점 아이콘 기준으로 x값 + 좌측으로 이동
 		ratingTextLabel.setBounds(ratingX + 30, titleStandardY + 5, 50, 30);
 
 		// 장르 텍스트가 7글자 초과시 .. 처리
-		int overNum = 7;//제한될 글자 수
+		int overNum = 7;// 제한될 글자 수
 		String bigGenreText = content.getGenres();
 		if (bigGenreText.length() > overNum) {
 			bigGenreText = bigGenreText.substring(0, 7) + "..";
@@ -156,20 +178,51 @@ public class MainPagePanel extends JPanel {
 		JLabel genreIconLabel = new JLabel(resizedBigGenreLabelIcon);
 		genreIconLabel.setBounds(genreX, titleStandardY, labelWidth, 35);
 
-		// 우측 하단 (찜하기 버튼)
-		int favoriteX = labelX + 203; // 장르 라벨 기준 오른쪽 +
-		JButton favoriteButton = new JButton(DataManagers.getInstance().getIcon("bigWishBtnOff", "main_Page"));
-		favoriteButton.setBounds(favoriteX, 362, 30, 30);
-		favoriteButton.setBorderPainted(false);
-		favoriteButton.setContentAreaFilled(false);
-		favoriteButton.setFocusPainted(false);
-		favoriteButton.setMargin(new Insets(0, 0, 0, 0)); // 버튼 여백 제거
+		// 로그인 상태 확인
+		//boolean isLoggedIn = (DataManagers.getInstance().getMyUser() != null);
 
-		favoriteButton.addActionListener(e -> {
-			content.setFavorite(!content.isFavorite());
-			favoriteButton.setIcon(DataManagers.getInstance()
-					.getIcon(content.isFavorite() ? "bigWishBtnOn" : "bigWishBtnOff", "main_Page"));
-		});
+		//로그인 유무에 따라 찜버튼 활성화 비활성화
+		boolean isLogin = DataManagers.getInstance().getMyUser() != null;
+		
+		
+		// 로그인 상태라면 찜버튼을 생성 및 추가
+		if (isLogin) {
+			// 우측 하단 (찜하기 버튼)
+			int favoriteX = labelX + 203; // 장르 라벨 기준 오른쪽 +
+			JButton favoriteButton = new JButton(DataManagers.getInstance().getIcon("bigWishBtnOff", "main_Page"));
+			favoriteButton.setBounds(favoriteX, 362, 30, 30);
+			favoriteButton.setBorderPainted(false);
+			favoriteButton.setContentAreaFilled(false);
+			favoriteButton.setFocusPainted(false);
+			favoriteButton.setMargin(new Insets(0, 0, 0, 0)); // 버튼 여백 제거
+
+			favoriteButton.addActionListener(e -> {
+				String userId = DataManagers.getInstance().getMyUser().getId();
+				int currentContentId = content.getId();
+				FavoriteVO myFavoriteVO = null;
+
+				for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
+					if (find.getUserId() == userId) {
+						myFavoriteVO = find;
+					}
+				}
+
+				FavoriteDAO favoriteDAO = new FavoriteDAO();
+				favoriteDAO.setLocalFavoriteData(myFavoriteVO, currentContentId);
+				try {
+					favoriteDAO.addFavoriteToJson(myFavoriteVO, AppConstants.FAVORITE_FILE_NAME, userId);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+				boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
+				// 변경된 아이콘 세팅 -> 비주얼
+				favoriteButton.setIcon(
+						DataManagers.getInstance().getIcon(isContains ? "bigWishBtnOn" : "bigWishBtnOff", "main_Page"));
+			});
+			//찜버튼 UI 배치
+			bigLabel.add(favoriteButton);
+		}
 
 		// UI 배치
 		bigLabel.add(thumbnailButton);
@@ -178,7 +231,6 @@ public class MainPagePanel extends JPanel {
 		bigLabel.add(ratingTextLabel);
 		bigLabel.add(genreTextLabel);
 		bigLabel.add(genreIconLabel);
-		bigLabel.add(favoriteButton);
 
 		return bigLabel;
 	}
@@ -186,6 +238,7 @@ public class MainPagePanel extends JPanel {
 	// 작은 추천 컨텐츠 패널 (4개 가로 배치, setLayout(null) 사용)
 	private JPanel smallRecommendContentPanel() {
 
+		ItemVO item = null;
 		JPanel smallPanel = new RoundedPanel(20, 20); // 라운드 모서리 적용
 
 		// 변경이 잦을 수 있는 위치,크기는 mainpage쪽으로 이동
@@ -201,20 +254,20 @@ public class MainPagePanel extends JPanel {
 		// 첫 번째 아이템의 x 간격을 맞추기 위해 시작 위치 조정
 
 		for (int i = 0; i < countContent; i++) { // 4개의 컨텐츠 추가
-			TestContentVO smallContent = contentDAO.getRandomContent(); // 랜덤 컨텐츠 가져오기
+			item = contentDAO.getRandomContent(); // 랜덤 컨텐츠 가져오기
 
 			// 각 아이템 x 좌표를 조정하여 가로 정렬
 			int x = leftPadding + i * (itemWidth + margin);
 
 			// 컨텐츠 아이템 매개변수 전달
-			createContentItem(smallContent, smallPanel, x, y);
+			createContentItem(item, smallPanel, x, y);
 		}
 
 		return smallPanel;
 	}
 
 	// 기존 방식 유지: createContentItem()에 JPanel을 반환하지 않음
-	private void createContentItem(TestContentVO content, JPanel smallPanel, int x, int y) {
+	private void createContentItem(ItemVO item, JPanel smallPanel, int x, int y) {
 
 		int itemWidth = 148; // 개별 아이템이 들어갈 넓이 무조건 thumbWidth,labelWidth 보다 커야함
 		int thumbWidth = 148; // 썸네일 넓이
@@ -229,46 +282,61 @@ public class MainPagePanel extends JPanel {
 		smallLabel.setLayout(null); // 내부 요소 배치 가능
 		smallLabel.setBounds(x, y, itemWidth, 250); // 프레임 크기 조정
 
-		// 찜하기 버튼 (썸네일 위에 배치)
-		JButton favoriteButton = new JButton(DataManagers.getInstance().getIcon("smallWishBtnOff", "main_Page"));
-		favoriteButton.setBounds(x + thumbX + 120, y + 205, 30, 30);
-		favoriteButton.setBorderPainted(false);
-		favoriteButton.setContentAreaFilled(false);
-		favoriteButton.setFocusPainted(false);
-		favoriteButton.setMargin(new Insets(0, 0, 0, 0)); // 버튼 여백 제거
-		favoriteButton.addActionListener(e -> {
-			content.setFavorite(!content.isFavorite());
-			favoriteButton.setIcon(DataManagers.getInstance()
-					.getIcon(content.isFavorite() ? "smallWishBtnOn" : "smallWishBtnOff", "main_Page"));
-		});
+		boolean isLogin = DataManagers.getInstance().getMyUser() != null;
+		
+		if (isLogin) {
+			// 찜하기 버튼 (썸네일 위에 배치)
+			JButton favoriteButton = new JButton(DataManagers.getInstance().getIcon("smallWishBtnOff", "main_Page"));
+			favoriteButton.setBounds(x + thumbX + 120, y + 205, 30, 30);
+			favoriteButton.setBorderPainted(false);
+			favoriteButton.setContentAreaFilled(false);
+			favoriteButton.setFocusPainted(false);
+			favoriteButton.setMargin(new Insets(0, 0, 0, 0)); // 버튼 여백 제거
+			favoriteButton.addActionListener(e -> {
+				
+				// 새로운 로직
+				String userId = DataManagers.getInstance().getMyUser().getId();
+				int currentContentId = item.getId();
+				FavoriteVO myFavoriteVO = null;
+						
+				for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
+					if (find.getUserId() == userId) {
+						myFavoriteVO = find;
+					}
+				}
+			
+				FavoriteDAO favoriteDAO = new FavoriteDAO();
+				favoriteDAO.setLocalFavoriteData(myFavoriteVO, currentContentId);
+				try {
+					favoriteDAO.addFavoriteToJson(myFavoriteVO, AppConstants.FAVORITE_FILE_NAME, userId);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 
-		// 작은 썸네일 이미지를 버튼 크기에 맞게 리사이징
-		/*
-		 * ImageIcon smallThumbnailIcon = new ImageIcon(content.getThumbnailFile());
-		 * Image scaledSmallThumbnailImage =
-		 * smallThumbnailIcon.getImage().getScaledInstance(thumbWidth, 181,
-		 * Image.SCALE_SMOOTH); ImageIcon resizedSmallThumbnailIcon = new
-		 * ImageIcon(scaledSmallThumbnailImage);
-		 */
-
-		// 썸네일 이미지 버튼
-		// JButton thumbnail = new JButton(resizedSmallThumbnailIcon);
-		JButton thumbnail = new JButton(DataManagers.getInstance().getIcon("toystoryPoster", "main_Page"));
+				boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
+				// 변경된 아이콘 세팅 -> 비주얼
+				favoriteButton.setIcon(DataManagers.getInstance()
+						.getIcon(isContains ? "smallWishBtnOn" : "smallWishBtnOff", "main_Page"));
+			});
+			smallPanel.add(favoriteButton);
+		}
+		
+		JButton thumbnail = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 134, 164));
 		thumbnail.setBounds(x, y + 20, thumbWidth, 181);
 		thumbnail.setBorderPainted(false);
 		thumbnail.setContentAreaFilled(false);
 		thumbnail.setFocusPainted(false);
-		thumbnail.addActionListener(e -> showContentDetails(content));
+		thumbnail.addActionListener(e -> showContentDetails(item));
 
 		// 제목 라벨
-		JLabel titleLabel = new JLabel(content.getTitle(), SwingConstants.CENTER);
+		JLabel titleLabel = new JLabel(item.getTitle(), SwingConstants.CENTER);
 		titleLabel.setFont(DataManagers.getInstance().getFont("bold", 13));
 		int titleLabelY = y + 188;
 		titleLabel.setBounds(x, titleLabelY + 3, labelWidth, 30);
 
 		// 장르 텍스트가 7글자 초과시 .. 처리
-		String smallGenreText = content.getGenres();
-		int overNum = 7;//초과 제한 될 글자 개수
+		String smallGenreText = item.getGenres();
+		int overNum = 7;// 초과 제한 될 글자 개수
 		if (smallGenreText.length() > overNum) {
 			smallGenreText = smallGenreText.substring(0, 7) + "..";
 		}
@@ -298,14 +366,22 @@ public class MainPagePanel extends JPanel {
 		int ratingIconX = x + (itemWidth - ratingIconWidth - 30) / 2; // 별점 아이콘 중앙 정렬
 		ratingIconLabel.setBounds(ratingIconX - 47, ratingY, ratingIconWidth, 20);
 
+		String rating = GenericFinder.findInList(DBDataManagers.getInstance().getDbRatingData(),
+				finditem -> finditem.getItemId() == item.getId(), // 조건: contentId가 일치하는지 확인
+				finditem -> Double.toString(finditem.getRatingPoint()) // 변환: double -> String
+		);
+		// 평점 정보가 없을 때 0.0으로 처리
+		if (rating == null) {
+			rating = "0.0";
+		}
+
 		// 평점 텍스트
-		JLabel ratingValueLabel = new JLabel(String.valueOf(content.getRating()), SwingConstants.LEFT);
+		JLabel ratingValueLabel = new JLabel(rating, SwingConstants.LEFT);
 		ratingValueLabel.setFont(DataManagers.getInstance().getFont("bold", 8));
 		ratingValueLabel.setForeground(new Color(0x78DBA6));
 		ratingValueLabel.setBounds(ratingIconX + 10, ratingY + 3, 40, 20); // 별점 아이콘 오른쪽 정렬
 
 		// UI 배치
-		smallPanel.add(favoriteButton);
 		smallPanel.add(thumbnail);
 		smallPanel.add(titleLabel);
 		smallPanel.add(genreTextLabel);
@@ -353,29 +429,11 @@ public class MainPagePanel extends JPanel {
 		return searchPanel;
 	}
 
-	// 패널 높이를 자동 조정하여 스크롤 오류 방지
-	private void updateContentPanelSize() {
-		int totalHeight = 0;
-
-		for (int i = 0; i < contentPanel.getComponentCount(); i++) {
-			totalHeight += contentPanel.getComponent(i).getHeight() + 10; // 각 컴포넌트 높이 + 간격
-		}
-
-		// 스크롤 높이 설정 최소 높이 보장
-		if (totalHeight < 875) {
-			totalHeight = 875;
-		}
-
-		contentPanel.setPreferredSize(new Dimension(600, totalHeight));
-		contentPanel.revalidate();
-		contentPanel.repaint();
-
-	}
-
 	// 컨텐츠 페이지 이동
-	private void showContentDetails(TestContentVO content) {
+	private void showContentDetails(ItemVO content) {
 		OpenPage openPage = new OpenPage();
 		openPage.openContentPage(content.getTitle());// openpage의 opencontentpage호출
 	}
+
 
 }

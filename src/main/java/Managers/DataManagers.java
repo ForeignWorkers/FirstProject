@@ -33,6 +33,7 @@ public class DataManagers {
     public static DataManagers getInstance() {
         if (dataManagers == null) {
             dataManagers = new DataManagers();
+            
         }
         return dataManagers;
     }
@@ -50,6 +51,8 @@ public class DataManagers {
     }
     
     public UserVO getMyUser() {
+    	//ItemVO aa = items.get(72);
+    	//aa.getTitle();
 		return myUser;
 	}
     
