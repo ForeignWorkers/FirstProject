@@ -153,31 +153,42 @@ public class LoginPanel extends JPanel {
 		signUpButton.setBorderPainted(false); // 버튼 테두리 없앰
 		add(signUpButton);
 
-		//
+		// 로그인 버튼 클릭 이벤트
 		loginButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				boolean isPwExist = isPWExists(pwTextField.getPassword());
+                // ID 및 비밀번호 존재 여부 확인
 				boolean isIdExist = isIDExists(idTextField.getText().trim());
+                //boolean isPwExist = isPWExists(pwTextField.getPassword());
+                
 				if (isIdExist) {
 					String findId = idTextField.getText().trim();
 					String inputPassword = new String(pwTextField.getPassword()); // 입력된 비밀번호를 String으로 변환
 					for (UserVO user : DBDataManagers.getInstance().getDbUsersData()) {
-						if (user.getId().equals(findId) && user.getPassword().equals(inputPassword)) {
+						//null 체크 추가함
+						if (user != null && user.getId() != null && user.getPassword() != null &&
+	                            user.getId().equals(findId) && user.getPassword().equals(inputPassword)) {
 							System.out.println("로그인 성공");
-
+							
+							//로그인된 사용자 정보 저장
+		                    DataManagers.getInstance().setMyUser(user);
+		                    
 							// 로그인 성공 후 텍스트 필드 초기화
 							idTextField.setText("");
 							pwTextField.setText("");
 
 							// To Do 로그인 성공 로직 구현
-							MainPagePanel mainPagePanel = new MainPagePanel();
-							OpenPage openPage = new OpenPage();
+							//모든 상,중,하 패널 로그인 상태로 최신화
+							FrameBase frameBase;
 							try {
-								openPage.openHomePage();
+								frameBase = FrameBase.getInstance();
+								frameBase.setInnerPanel(new TopNavBar(), "up");   // 상단 바 갱신
+			                    frameBase.setInnerPanel(new MainPagePanel(), "mid"); // 메인 패널 갱신
+			                    frameBase.setInnerPanel(new BottomNavBar("home"), "down"); // 하단 바 갱신
 							} catch (IOException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
+		                    
 							return;
 						}
 					}
@@ -214,7 +225,8 @@ public class LoginPanel extends JPanel {
 	public boolean isIDExists(String Id) {
 		boolean isExis = false;
 		for (UserVO iDvon : DBDataManagers.getInstance().getDbUsersData()) {
-			if (iDvon.getId().equals(Id))
+			//null 체크 추가함
+			if (iDvon != null && iDvon.getId() != null && iDvon.getId().equals(Id))
 				isExis = true;
 		}
 		return isExis;
@@ -224,7 +236,8 @@ public class LoginPanel extends JPanel {
 	public boolean isPWExists(char[] cs) {
 		boolean isPWis = false;
 		for (UserVO PWvon : DBDataManagers.getInstance().getDbUsersData()) {
-			if (PWvon.getPassword().equals(cs))
+			//null 체크 추가함
+			if (PWvon != null && PWvon.getPassword() != null && PWvon.getPassword().equals(new String(cs)))
 				isPWis = true;
 		}
 		return isPWis;
