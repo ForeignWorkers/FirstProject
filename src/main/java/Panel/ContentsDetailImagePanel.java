@@ -253,7 +253,7 @@ public class ContentsDetailImagePanel extends JPanel {
 		add(ReviewTabPanel);
 
 		// ReviewPanelLast을 따오기 위한 객체, accessReviewPanelLast
-		ReviewPanelLast accessReviewPanelLast = new ReviewPanelLast();
+		ReviewPanel accessReviewPanelLast = new ReviewPanel();
 		ReviewTabPanel.add(accessReviewPanelLast);
 
 		// ContentDetailTabPanel에 들어갈 [장르,개봉일,등급,러닝타임,국가,감독-출연] 라벨들 생성
