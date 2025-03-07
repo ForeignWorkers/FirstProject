@@ -50,14 +50,13 @@ public class ContentsDetailImagePanel extends JPanel {
 
 		// 이미지 라벨
 		ImageIcon thumbnailIcon = ImageHelper.getResizedImageIconFromUrl(content.getThumbnail(), 222, 271);
-		Image scaledthumbnailImage = thumbnailIcon.getImage().getScaledInstance(129, 161,
-				Image.SCALE_SMOOTH);
+		Image scaledthumbnailImage = thumbnailIcon.getImage().getScaledInstance(129, 161, Image.SCALE_SMOOTH);
 		ImageIcon resizedthumbnailIcon = new ImageIcon(scaledthumbnailImage);
-		
+
 		JLabel thumbnailPoster = new JLabel(resizedthumbnailIcon);
 		thumbnailPoster.setLayout(null);
 		thumbnailPoster.setBounds(405, 30, 129, 161);
-		
+
 		// 평점 및 리뷰 개수
 		JLabel ratingLabel = new JLabel("평점");
 		ratingLabel.setLayout(null);
@@ -164,24 +163,24 @@ public class ContentsDetailImagePanel extends JPanel {
 		reviewTabString.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 24));
 		reviewTabString.setForeground(Color.decode("#CBCBCB"));
 		// 탭버튼 하단의 바이미지 객체 생성 및 위치할당
-		CustomButton contentTabBar = new CustomButton(
+		CustomButton contentTabBarOn = new CustomButton(
 				DataManagers.getInstance().getIcon("barOn", "detail_Content_Page"));
-		contentTabBar.setBounds(152, 312, 100, 3);
-		CustomButton contentTabBar2 = new CustomButton(
+		contentTabBarOn.setBounds(152, 312, 100, 3);
+		CustomButton contentTabBarOff = new CustomButton(
 				DataManagers.getInstance().getIcon("barOff", "detail_Content_Page"));
-		contentTabBar2.setBounds(152, 312, 100, 3);
-		CustomButton reviewTabBar = new CustomButton(
+		contentTabBarOff.setBounds(152, 312, 100, 3);
+		CustomButton reviewTabBarOn = new CustomButton(
 				DataManagers.getInstance().getIcon("barOn", "detail_Content_Page"));
-		reviewTabBar.setBounds(343, 312, 100, 3);
-		CustomButton reviewTabBar2 = new CustomButton(
+		reviewTabBarOn.setBounds(343, 312, 100, 3);
+		CustomButton reviewTabBarOff = new CustomButton(
 				DataManagers.getInstance().getIcon("barOff", "detail_Content_Page"));
-		reviewTabBar2.setBounds(343, 312, 100, 3);
+		reviewTabBarOff.setBounds(343, 312, 100, 3);
 
 		// 처음 페이지를 열었을때 나오는 default값 세팅해준 것
-		contentTabBar.setVisible(true);
-		contentTabBar2.setVisible(false);
-		reviewTabBar.setVisible(false);
-		reviewTabBar2.setVisible(true);
+		contentTabBarOn.setVisible(true);
+		contentTabBarOff.setVisible(false);
+		reviewTabBarOn.setVisible(false);
+		reviewTabBarOff.setVisible(true);
 
 		// 작품설명탭 버튼
 		CustomButton ContentTabButton = new CustomButton("");
@@ -196,10 +195,10 @@ public class ContentsDetailImagePanel extends JPanel {
 					showContentPanel();
 					contentTabString.setForeground(Color.decode("#78DBA6"));
 					reviewTabString.setForeground(Color.decode("#CBCBCB"));
-					contentTabBar.setVisible(true);
-					contentTabBar2.setVisible(false);
-					reviewTabBar.setVisible(false);
-					reviewTabBar2.setVisible(true);
+					contentTabBarOn.setVisible(true);
+					contentTabBarOff.setVisible(false);
+					reviewTabBarOn.setVisible(false);
+					reviewTabBarOff.setVisible(true);
 					System.out.println("작품설명탭버튼을 클릭함");
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -219,10 +218,10 @@ public class ContentsDetailImagePanel extends JPanel {
 					showReviewPanel();
 					contentTabString.setForeground(Color.decode("#CBCBCB"));
 					reviewTabString.setForeground(Color.decode("#78DBA6"));
-					contentTabBar.setVisible(false);
-					contentTabBar2.setVisible(true);
-					reviewTabBar.setVisible(true);
-					reviewTabBar2.setVisible(false);
+					contentTabBarOn.setVisible(false);
+					contentTabBarOff.setVisible(true);
+					reviewTabBarOn.setVisible(true);
+					reviewTabBarOff.setVisible(false);
 					System.out.println("리뷰탭버튼을 클릭함");
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -234,10 +233,10 @@ public class ContentsDetailImagePanel extends JPanel {
 		firstPanel.add(reviewTabString);
 		firstPanel.add(ContentTabButton);
 		firstPanel.add(reviewTabButton);
-		firstPanel.add(contentTabBar);
-		firstPanel.add(contentTabBar2);
-		firstPanel.add(reviewTabBar);
-		firstPanel.add(reviewTabBar2);
+		firstPanel.add(contentTabBarOn);
+		firstPanel.add(contentTabBarOff);
+		firstPanel.add(reviewTabBarOn);
+		firstPanel.add(reviewTabBarOff);
 
 		// 작품상세설명 패널(디폴트로 표시되는 패널)\MID_Panel의 중단에 위치함
 		ContentDetailTabPanel = new JPanel();
@@ -254,80 +253,80 @@ public class ContentsDetailImagePanel extends JPanel {
 		add(ReviewTabPanel);
 
 		// ReviewPanelLast을 따오기 위한 객체 RPL
-		ReviewPanelLast RPL = new ReviewPanelLast();
-		ReviewTabPanel.add(RPL);
+		ReviewPanelLast AccessreviewPanelLast = new ReviewPanelLast();
+		ReviewTabPanel.add(AccessreviewPanelLast);
 
-		// ContentDetailTabPanel에 들어갈 [장르,개봉일,등급,러닝타임,국가,감독-출연] 라벨들 생성		
-		JLabel genreLabel2 = new JLabel("장르");
-		genreLabel2.setBounds(97, 15, 62, 30);
-		genreLabel2.setFont(DataManagers.getInstance().getFont("", 18));
-		genreLabel2.setForeground(Color.decode("#CBCBCB"));
-		JLabel genreLabel3 = new JLabel(content.getGenres());
-		genreLabel3.setLayout(null);
-		genreLabel3.setBounds(162, 15, 131, 30);
-		genreLabel3.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
-		genreLabel3.setForeground(Color.decode("#CBCBCB"));
+		// ContentDetailTabPanel에 들어갈 [장르,개봉일,등급,러닝타임,국가,감독-출연] 라벨들 생성
+		JLabel genreLabelMenu = new JLabel("장르");
+		genreLabelMenu.setBounds(97, 15, 62, 30);
+		genreLabelMenu.setFont(DataManagers.getInstance().getFont("", 18));
+		genreLabelMenu.setForeground(Color.decode("#CBCBCB"));
+		JLabel genreLabelInfo = new JLabel(content.getGenres());
+		genreLabelInfo.setLayout(null);
+		genreLabelInfo.setBounds(162, 15, 131, 30);
+		genreLabelInfo.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
+		genreLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		// 개봉일
-		JLabel PromotionDayLabel = new JLabel("개봉일");
-		PromotionDayLabel.setBounds(297, 15, 62, 30);
-		PromotionDayLabel.setFont(DataManagers.getInstance().getFont("", 18));
-		PromotionDayLabel.setForeground(Color.decode("#CBCBCB"));
-		JLabel PromotionDayLabel2 = new JLabel(content.getPromotionDay());
-		PromotionDayLabel2.setLayout(null);
-		PromotionDayLabel2.setBounds(402, 15, 131, 30);
-		PromotionDayLabel2.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
-		PromotionDayLabel2.setForeground(Color.decode("#CBCBCB"));
+		JLabel PromotionDayLabelMenu = new JLabel("개봉일");
+		PromotionDayLabelMenu.setBounds(297, 15, 62, 30);
+		PromotionDayLabelMenu.setFont(DataManagers.getInstance().getFont("", 18));
+		PromotionDayLabelMenu.setForeground(Color.decode("#CBCBCB"));
+		JLabel PromotionDayLabelInfo = new JLabel(content.getPromotionDay());
+		PromotionDayLabelInfo.setLayout(null);
+		PromotionDayLabelInfo.setBounds(402, 15, 131, 30);
+		PromotionDayLabelInfo.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
+		PromotionDayLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		// 등급
-		JLabel rateLabel = new JLabel("등급");
-		rateLabel.setBounds(97, 45, 62, 30);
-		rateLabel.setFont(DataManagers.getInstance().getFont("", 18));
-		rateLabel.setForeground(Color.decode("#CBCBCB"));
-		JLabel rateLabel2 = new JLabel(content.getAgeRating());
-		rateLabel2.setBounds(162, 45, 131, 30);
-		rateLabel2.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
-		rateLabel2.setForeground(Color.decode("#CBCBCB"));
+		JLabel rateLabelMenu = new JLabel("등급");
+		rateLabelMenu.setBounds(97, 45, 62, 30);
+		rateLabelMenu.setFont(DataManagers.getInstance().getFont("", 18));
+		rateLabelMenu.setForeground(Color.decode("#CBCBCB"));
+		JLabel rateLabelInfo = new JLabel(content.getAgeRating());
+		rateLabelInfo.setBounds(162, 45, 131, 30);
+		rateLabelInfo.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
+		rateLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		// 러닝타임
-		JLabel runningTimeLabel = new JLabel("러닝타임");
-		runningTimeLabel.setBounds(297, 45, 62, 30);
-		runningTimeLabel.setFont(DataManagers.getInstance().getFont("", 18));
-		runningTimeLabel.setForeground(Color.decode("#CBCBCB"));
-		JLabel runningTimeLabel2 = new JLabel(content.getRunningTime());
-		runningTimeLabel2.setLayout(null);
-		runningTimeLabel2.setBounds(402, 45, 131, 30);
-		runningTimeLabel2.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
-		runningTimeLabel2.setForeground(Color.decode("#CBCBCB"));
+		JLabel runningTimeLabelMenu = new JLabel("러닝타임");
+		runningTimeLabelMenu.setBounds(297, 45, 62, 30);
+		runningTimeLabelMenu.setFont(DataManagers.getInstance().getFont("", 18));
+		runningTimeLabelMenu.setForeground(Color.decode("#CBCBCB"));
+		JLabel runningTimeLabelInfo = new JLabel(content.getRunningTime());
+		runningTimeLabelInfo.setLayout(null);
+		runningTimeLabelInfo.setBounds(402, 45, 131, 30);
+		runningTimeLabelInfo.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
+		runningTimeLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		// 국가
-		JLabel nationLabel = new JLabel("국가");
-		nationLabel.setBounds(97, 75, 62, 30);
-		nationLabel.setFont(DataManagers.getInstance().getFont("", 18));
-		nationLabel.setForeground(Color.decode("#CBCBCB"));
-		JLabel nationLabel2 = new JLabel(content.getNation());
-		nationLabel2.setLayout(null);
-		nationLabel2.setBounds(162, 75, 131, 30);
-		nationLabel2.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
-		nationLabel2.setForeground(Color.decode("#CBCBCB"));
+		JLabel nationLabelMenu = new JLabel("국가");
+		nationLabelMenu.setBounds(97, 75, 62, 30);
+		nationLabelMenu.setFont(DataManagers.getInstance().getFont("", 18));
+		nationLabelMenu.setForeground(Color.decode("#CBCBCB"));
+		JLabel nationLabelInfo = new JLabel(content.getNation());
+		nationLabelInfo.setLayout(null);
+		nationLabelInfo.setBounds(162, 75, 131, 30);
+		nationLabelInfo.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
+		nationLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		// 감독-출연
-		JLabel DirectorActorLabel = new JLabel("감독/출연");
-		DirectorActorLabel.setBounds(297, 75, 62, 30);
-		DirectorActorLabel.setFont(DataManagers.getInstance().getFont("", 18));
-		DirectorActorLabel.setForeground(Color.decode("#CBCBCB"));
-		JLabel DirectorActorLabel2 = new JLabel(content.getDirector() + "/" + content.getActor()[0]);
-		DirectorActorLabel2.setLayout(null);
-		DirectorActorLabel2.setBounds(402, 75, 161, 30);
-		DirectorActorLabel2.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
-		DirectorActorLabel2.setForeground(Color.decode("#CBCBCB"));
-		ContentDetailTabPanel.add(genreLabel2);
-		ContentDetailTabPanel.add(genreLabel3);
-		ContentDetailTabPanel.add(PromotionDayLabel);
-		ContentDetailTabPanel.add(PromotionDayLabel2);
-		ContentDetailTabPanel.add(rateLabel);
-		ContentDetailTabPanel.add(rateLabel2);
-		ContentDetailTabPanel.add(runningTimeLabel);
-		ContentDetailTabPanel.add(runningTimeLabel2);
-		ContentDetailTabPanel.add(nationLabel);
-		ContentDetailTabPanel.add(nationLabel2);
-		ContentDetailTabPanel.add(DirectorActorLabel);
-		ContentDetailTabPanel.add(DirectorActorLabel2);
+		JLabel DirectorActorMenu = new JLabel("감독/출연");
+		DirectorActorMenu.setBounds(297, 75, 62, 30);
+		DirectorActorMenu.setFont(DataManagers.getInstance().getFont("", 18));
+		DirectorActorMenu.setForeground(Color.decode("#CBCBCB"));
+		JLabel DirectorActorLabelInfo = new JLabel(content.getDirector() + "/" + content.getActor()[0]);
+		DirectorActorLabelInfo.setLayout(null);
+		DirectorActorLabelInfo.setBounds(402, 75, 161, 30);
+		DirectorActorLabelInfo.setFont(DataManagers.getInstance().getFont("LINESeedKR-Th", 18));
+		DirectorActorLabelInfo.setForeground(Color.decode("#CBCBCB"));
+		ContentDetailTabPanel.add(genreLabelMenu);
+		ContentDetailTabPanel.add(genreLabelInfo);
+		ContentDetailTabPanel.add(PromotionDayLabelMenu);
+		ContentDetailTabPanel.add(PromotionDayLabelInfo);
+		ContentDetailTabPanel.add(rateLabelMenu);
+		ContentDetailTabPanel.add(rateLabelInfo);
+		ContentDetailTabPanel.add(runningTimeLabelMenu);
+		ContentDetailTabPanel.add(runningTimeLabelInfo);
+		ContentDetailTabPanel.add(nationLabelMenu);
+		ContentDetailTabPanel.add(nationLabelInfo);
+		ContentDetailTabPanel.add(DirectorActorMenu);
+		ContentDetailTabPanel.add(DirectorActorLabelInfo);
 
 		// OTT버튼이 위치할 패널을 생성(MID_PANEL의 하단에 위치함, ReviewPanelLast를 보여줄때에는 사라짐)
 		AccessOTTPanel = new JPanel();
