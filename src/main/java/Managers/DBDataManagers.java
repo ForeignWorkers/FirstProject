@@ -1,16 +1,17 @@
 package Managers;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.reflect.TypeToken;
+
 import Data.AppConstants;
 import Data.GoogleDriveFileReader;
 import VO.FavoriteVO;
 import VO.RatingVO;
 import VO.ReviewVO;
 import VO.UserVO;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DBDataManagers {
     private boolean isInitialized = false;
@@ -28,6 +29,8 @@ public class DBDataManagers {
         return dbDataManagers;
     }
 
+    
+    
     public List<UserVO> getDbUsersData() {
         return dbUsersData;
     }
@@ -44,6 +47,31 @@ public class DBDataManagers {
         return dbFavoriteData;
     }
 
+    //컨텐츠명으로 분류해서 리뷰 목록 생성
+    public List<ReviewVO> getContentReviewsData(String contentName) {
+        List<ReviewVO> allReviews = getDbReviewsData(); // 전체 리뷰 가져오기
+        List<ReviewVO> filteredReviews = new ArrayList<>();
+
+        for (ReviewVO review : allReviews) {
+            if (review.getContentName().equals(contentName)) { // 콘텐츠명 비교
+                filteredReviews.add(review);
+            }
+        }
+        return filteredReviews;
+    }
+    //리뷰어명으로 분류해서 리뷰 목록 생성
+    public List<ReviewVO> getReviewerReviewsData(String reviewName) {
+        List<ReviewVO> allReviews = getDbReviewsData(); // 전체 리뷰 가져오기
+        List<ReviewVO> filteredReviews = new ArrayList<>();
+
+        for (ReviewVO review : allReviews) {
+            if (review.getContentName().equals(reviewName)) { // 작성자명 비교
+                filteredReviews.add(review);
+            }
+        }
+        return filteredReviews;
+    }
+    
     //드라이버 속도가 느려서 데이터는 처음 진입 시 초기화 써주기
     public DBDataManagers InitDBDataManagers() throws IOException {
         if(isInitialized)
@@ -87,6 +115,8 @@ public class DBDataManagers {
         	System.out.println("평점 데이터를 셋업했습니다.");
         	dbFavoriteData.addAll(favoriteDatas);
         }
+        
+        
 
         isInitialized = true;
         return this;
