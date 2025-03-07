@@ -21,16 +21,23 @@ public class OpenPage {
 		FrameBase.getInstance().setInnerPanel(new LoginPanel(), "mid");
 		FrameBase.getInstance().setInnerPanel(new BottomNavBar("mypage"), "down");
 	}
-
-	// 임시 홈 페이지 이동 확인
+	
+	//회원 가입 페이지 이동
+	public void openSignupPage() throws IOException{
+		FrameBase.getInstance().setInnerPanel(new SignUPPanel(), "mid");
+		//FrameBase.getInstance().setInnerPanel(new BottomNavBar("mypage"), "down");
+	}
+	
+	//홈 페이지 이동 확인
 	public void openHomePage() throws IOException {
 		FrameBase.getInstance().setInnerPanel(new MainPagePanel(), "mid");
 		FrameBase.getInstance().setInnerPanel(new BottomNavBar("home"), "down");
 	}
-
-	// 임시 랭킹 페이지 이동 확인
-	public void openRankingPage() {
-		JOptionPane.showMessageDialog(null, "랭킹 페이지로 이동");
+	
+	//랭킹 페이지 이동 확인
+	public void openRankingPage() throws IOException {
+		FrameBase.getInstance().setInnerPanel(new RankingPagePanel(), "mid");
+		FrameBase.getInstance().setInnerPanel(new BottomNavBar("ranking"), "down");
 	}
 
 	// 임시 검색 페이지 이동 확인
@@ -38,7 +45,7 @@ public class OpenPage {
 		JOptionPane.showMessageDialog(null, "검색 페이지로 이동");
 	}
 
-	// 임시 메인 컨텐츠 세부 페이지 이동 확인
+	//메인 컨텐츠 세부 페이지 이동 확인
 	public void openMainContentPage() {
 		JOptionPane.showMessageDialog(null, "메인 컨텐츠 세부 페이지 이동 확인");
 	}

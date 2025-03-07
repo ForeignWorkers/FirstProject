@@ -33,6 +33,7 @@ public class DataManagers {
     public static DataManagers getInstance() {
         if (dataManagers == null) {
             dataManagers = new DataManagers();
+            
         }
         return dataManagers;
     }
