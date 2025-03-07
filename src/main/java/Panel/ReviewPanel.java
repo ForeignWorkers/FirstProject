@@ -367,13 +367,8 @@ public class ReviewPanel extends JPanel {
 	// 별점 버튼의 상태를 설정하는 메서드
 	private void setStarButtonsVisibility() {
 		for (JButton starButton : starButtons) {
-			if (isLoggedIn) {
-				starButton.setVisible(isLoggedIn); // 로그인된 경우 별점 버튼을 보이게 함
-				starButton.setEnabled(isLoggedIn); // 로그인된 경우 클릭 가능하게 활성화
-			} else {
-				starButton.setVisible(isLoggedIn); // 로그인되지 않은 경우 별점 버튼을 숨김
-				starButton.setEnabled(isLoggedIn); // 로그인되지 않은 경우 클릭 불가
-			}
+			starButton.setVisible(isLoggedIn); // 로그인된 경우 별점 버튼을 보이게 함
+			starButton.setEnabled(isLoggedIn); // 로그인된 경우 클릭 가능하게 활성화
 		}
 	}
 
