@@ -13,8 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
-import com.google.common.collect.ImmutableSetMultimap;
-
 import DAO.FavoriteDAO;
 import Data.AppConstants;
 import Helper.GenericFinder;
