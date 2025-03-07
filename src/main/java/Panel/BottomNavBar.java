@@ -19,7 +19,7 @@ public class BottomNavBar extends JPanel {
 		this.currentPage = currentPage; // 현재 페이지 저장
 		setLayout(null);
 		setBackground(new Color(0x3d445c)); // 배경색 설정
-		setBounds(0, 0, 600, 80); // 위치,크기 설정
+		setBounds(0, 0, 595, 102); // 위치,크기 설정
 
 		// 버튼 크기 및 위치 설정
 		int buttonSize = 50; // 버튼 사이즈
@@ -54,11 +54,11 @@ public class BottomNavBar extends JPanel {
 		// mypage버튼 눌렀을 때 예외처리 마이테이지 이동 or 로그인 창 이동
 		Navbutton.addActionListener(e -> {
 			if (pageName.equals("mypage")) {
-				if (LoginConfrimManager.loginConfrim("DDD", "DDD")) { // 로그인 확인 id,pw 지금 안써서 false 처리
-					// 존재하는 계정이면 마이페이지
+				if (DataManagers.getInstance().getMyUser() != null) { // 로그인 확인
+					// 로그인 상태일 경우 마이 페이지 이동
 					openPage.openMyPage();
 				} else {
-					// 존재하지 않는 계정이면 마이페이지
+					// 비로그인 상태일 경우 로그인 페이지 이동
 					try {
 						openPage.openLoginPage();
 					} catch (IOException e1) {
@@ -78,10 +78,3 @@ public class BottomNavBar extends JPanel {
 		return Navbutton;
 	}
 }
-/*
- * //버튼 눌렀을때 methodName에 해당하는 Openpage메소드 실행 private void
- * invokeOpenPageMethod(String methodName) { //invoke사용 시 접근할 수 없는 메서드를 실행시도 할 수
- * 있기때문에 예외처리 try { //해당 메서드를 실행함
- * OpenPage.class.getMethod(methodName).invoke(openPage); } catch (Exception e)
- * { e.printStackTrace(); } }
- */

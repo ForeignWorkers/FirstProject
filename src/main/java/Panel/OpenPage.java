@@ -8,6 +8,7 @@ import Frame.FrameBase;
 import Managers.DBDataManagers;
 import Managers.DataManagers;
 import Managers.LoginConfrimManager;
+import VO.ItemVO;
 
 public class OpenPage {
 
@@ -51,9 +52,15 @@ public class OpenPage {
 	}
 
 	// 임시 메인 컨텐츠 세부 페이지 이동 확인
-	public void openContentPage(String contentTitle) {
-		JOptionPane.showMessageDialog(null, contentTitle + " 상세 페이지 이동");
+	public void openContentPage(ItemVO content) {
+	    try {
+	        //클릭한 콘텐츠 정보를 ContentsDetailImagePanel에 전달
+	        FrameBase.getInstance().setInnerPanel(new ContentsDetailImagePanel(content), "mid");
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 	}
+
 
 	// 하단 네비를 위한 공통 메서드
 	public void navigateToPage(String pageName) throws IOException {

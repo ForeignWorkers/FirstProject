@@ -144,8 +144,8 @@ public class MainPagePanel extends JPanel {
 				item -> Double.toString(item.getRatingPoint()) // 변환: double -> String
 		);
 		
-		//평점 정보가 없을 경우 평점 라벨 텍스트 0.0으로 처리
-		if (rating == null) {
+		//평점 정보가 없거나 0 또는 0.0 일 경우 평점 라벨 텍스트 0.0으로 처리
+		if (rating == null || rating.equals("0") || rating.equals("0.0")) {
 			rating = "0.0";
 		}
 		
@@ -371,7 +371,7 @@ public class MainPagePanel extends JPanel {
 				finditem -> Double.toString(finditem.getRatingPoint()) // 변환: double -> String
 		);
 		// 평점 정보가 없을 때 0.0으로 처리
-		if (rating == null) {
+		if (rating == null || rating.equals("0") || rating.equals("0.0")) {
 			rating = "0.0";
 		}
 
@@ -432,7 +432,7 @@ public class MainPagePanel extends JPanel {
 	// 컨텐츠 페이지 이동
 	private void showContentDetails(ItemVO content) {
 		OpenPage openPage = new OpenPage();
-		openPage.openContentPage(content.getTitle());// openpage의 opencontentpage호출
+		openPage.openContentPage(content);// openpage의 opencontentpage호출
 	}
 
 
