@@ -250,11 +250,13 @@ public class ReviewPanel extends JPanel {
 		// 리뷰 목록이 비어 있을 때 표시된 문구 제거
 		if (reviewListPanel.getComponentCount() == 1 && reviewListPanel.getComponent(0) instanceof JLabel) {
 			reviewListPanel.removeAll();
+			checkReviewList();
 		}
 
 		int reviewCount = reviewListPanel.getComponentCount(); // 현재 리뷰 개수
 		int yPosition = reviewCount * 146; // 각 리뷰의 Y 위치 (간격 포함)
-
+		
+		//리뷰 리스트에서 각각의 리뷰가 담길 칸 ( 이 목표임 )
 		JPanel reviewItem = new JPanel();
 		reviewItem.setLayout(null);
 		reviewItem.setBackground(new Color(0xECECEC));
@@ -283,13 +285,13 @@ public class ReviewPanel extends JPanel {
 		// 날짜
 		JLabel dateLabel = new JLabel(reviewDate); // 리뷰 작성 날짜 표시
 		dateLabel.setLayout(null);
-		dateLabel.setForeground(new Color(0xA4A4A4));
+		dateLabel.setForeground(new Color(0xCBCBCB));
 		dateLabel.setBounds(2, 24, 156, 16);
 		dateLabel.setFont(DataManagers.getInstance().getFont("", 10));
 		topPanel.add(dateLabel);
 
 		// 리뷰 내용 패널
-		JLabel contentLabel = new JLabel("<html>" + content + "</html>"); // 실제 리뷰 내용 3줄까진 날짜 표기 O 4줄에서 사라짐.
+		JLabel contentLabel = new JLabel("<html>" + content + "</html>"); // 실제 리뷰 내용 3줄까진 날짜 표기 O 4줄에서 날짜 표기가 사라짐.
 		contentLabel.setLayout(null);
 		contentLabel.setForeground(new Color(0xA4A4A4));
 		contentLabel.setBounds(144, 40, 347, 50);
@@ -320,36 +322,28 @@ public class ReviewPanel extends JPanel {
 		// 좋아요 버튼
 		CustomButton iineButton = new CustomButton(
 				DataManagers.getInstance().getIcon("thumbUpOff", "detail_review_Page"));
-
-		// JButton likeButton = new
-		// JButton(DataManagers.getInstance().getIcon("thumbUpOff",
-		// "detail_review_Page"));
 		iineButton.addActionListener(new ActionListener() {
-			private int likeCount = 0;
+			private int iineCount = 0;
 			private boolean liked = false;
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (liked) {
-					likeCount--; // 이미 좋아요가 눌렸다면 카운트 감소
+					iineCount--; // 이미 좋아요가 눌렸다면 카운트 감소
 					liked = false;
-					iineButton.setIcon(DataManagers.getInstance().getIcon("thumbUpOff", "detail_review_Page")); // 아이콘을
-																												// "OFF"
-																												// 상태로
-																												// 변경
+					iineButton.setIcon(DataManagers.getInstance().getIcon("thumbUpOff", "detail_review_Page")); 
+																												
 				} else {
-					likeCount++; // 좋아요를 누르면 카운트 증가
+					iineCount++; // 좋아요를 누르면 카운트 증가
 					liked = true;
-					iineButton.setIcon(DataManagers.getInstance().getIcon("thumbUpOn", "detail_review_Page")); // 아이콘을
-																												// "ON"
-																												// 상태로
-																												// 변경
+					iineButton.setIcon(DataManagers.getInstance().getIcon("thumbUpOn", "detail_review_Page")); 
+																																																	
 				}
 
 				// 좋아요 버튼에 좋아요 카운트를 텍스트로 표시
 				iineButton.setFont(DataManagers.getInstance().getFont(" ", 14));
 				iineButton.setForeground(new Color(0x78DBA6));
-				iineButton.setText("" + likeCount);
+				iineButton.setText("" + iineCount);
 			}
 		});
 		iineButton.setLayout(null);
