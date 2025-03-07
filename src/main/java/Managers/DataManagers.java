@@ -68,7 +68,22 @@ public class DataManagers {
     //추 후 볼드. 레귤러, 작은 글씨 탕비을 나눌 예정임
     public Font getFont(String thinType, int size) {
         try {
-            Font getFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources/font/LINESeedKR-Bd.ttf"));
+            Font getFont = null;
+            switch(thinType)
+            {
+                case "bold":
+                    getFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources/font/LINESeedKR-Bd.ttf"));
+                    break;
+                case "regular":
+                    getFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources/font/LINESeedKR-Rg.ttf"));
+                    break;
+                case "thin":
+                    getFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources/font/LINESeedKR-Th.ttf"));
+                    break;
+                default:
+                    getFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources/font/LINESeedKR-Rg.ttf"));
+                    break;
+            }
             return getFont.deriveFont(Font.BOLD, size); // 크기 18로 설정
         } catch (IOException | FontFormatException e) {
             return new Font("Arial", Font.BOLD, 18); // 오류 시 기본 폰트 사용
