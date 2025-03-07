@@ -246,8 +246,7 @@ public class ContentsDetailImagePanel extends JPanel {
 		ReviewPanelLast RPL = new ReviewPanelLast();
 		ReviewTabPanel.add(RPL);
 
-		// ContentDetailTabPanel에 들어갈 [장르,개봉일,등급,러닝타임,국가,감독-출연] 라벨들 생성
-		// 장르
+		// ContentDetailTabPanel에 들어갈 [장르,개봉일,등급,러닝타임,국가,감독-출연] 라벨들 생성		
 		JLabel genreLabel2 = new JLabel("장르");
 		genreLabel2.setBounds(97, 15, 62, 30);
 		genreLabel2.setFont(DataManagers.getInstance().getFont("", 18));
