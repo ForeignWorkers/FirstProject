@@ -368,11 +368,11 @@ public class ReviewPanel extends JPanel {
 	private void setStarButtonsVisibility() {
 		for (JButton starButton : starButtons) {
 			if (isLoggedIn) {
-				starButton.setVisible(true); // 로그인된 경우 별점 버튼을 보이게 함
-				starButton.setEnabled(true); // 로그인된 경우 클릭 가능하게 활성화
+				starButton.setVisible(isLoggedIn); // 로그인된 경우 별점 버튼을 보이게 함
+				starButton.setEnabled(isLoggedIn); // 로그인된 경우 클릭 가능하게 활성화
 			} else {
-				starButton.setVisible(false); // 로그인되지 않은 경우 별점 버튼을 숨김
-				starButton.setEnabled(false); // 로그인되지 않은 경우 클릭 불가
+				starButton.setVisible(isLoggedIn); // 로그인되지 않은 경우 별점 버튼을 숨김
+				starButton.setEnabled(isLoggedIn); // 로그인되지 않은 경우 클릭 불가
 			}
 		}
 	}

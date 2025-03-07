@@ -55,7 +55,7 @@ public class OpenPage {
 	public void openContentPage(ItemVO content) {
 	    try {
 	        //클릭한 콘텐츠 정보를 ContentsDetailImagePanel에 전달
-	        FrameBase.getInstance().setInnerPanel(new ContentsDetailImagePanel(), "mid");
+	        FrameBase.getInstance().setInnerPanel(new ContentsDetailImagePanel(content), "mid");
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
