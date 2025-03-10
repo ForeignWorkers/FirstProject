@@ -31,11 +31,10 @@ import VO.ItemVO;
 public class ContentsDetailImagePanel extends JPanel {
 	// 세 번째 패널 (버튼 클릭에 따라 변경)
 	private ItemVO content; // 현재 패널이 표시하는 컨텐츠 정보
+	private List<Map<String, String>> category;
 	private JPanel ContentDetailTabPanel; // 기본 패널 (검은색)
 	private JPanel ReviewTabPanel; // 변경될 패널 (초록색)
-	private JPanel AccessOTTPanel; // 변경될 패널 (초록색)
-
-	List<Map<String, String>> category;
+	private JPanel AccessOTTPanel; // 변경될 패널 (초록색)	
 
 	// 콘텐츠 상세 이미지 패널 생성자
 	public ContentsDetailImagePanel(ItemVO content) {
