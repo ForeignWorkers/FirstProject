@@ -55,7 +55,11 @@ public class BottomNavBar extends JPanel {
 			if (pageName.equals("mypage")) {
 				if (DataManagers.getInstance().getMyUser() != null) { // 로그인 확인
 					// 로그인 상태일 경우 마이 페이지 이동
-                    openPage.openMyPage();
+                    try {
+                        openPage.openMyPage();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 } else {
 					// 비로그인 상태일 경우 로그인 페이지 이동
 					try {
