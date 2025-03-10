@@ -34,7 +34,7 @@ public class MainPagePanel extends JPanel {
 
 		// 메인 패널 자체 크기 설정
 		setLayout(null); // 전체 레이아웃 설정
-		setBackground(new Color(0x404153));
+//		setBackground(new Color(0x404153));
 		setBounds(0, 0, 600, 600); // 패널 크기 설정
 
 		// 스크롤 적용 패널
@@ -435,8 +435,12 @@ public class MainPagePanel extends JPanel {
 		// 검색 버튼 클릭 시 검색 페이지 이동
 		searchButton.addActionListener(e -> {
 			OpenPage openPage = new OpenPage();
-			openPage.openSearchPage();
-		});
+            try {
+                openPage.openSearchPage();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
 		// 입력 필드 (기본 안내 문구)
 		JLabel searchField = new JLabel("보고 싶은 작품을 검색해보세요!", SwingConstants.LEFT);
