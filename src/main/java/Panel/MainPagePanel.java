@@ -13,22 +13,22 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import DAO.ContentDAO;
 import DAO.FavoriteDAO;
 import Data.AppConstants;
 import Helper.GenericFinder;
 import Helper.ImageHelper;
 import Managers.DBDataManagers;
 import Managers.DataManagers;
-import TESTDAO.TestContentDAO;
 import VO.FavoriteVO;
 import VO.ItemVO;
 
 // 컨텐츠 패널
 public class MainPagePanel extends JPanel {
 	private ItemVO content; // 현재 패널이 표시하는 컨텐츠 정보
-	private TestContentDAO contentDAO = new TestContentDAO(); // DAO 객체 생성
+	private ContentDAO contentDAO = new ContentDAO(); // DAO 객체 생성
 	private JPanel contentPanel; // 스크롤될 전체 컨텐츠 패널
-	private int countContent = 4; // 작은 추천 컨텐츠 개수
+	private int countContent = 10; // 작은 추천 컨텐츠 개수
 
 	public MainPagePanel() {
 
@@ -42,7 +42,7 @@ public class MainPagePanel extends JPanel {
 		contentPanel.setLayout(null);
 		contentPanel.setBackground(new Color(0x404153));
 		// 스크롤 적용 패널 사이즈 조정
-		contentPanel.setPreferredSize(new Dimension(600, 825));
+		contentPanel.setPreferredSize(new Dimension(600, 830));
 
 		// 스크롤 추가
 		JScrollPane mainPageScroll = new JScrollPane(contentPanel);
@@ -78,15 +78,15 @@ public class MainPagePanel extends JPanel {
 		contentPanel.add(smallPanelTitle);
 
 		// 작은 추천 컨텐츠 패널 추가
-		JPanel smallPanel = smallRecommendContentPanel();
-		smallPanel.setBounds(15, 537, 550, 232); // 작은 패널 위치 크기 컨트롤
+		JPanel smallPanel = smallRecommendContentPanel(); // RoundedPanel 반환
+		// 컨텐츠 패널 크기는 하단 메소드에서 설정함
+		smallPanel.setLocation(15, 537); // 작은 컨텐츠 패널 x,y위치 컨트롤
 		contentPanel.add(smallPanel);
 
 		// 검색 바 추가
 		JPanel searchBar = createSearchBar();
 		searchBar.setBounds(16, 430, 550, 50); // 검색 바 위치 조정
 		contentPanel.add(searchBar);
-
 	}
 
 	// 큰 추천 컨텐츠 라벨
@@ -137,18 +137,18 @@ public class MainPagePanel extends JPanel {
 		int ratingX = labelX - 35; // 장르 라벨 기준 왼쪽
 		JLabel ratingIconLabel = new JLabel(DataManagers.getInstance().getIcon("bigRatingIcon", "main_Page"));
 		ratingIconLabel.setBounds(ratingX, titleStandardY, 30, 30);
-		
+
 		// 평점 데이터 가져옴
 		String rating = GenericFinder.findInList(DBDataManagers.getInstance().getDbRatingData(),
 				item -> item.getItemId() == content.getId(), // 조건: contentId가 일치하는지 확인
 				item -> Double.toString(item.getRatingPoint()) // 변환: double -> String
 		);
-		
-		//평점 정보가 없거나 0 또는 0.0 일 경우 평점 라벨 텍스트 0.0으로 처리
+
+		// 평점 정보가 없거나 0 또는 0.0 일 경우 평점 라벨 텍스트 0.0으로 처리
 		if (rating == null || rating.equals("0") || rating.equals("0.0")) {
 			rating = "0.0";
 		}
-		
+
 		JLabel ratingTextLabel = new JLabel(rating, SwingConstants.LEFT);
 		ratingTextLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
 		ratingTextLabel.setForeground(new Color(0x78DBA6));
@@ -179,12 +179,11 @@ public class MainPagePanel extends JPanel {
 		genreIconLabel.setBounds(genreX, titleStandardY, labelWidth, 35);
 
 		// 로그인 상태 확인
-		//boolean isLoggedIn = (DataManagers.getInstance().getMyUser() != null);
+		// boolean isLoggedIn = (DataManagers.getInstance().getMyUser() != null);
 
-		//로그인 유무에 따라 찜버튼 활성화 비활성화
+		// 로그인 유무에 따라 찜버튼 활성화 비활성화
 		boolean isLogin = DataManagers.getInstance().getMyUser() != null;
-		
-		
+
 		// 로그인 상태라면 찜버튼을 생성 및 추가
 		if (isLogin) {
 			// 우측 하단 (찜하기 버튼)
@@ -220,7 +219,7 @@ public class MainPagePanel extends JPanel {
 				favoriteButton.setIcon(
 						DataManagers.getInstance().getIcon(isContains ? "bigWishBtnOn" : "bigWishBtnOff", "main_Page"));
 			});
-			//찜버튼 UI 배치
+			// 찜버튼 UI 배치
 			bigLabel.add(favoriteButton);
 		}
 
@@ -235,15 +234,26 @@ public class MainPagePanel extends JPanel {
 		return bigLabel;
 	}
 
-	// 작은 추천 컨텐츠 패널 (4개 가로 배치, setLayout(null) 사용)
+	// 작은 추천 컨텐츠 패널 (N개 가로 배치, setLayout(null) 사용)
 	private JPanel smallRecommendContentPanel() {
 
 		ItemVO item = null;
+
+		int smallPanelWidth = 550;
+		int smallPanelHeight = 240;
+
 		JPanel smallPanel = new RoundedPanel(20, 20); // 라운드 모서리 적용
 
-		// 변경이 잦을 수 있는 위치,크기는 mainpage쪽으로 이동
+		// 외부 라운드 패널
 		smallPanel.setLayout(null); // null 레이아웃 유지
 		smallPanel.setBackground(new Color(0xCBCBCB));
+		// 외부 라운드 패널 가로 세로 넓이 세팅(w,h -> MainPagePanel)
+		smallPanel.setSize(smallPanelWidth, smallPanelHeight);
+
+		// 스크롤 가능패널
+		JPanel itemPanel = new JPanel();
+		itemPanel.setLayout(null);
+		itemPanel.setBackground(new Color(0xCBCBCB)); // smallpanel과 동일하게
 
 		int itemWidth = 150; // 아이템 넓이
 		int margin = 10; // 아이템 간격
@@ -251,23 +261,41 @@ public class MainPagePanel extends JPanel {
 
 		int leftPadding = 10; // 좌측 아이템 패널과의 여백 설정
 
-		// 첫 번째 아이템의 x 간격을 맞추기 위해 시작 위치 조정
+		// 패널의 총 길이 계산 (컨텐츠 수에 따라 동적 넓이 설정)
+		int totalWidth = leftPadding + (itemWidth + margin) * countContent;
+		itemPanel.setPreferredSize(new Dimension(totalWidth, smallPanelHeight)); // 전체 사이즈
 
-		for (int i = 0; i < countContent; i++) { // 4개의 컨텐츠 추가
+		for (int i = 0; i < countContent; i++) { // N개의 컨텐츠 추가
 			item = contentDAO.getRandomContent(); // 랜덤 컨텐츠 가져오기
 
 			// 각 아이템 x 좌표를 조정하여 가로 정렬
 			int x = leftPadding + i * (itemWidth + margin);
 
 			// 컨텐츠 아이템 매개변수 전달
-			createContentItem(item, smallPanel, x, y);
+			createContentItem(item, itemPanel, x, y);
 		}
 
-		return smallPanel;
+		// 스크롤 생성 및 스크롤 내부에 itempanel할당
+		JScrollPane smallScroll = new JScrollPane(itemPanel);
+		// 스크롤 영역이 smallpanel 보다 조금 작게 설정(라운드 영역을 침범하지 못하게 함)
+		smallScroll.setBounds(3, 3, smallPanelWidth - 6, smallPanelHeight - 6);
+		smallScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		smallScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER); // 세로 스크롤 없음
+		smallScroll.getHorizontalScrollBar().setUnitIncrement(10); // 스크롤 속도 증가
+		
+		// 스크롤바 투명/숨김 처리
+		smallScroll.setBorder(null);
+		smallScroll.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
+		smallScroll.getHorizontalScrollBar().setOpaque(false);
+
+		// 스크롤 패널 추가
+		smallPanel.add(smallScroll);
+
+		return smallPanel; // 전체 라운드 + 스크롤 반환
 	}
 
-	// 기존 방식 유지: createContentItem()에 JPanel을 반환하지 않음
-	private void createContentItem(ItemVO item, JPanel smallPanel, int x, int y) {
+	// smallpanel 내부에 들어갈 item 생성 메소드
+	private void createContentItem(ItemVO item, JPanel itemsPanel, int x, int y) {
 
 		int itemWidth = 148; // 개별 아이템이 들어갈 넓이 무조건 thumbWidth,labelWidth 보다 커야함
 		int thumbWidth = 148; // 썸네일 넓이
@@ -283,7 +311,7 @@ public class MainPagePanel extends JPanel {
 		smallLabel.setBounds(x, y, itemWidth, 250); // 프레임 크기 조정
 
 		boolean isLogin = DataManagers.getInstance().getMyUser() != null;
-		
+
 		if (isLogin) {
 			// 찜하기 버튼 (썸네일 위에 배치)
 			JButton favoriteButton = new JButton(DataManagers.getInstance().getIcon("smallWishBtnOff", "main_Page"));
@@ -293,18 +321,18 @@ public class MainPagePanel extends JPanel {
 			favoriteButton.setFocusPainted(false);
 			favoriteButton.setMargin(new Insets(0, 0, 0, 0)); // 버튼 여백 제거
 			favoriteButton.addActionListener(e -> {
-				
+
 				// 새로운 로직
 				String userId = DataManagers.getInstance().getMyUser().getId();
 				int currentContentId = item.getId();
 				FavoriteVO myFavoriteVO = null;
-						
+
 				for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
 					if (find.getUserId() == userId) {
 						myFavoriteVO = find;
 					}
 				}
-			
+
 				FavoriteDAO favoriteDAO = new FavoriteDAO();
 				favoriteDAO.setLocalFavoriteData(myFavoriteVO, currentContentId);
 				try {
@@ -318,9 +346,9 @@ public class MainPagePanel extends JPanel {
 				favoriteButton.setIcon(DataManagers.getInstance()
 						.getIcon(isContains ? "smallWishBtnOn" : "smallWishBtnOff", "main_Page"));
 			});
-			smallPanel.add(favoriteButton);
+			itemsPanel.add(favoriteButton);
 		}
-		
+
 		JButton thumbnail = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 134, 164));
 		thumbnail.setBounds(x, y + 20, thumbWidth, 181);
 		thumbnail.setBorderPainted(false);
@@ -382,13 +410,13 @@ public class MainPagePanel extends JPanel {
 		ratingValueLabel.setBounds(ratingIconX + 10, ratingY + 3, 40, 20); // 별점 아이콘 오른쪽 정렬
 
 		// UI 배치
-		smallPanel.add(thumbnail);
-		smallPanel.add(titleLabel);
-		smallPanel.add(genreTextLabel);
-		smallPanel.add(genreIconLabel);
-		smallPanel.add(ratingIconLabel);
-		smallPanel.add(ratingValueLabel);
-		smallPanel.add(smallLabel);
+		itemsPanel.add(thumbnail);
+		itemsPanel.add(titleLabel);
+		itemsPanel.add(genreTextLabel);
+		itemsPanel.add(genreIconLabel);
+		itemsPanel.add(ratingIconLabel);
+		itemsPanel.add(ratingValueLabel);
+		itemsPanel.add(smallLabel);
 	}
 
 	private JPanel createSearchBar() {
@@ -434,6 +462,5 @@ public class MainPagePanel extends JPanel {
 		OpenPage openPage = new OpenPage();
 		openPage.openContentPage(content);// openpage의 opencontentpage호출
 	}
-
 
 }

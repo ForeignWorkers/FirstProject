@@ -5,7 +5,6 @@ import java.awt.*;
 import java.io.IOException;
 
 import Managers.DataManagers;
-import Managers.LoginConfrimManager;
 
 public class TopNavBar extends JPanel {
 	private OpenPage openPage = new OpenPage(); // 페이지 이동 관리 메서드
@@ -74,22 +73,20 @@ public class TopNavBar extends JPanel {
 	// 로그인 상태일 때 메소드 / 닉네임 + 마이페이지 버튼 나중에 사용
 
 	private void createLogInView() {
-		//유저 닉네임을 불러옴
+		// 유저 닉네임을 불러옴
 		String nickname = DataManagers.getInstance().getMyUser().getNickName();
 
-		// 패널 너비 가져오기 (이 값을 사용하여 중앙 정렬)
-		int panelWidth = this.getWidth(); // TopNavBar의 너비
 		// 닉네임 라벨 생성
-		JLabel welcomeLabel = new JLabel(nickname + "님 반갑습니다.", SwingConstants.CENTER);
+		JLabel welcomeLabel = new JLabel(nickname + "님 반갑습니다.", SwingConstants.RIGHT);
 		welcomeLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
-		welcomeLabel.setForeground(new Color(0x78DBA6)); // 민트색
+		welcomeLabel.setForeground(new Color(0x78DBA6)); // 텍스트 색상을 흰색으로 설정
 
-		// 닉네임 중앙 정렬을 위한 X좌표 계산
-		int labelWidth = 180; // 라벨의 가로 길이 (텍스트 길이에 따라 조절 가능)
-		int labelX = (panelWidth - labelWidth) / 2; // 중앙 정렬 X 위치
+		// 닉네임 라벨의 너비를 자동 계산
+		int labelWidth = welcomeLabel.getPreferredSize().width; // 텍스트라벨의 동적 넓이
 
-		// Y좌표 설정
-		welcomeLabel.setBounds(labelX, 30, labelWidth, 40);
+		int labelRightX = 485; // 마이페이지 버튼의 X 좌표
+		int labelX = labelRightX - labelWidth; // 오른쪽 기준으로 X 위치 계산
+		welcomeLabel.setBounds(labelX, 39, labelWidth, 20);
 
 		// 마이페이지 버튼 로그인 버튼 대체
 		ImageIcon myPageIcon = DataManagers.getInstance().getIcon("loginButton", "panel_UP");
@@ -105,7 +102,13 @@ public class TopNavBar extends JPanel {
 		myPageTextLabel.setForeground(Color.WHITE);
 		myPageTextLabel.setBounds(495, 39, 90, 20); // 버튼 아래에 배치
 
-		myPageButton.addActionListener(e -> openPage.openMyPage()); // 마이페이지 이동
+		myPageButton.addActionListener(e -> {
+			try {
+				openPage.openMyPage();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}); // 마이페이지 이동
 
 		// UI 추가
 		add(myPageTextLabel);
