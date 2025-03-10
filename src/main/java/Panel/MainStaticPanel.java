@@ -18,7 +18,7 @@ public class MainStaticPanel extends JPanel {
         // 🔴 상단 패널 (고정)
         upPanel = new JPanel();
         upPanel.setLayout(null);
-        upPanel.setBackground(new Color(255,0,0,0));
+//        upPanel.setBackground(new Color(255,0,0,0));
         upPanel.setOpaque(false);
         upPanel.setSize(AppConstants.PANEL_UP_WIDTH,AppConstants.PANEL_UP_HEIGHT);
         upPanel.setLocation(0,0);
@@ -26,14 +26,14 @@ public class MainStaticPanel extends JPanel {
         // 🔵 중앙 패널 (고정)
         midPanel = new JPanel();
         midPanel.setLayout(null);
-        midPanel.setBackground(new Color(182,231,33,50));
+//        midPanel.setBackground(new Color(182,231,33,50));
         midPanel.setSize(AppConstants.PANEL_MID_WIDTH,AppConstants.PANEL_MID_HEIGHT);
         midPanel.setLocation(0,83);
 
         // 🟢 하단 패널 (고정)
         downPanel = new JPanel();
         downPanel.setLayout(null);
-        downPanel.setBackground(new Color(255,0,0,1));
+//        downPanel.setBackground(new Color(255,0,0,1));
         downPanel.setSize(AppConstants.PANEL_DOWN_WIDTH,AppConstants.PANEL_DOWN_HEIGHT);
         downPanel.setLocation(0,632);
 

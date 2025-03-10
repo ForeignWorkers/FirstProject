@@ -7,7 +7,6 @@ import javax.swing.JOptionPane;
 import Frame.FrameBase;
 import Managers.DBDataManagers;
 import Managers.DataManagers;
-import Managers.LoginConfrimManager;
 import VO.ItemVO;
 
 public class OpenPage {

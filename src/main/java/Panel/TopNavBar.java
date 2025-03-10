@@ -103,12 +103,8 @@ public class TopNavBar extends JPanel {
 		myPageTextLabel.setBounds(495, 39, 90, 20); // 버튼 아래에 배치
 
 		myPageButton.addActionListener(e -> {
-			try {
-				openPage.openMyPage();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		}); // 마이페이지 이동
+            openPage.openMyPage();
+        }); // 마이페이지 이동
 
 		// UI 추가
 		add(myPageTextLabel);
