@@ -9,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import Managers.DataManagers;
-import Managers.LoginConfrimManager;
 
 public class BottomNavBar extends JPanel {
 	private OpenPage openPage = new OpenPage(); // 페이지 임시 이동 관리 객체
@@ -56,7 +55,11 @@ public class BottomNavBar extends JPanel {
 			if (pageName.equals("mypage")) {
 				if (DataManagers.getInstance().getMyUser() != null) { // 로그인 확인
 					// 로그인 상태일 경우 마이 페이지 이동
-					openPage.openMyPage();
+					try {
+						openPage.openMyPage();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 				} else {
 					// 비로그인 상태일 경우 로그인 페이지 이동
 					try {
