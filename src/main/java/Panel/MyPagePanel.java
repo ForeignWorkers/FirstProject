@@ -41,7 +41,7 @@ public class MyPagePanel extends JPanel {
 		// 위쪽 패널 닉네임 변경하는 쪽
 		JPanel firstPanel = new JPanel();
 		firstPanel.setLayout(null);
-		firstPanel.setBackground(Color.decode("#404153"));
+		firstPanel.setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 		firstPanel.setBounds(0, 0, 595, 217);
 
 		// 마이페이지 프로필 이미지
@@ -58,7 +58,7 @@ public class MyPagePanel extends JPanel {
 		JTextField mypageNicknameEdit = new JTextField();
 		mypageNicknameEdit.setBounds(163, 79, 277, 37);
 		mypageNicknameEdit.setFont(DataManagers.getInstance().getFont("bold", 17));
-		mypageNicknameEdit.setForeground(Color.decode("#78DBA6"));
+		mypageNicknameEdit.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		mypageNicknameEdit.setOpaque(false);
 		mypageNicknameEdit.setBorder(null);
 
@@ -116,14 +116,14 @@ public class MyPagePanel extends JPanel {
 		// 중간 패널 버튼 누르는 쪽
 		JPanel btnPanel = new JPanel();
 		btnPanel.setLayout(null);
-		btnPanel.setBackground(Color.decode("#404153"));
+		btnPanel.setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 		btnPanel.setBounds(0, 217, 595, 71);
 
 		// 해야하는거 리뷰내역이랑 리뷰내역 밑에 바를 같은 버튼으로 만들기
 
 		// 리뷰내역 버튼
 		myReviewHistory = new CustomButton("리뷰내역");
-		myReviewHistory.setForeground(Color.decode("#BABABC"));
+		myReviewHistory.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		myReviewHistory.setFont(DataManagers.getInstance().getFont("bold", 24));
 		myReviewHistory.setBounds(342, 37, 114, 35);
 		myReviewHistory.setVerticalAlignment(SwingConstants.CENTER);
@@ -146,25 +146,22 @@ public class MyPagePanel extends JPanel {
 				ChangeButtonColor(myReviewHistory, myReviewHistoryBar, true);
 				ChangeButtonColor(myiineHistory, myiineHistoryBar, false);
 
-				//리스트베열  ㅎ
 				List<Integer> reviewlist = new ArrayList<Integer>();
-				
+
 				for (ReviewVO reviewVO : (DBDataManagers.getInstance().getDbReviewsData())) {
 					if (reviewVO.getReviewName() == (DataManagers.getInstance().getMyUser().getNickName())) {
 						reviewlist.add(reviewVO.getReviewid());
-						}
-						
-						//System.out.println(reviewVO.getReviewContent());
 					}
-				
-			
+
 				}
+
+			}
 
 		});
 
 		// 찜 리스트 버튼
 		myiineHistory = new CustomButton("찜 리스트");
-		myiineHistory.setForeground(Color.decode("#78DBA6"));
+		myiineHistory.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		myiineHistory.setFont(DataManagers.getInstance().getFont("bold", 24));
 		myiineHistory.setBounds(154, 37, 114, 35);
 		myiineHistory.setVerticalAlignment(SwingConstants.CENTER);
@@ -184,54 +181,53 @@ public class MyPagePanel extends JPanel {
 
 		myiineBtn.addMouseListener(new MouseAdapter() {
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		ChangeButtonColor(myReviewHistory, myReviewHistoryBar, false);
-		ChangeButtonColor(myiineHistory, myiineHistoryBar, true);
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ChangeButtonColor(myReviewHistory, myReviewHistoryBar, false);
+				ChangeButtonColor(myiineHistory, myiineHistoryBar, true);
 
-			List<Integer> favoriteList = new ArrayList<Integer>();
-			
-		for (FavoriteVO favoriteVO : (DBDataManagers.getInstance().getDbFavoriteData())) {
-			if (favoriteVO.getUserId() == DataManagers.getInstance().getMyUser().getId()) {
-				System.out.println(favoriteVO.getMyFavoriteList());
-				favoriteList = favoriteVO.getMyFavoriteList();
+				List<Integer> favoriteList = new ArrayList<Integer>();
 
+				for (FavoriteVO favoriteVO : (DBDataManagers.getInstance().getDbFavoriteData())) {
+					if (favoriteVO.getUserId() == DataManagers.getInstance().getMyUser().getId()) {
+						System.out.println(favoriteVO.getMyFavoriteList());
+						favoriteList = favoriteVO.getMyFavoriteList();
+
+					}
+				}
 			}
-		}
-	}});
+		});
 
-	btnPanel.add(myiineBtn);btnPanel.add(myReviewBtn);btnPanel.add(myiineHistoryBar);btnPanel.add(myReviewHistoryBar);btnPanel.add(myiineHistory);btnPanel.add(myReviewHistory);add(btnPanel);
+		btnPanel.add(myiineBtn);
+		btnPanel.add(myReviewBtn);
+		btnPanel.add(myiineHistoryBar);
+		btnPanel.add(myReviewHistoryBar);
+		btnPanel.add(myiineHistory);
+		btnPanel.add(myReviewHistory);
+		add(btnPanel);
 
-	// 맨 밑 기본 패널
-	JPanel listPanel = new JPanel();listPanel.setLayout(null);listPanel.setBackground(Color.decode("#BABABC"));listPanel.setBounds(0,231,595,318);
+		// 맨 밑 기본 패널
+		JPanel listPanel = new JPanel();
+		listPanel.setLayout(null);
+		listPanel.setBackground(Color.decode(AppConstants.UI_SUB_TEXT_HEX));
+		listPanel.setBounds(0, 231, 595, 318);
 
-	mypageGreenBarnagai.setIcon(DataManagers.getInstance().getIcon("bar","myPage_Page"));
-	// 맨 밑 찜 리스트 패널
-	JLabel myiineListPanel = new JLabel();myiineListPanel.setIcon(DataManagers.getInstance().getIcon("ggimContentBG","myPage_Page"));myiineListPanel.setBounds(30,80,565,230);
-	// 30
+		mypageGreenBarnagai.setIcon(DataManagers.getInstance().getIcon("bar", "myPage_Page"));
+		// 맨 밑 찜 리스트 패널
+		JLabel myiineListPanel = new JLabel();
+		myiineListPanel.setIcon(DataManagers.getInstance().getIcon("ggimContentBG", "myPage_Page"));
+		myiineListPanel.setBounds(30, 80, 565, 230);
+		// 30
 
-	listPanel.add(myiineListPanel);
+		add(listPanel);
+		listPanel.add(myiineListPanel);
 
-	add(listPanel);
+		
 	}
-	/*
-	 * JLabel favoriteDetail = new JLabel();
-	 * favoriteDetail.setIcon(DataManagers.getInstance().getIcon("ggimItemBG",
-	 * "myPage_Page")); favoriteDetail.setBounds(42, 293, (int)575.25, 126);
-	 * listPanel.add(favoriteDetail);
-	 */
 
 	private void ChangeButtonColor(CustomButton textButton, CustomButton bar, boolean isOn) {
-		textButton.setForeground(isOn == true ? Color.decode("#78DBA6") : Color.decode("#BABABC"));
+		textButton.setForeground(isOn == true ? Color.decode(AppConstants.UI_POINT_COLOR_HEX) : Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		bar.setIcon((DataManagers.getInstance().getIcon(isOn == true ? "barOn" : "barOff", "detail_Content_Page")));
 	}
-
-	/*
-	 * //private void favoriteDetail() { JLabel favoriteDetail = new JLabel();
-	 * favoriteDetail.setIcon(DataManagers.getInstance().getIcon("ggimItemBG",
-	 * "myPage_Page")); favoriteDetail.setBounds(42, 293, (int)575.25, 126);
-	 * add(favoriteDetail);
-	 */
-	// }
 
 }
