@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import Component.CustomButton;
+import Data.AppConstants;
 import Frame.FrameBase;
 import Managers.DBDataManagers;
 import Managers.DataManagers;
@@ -30,25 +31,25 @@ public class LoginPanel extends JPanel {
 
 	public LoginPanel() {
 
-		setBackground(Color.decode("#404153"));
+		setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 		setLayout(null);
 		setBounds(0, 0, 595, 575);
 
 		JLabel hiWelcome = new JLabel("안녕하세요?");
 		hiWelcome.setBounds(63, 28, 461, 85);
-		hiWelcome.setFont(DataManagers.getInstance().getFont("", 30));
-		hiWelcome.setForeground(Color.decode("#78DBA6"));
+		hiWelcome.setFont(DataManagers.getInstance().getFont("bold", 30));
+		hiWelcome.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		add(hiWelcome);
 		JLabel hiWelcome2 = new JLabel("다시 돌아온 것을 환영합니다.");
 		hiWelcome2.setBounds(63, 57, 461, 85);
-		hiWelcome2.setFont(DataManagers.getInstance().getFont("Medium", 30));
-		hiWelcome2.setForeground(Color.decode("#78DBA6"));
+		hiWelcome2.setFont(DataManagers.getInstance().getFont("thin", 30));
+		hiWelcome2.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		add(hiWelcome2);
 
 		JLabel login = new JLabel("로그인");
 		login.setBounds(63, 155, 332, 42);
-		login.setFont(DataManagers.getInstance().getFont("", 24));
-		login.setForeground(Color.decode("#CBCBCB"));
+		login.setFont(DataManagers.getInstance().getFont("bold", 24));
+		login.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		add(login);
 
 		JLabel idBG = new JLabel();
@@ -57,8 +58,8 @@ public class LoginPanel extends JPanel {
 
 		JTextField idTextField = new JTextField("아이디를 입력해주세요.");
 		idTextField.setBounds(20, 8, 350, 35);
-		idTextField.setFont(DataManagers.getInstance().getFont("", 13));
-		idTextField.setForeground(Color.decode("#CBCBCB"));
+		idTextField.setFont(DataManagers.getInstance().getFont("bold", 13));
+		idTextField.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		idTextField.setOpaque(false);
 		idTextField.setBorder(null);
 
@@ -78,7 +79,7 @@ public class LoginPanel extends JPanel {
 				// 텍스트 필드가 비어 있으면 기본 텍스트를 복원
 				if (idTextField.getText().isEmpty()) {
 					idTextField.setText("아이디를 입력해주세요."); // 기본 텍스트 설정
-					idTextField.setForeground(Color.decode("#CBCBCB")); // 텍스트 색상 회색으로 변경
+					idTextField.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX)); // 텍스트 색상 회색으로 변경
 				}
 			}
 		});
@@ -91,8 +92,8 @@ public class LoginPanel extends JPanel {
 
 		JPasswordField pwTextField = new JPasswordField();
 		pwTextField.setBounds(20, 8, 350, 35);
-		pwTextField.setFont(DataManagers.getInstance().getFont("", 13));
-		pwTextField.setForeground(Color.decode("#CBCBCB"));
+		pwTextField.setFont(DataManagers.getInstance().getFont("bold", 13));
+		pwTextField.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 
 		// ✅ 플레이스홀더 상태를 위해 별도 변수 추가
 		boolean[] isPlaceholder = { true }; // 배열을 사용해 final처럼 활용
@@ -119,7 +120,7 @@ public class LoginPanel extends JPanel {
 				if (pwTextField.getPassword().length == 0) { // 비밀번호가 없으면
 					pwTextField.setText("비밀번호를 입력해주세요."); // 플레이스홀더 복구
 					pwTextField.setEchoChar((char) 0); // 텍스트 그대로 보이게 설정
-					pwTextField.setForeground(Color.decode("#CBCBCB"));
+					pwTextField.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 					isPlaceholder[0] = true;
 				}
 			}
@@ -138,17 +139,17 @@ public class LoginPanel extends JPanel {
 
 		JLabel loginButtonText = new JLabel("로그인");
 		loginButtonText.setBounds(265, 430, 461, 43);
-		loginButtonText.setFont(DataManagers.getInstance().getFont("", 20));
-		loginButtonText.setForeground(Color.decode("#595959"));
+		loginButtonText.setFont(DataManagers.getInstance().getFont("bold", 20));
+		loginButtonText.setForeground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 
 		add(loginButtonText);
 		add(loginButton);
 
 		// 회원가입 버튼
 		JButton signUpButton = new JButton("회원가입");
-		signUpButton.setFont(DataManagers.getInstance().getFont("", 17));
+		signUpButton.setFont(DataManagers.getInstance().getFont("bold", 17));
 		signUpButton.setBounds(195, 481, 202, 39);
-		signUpButton.setForeground(Color.decode("#78DBA6")); // 버튼 컬러
+		signUpButton.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX)); // 버튼 컬러
 		signUpButton.setContentAreaFilled(false); // 버튼 배경 없애기
 		signUpButton.setBorderPainted(false); // 버튼 테두리 없앰
 		add(signUpButton);

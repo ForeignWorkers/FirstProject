@@ -12,8 +12,9 @@ import VO.ItemVO;
 public class OpenPage {
 
 	// 임시 마이페이지 이동 확인
-	public void openMyPage() {
-		JOptionPane.showMessageDialog(null, "마이페이지로 이동");
+	public void openMyPage() throws IOException {
+		FrameBase.getInstance().setInnerPanel(new MyPagePanel(), "mid");
+		FrameBase.getInstance().setInnerPanel(new BottomNavBar("mypage"), "down");
 	}
 
 	// 임시 로그인 페이지 이동 확인
