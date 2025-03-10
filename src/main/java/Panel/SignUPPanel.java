@@ -54,7 +54,7 @@ public class SignUPPanel extends JPanel {
 
 		JLabel SignUp = new JLabel("회원가입");
 		SignUp.setBounds(83, 28, 461, 85);
-		SignUp.setFont(DataManagers.getInstance().getFont("", 30));
+		SignUp.setFont(DataManagers.getInstance().getFont("bold", 30));
 		SignUp.setForeground(Color.decode("#78DBA6"));
 		add(SignUp);
 
@@ -64,8 +64,8 @@ public class SignUPPanel extends JPanel {
 		idBG.setIcon(DataManagers.getInstance().getIcon("textBox01", "signUp_Page"));
 
 		// id텍스트필드
-		id = createPlaceholderTextField("아이디 또는 이메일을 입력해주세요.", 110, 115, 361, 37);
-		id.setFont(DataManagers.getInstance().getFont("", 13));
+		id = createPlaceholderTextField("아이디를 입력해주세요.", 110, 115, 361, 37);
+		id.setFont(DataManagers.getInstance().getFont("bold", 13));
 		id.setForeground(Color.decode("#CBCBCB"));
 		id.setOpaque(false);
 		id.setBorder(null);
@@ -75,7 +75,7 @@ public class SignUPPanel extends JPanel {
 		// ID중복 확인 버튼 라벨 JLabel
 		JLabel checkIDButtonBG = new JLabel("중복확인");
 		checkIDButtonBG.setBounds(484, 114, 101, 37);
-		checkIDButtonBG.setFont(DataManagers.getInstance().getFont("", 14));
+		checkIDButtonBG.setFont(DataManagers.getInstance().getFont("bold", 14));
 		checkIDButtonBG.setForeground(Color.decode("#595959"));
 
 		// ID 중복 확인 버튼
@@ -116,7 +116,7 @@ public class SignUPPanel extends JPanel {
 
 		// pw텍스트 필드
 		pw = createPlaceholderPasswordField("비밀번호를 입력해주세요", 110, 175, 361, 37);
-		pw.setFont(DataManagers.getInstance().getFont("", 13));
+		pw.setFont(DataManagers.getInstance().getFont("bold", 13));
 		pw.setForeground(Color.decode("#CBCBCB"));
 		pw.setOpaque(false);
 		pw.setBorder(null);
@@ -130,7 +130,7 @@ public class SignUPPanel extends JPanel {
 
 		// pw체크텍스트 필드
 		pwCheck = createPlaceholderPasswordField("다시 한 번 비밀번호를 입력해주세요", 110, 235, 260, 30);
-		pwCheck.setFont(DataManagers.getInstance().getFont("", 13));
+		pwCheck.setFont(DataManagers.getInstance().getFont("bold", 13));
 		pwCheck.setForeground(Color.decode("#CBCBCB"));
 		pwCheck.setOpaque(false);
 		pwCheck.setBorder(null);
@@ -140,7 +140,7 @@ public class SignUPPanel extends JPanel {
 		// pw체크 테스트 밑에 뜨는 경고문구
 		JLabel pwErrorLabel = new JLabel("• 비밀번호는 8자이상의 영문, 숫자, 특수문자를 포함해야 합니다.");
 		pwErrorLabel.setForeground(Color.decode("#CBCBCB"));
-		pwErrorLabel.setFont(DataManagers.getInstance().getFont("", 9));
+		pwErrorLabel.setFont(DataManagers.getInstance().getFont("regular", 9));
 		pwErrorLabel.setBounds(110, 260, 260, 30); // PW 필드 옆에 배치
 		add(pwErrorLabel);
 
@@ -151,7 +151,7 @@ public class SignUPPanel extends JPanel {
 
 		// email텍스트 필드
 		email = createPlaceholderTextField("이메일을 입력해주세요", 110, 307, 260, 30);
-		email.setFont(DataManagers.getInstance().getFont("", 13));
+		email.setFont(DataManagers.getInstance().getFont("bold", 13));
 		email.setForeground(Color.decode("#CBCBCB"));
 		email.setOpaque(false);
 		email.setBorder(null);
@@ -165,7 +165,7 @@ public class SignUPPanel extends JPanel {
 
 		// 주민번호 앞자리 텍스트 필드
 		myNum = createPlaceholderTextField("주민번호 앞 6자리", 110, 367, 130, 30);
-		myNum.setFont(DataManagers.getInstance().getFont("", 13));
+		myNum.setFont(DataManagers.getInstance().getFont("bold", 13));
 		myNum.setForeground(Color.decode("#CBCBCB"));
 		myNum.setOpaque(false);
 		myNum.setBorder(null);
@@ -194,13 +194,13 @@ public class SignUPPanel extends JPanel {
 		// 주민번호 7번째 자리의 뒤의 **** 텍스트 라벨
 		JLabel myNum7B7G77 = new JLabel("******");
 		myNum7B7G77.setBounds(355, 373, 80, 30);
-		myNum7B7G77.setFont(DataManagers.getInstance().getFont("", 22)); // 폰트 크기 조정
+		myNum7B7G77.setFont(DataManagers.getInstance().getFont("bold", 22)); // 폰트 크기 조정
 		myNum7B7G77.setForeground(Color.decode("#CBCBCB"));
 		myNum7B7G77.setOpaque(false);
 
 		// 주민번호 한자리 텍스트필드
 		myNum7 = createMynum7Field("한자리", 290, 368, 40, 28);
-		myNum7.setFont(DataManagers.getInstance().getFont("", 13));
+		myNum7.setFont(DataManagers.getInstance().getFont("bold", 13));
 		myNum7.setForeground(Color.decode("#CBCBCB"));
 		myNum7.setBorder(null);
 		myNum7.setVisible(true);
@@ -220,7 +220,7 @@ public class SignUPPanel extends JPanel {
 
 		// 전번 텍스트 필드
 		phoneNum = createPlaceholderTextField("전화번호를 입력해주세요", 110, 437, 130, 30);
-		phoneNum.setFont(DataManagers.getInstance().getFont("", 13));
+		phoneNum.setFont(DataManagers.getInstance().getFont("bold", 13));
 		phoneNum.setForeground(Color.decode("#CBCBCB"));
 		phoneNum.setOpaque(false);
 		phoneNum.setBorder(null);
@@ -233,7 +233,7 @@ public class SignUPPanel extends JPanel {
 		nationalitiesBG.setIcon(DataManagers.getInstance().getIcon("textBox05", "signUp_Page"));
 
 		JLabel nationalityLabel = new JLabel("국적 선택");
-		nationalityLabel.setFont(DataManagers.getInstance().getFont("", 13));
+		nationalityLabel.setFont(DataManagers.getInstance().getFont("bold", 13));
 		nationalityLabel.setForeground(Color.decode("#CBCBCB"));
 		nationalityLabel.setBounds(110, 493, 232, 37);
 
@@ -270,7 +270,7 @@ public class SignUPPanel extends JPanel {
 
 		// 닉네임 텍스트 필드
 		nickName = createPlaceholderTextField("닉네임을 입력해주세요", 110, 557, 200, 30);
-		nickName.setFont(DataManagers.getInstance().getFont("", 13));
+		nickName.setFont(DataManagers.getInstance().getFont("bold", 13));
 		nickName.setForeground(Color.decode("#CBCBCB"));
 		nickName.setOpaque(false);
 		nickName.setBorder(null);
@@ -280,7 +280,7 @@ public class SignUPPanel extends JPanel {
 		// 닉네임 중복 확인 버튼 라벨 JLabel
 		JLabel checkNicknameButtonBG = new JLabel("중복확인");
 		checkNicknameButtonBG.setBounds(359, 553, 101, 37);
-		checkNicknameButtonBG.setFont(DataManagers.getInstance().getFont("", 14));
+		checkNicknameButtonBG.setFont(DataManagers.getInstance().getFont("bold", 14));
 		checkNicknameButtonBG.setForeground(Color.decode("#595959"));
 
 		// 닉네임 커스텀 버튼
@@ -334,7 +334,7 @@ public class SignUPPanel extends JPanel {
 
 		JLabel finaljoinButtonLabel = new JLabel("회원가입");
 		finaljoinButtonLabel.setBounds(280, 615, 461, 43);
-		finaljoinButtonLabel.setFont(DataManagers.getInstance().getFont("", 17));
+		finaljoinButtonLabel.setFont(DataManagers.getInstance().getFont("bold", 17));
 		finaljoinButtonLabel.setForeground(Color.decode("#595959"));
 
 		finaljoinButton.addMouseListener(new MouseAdapter() {
@@ -530,7 +530,7 @@ public class SignUPPanel extends JPanel {
 		// 오류 메시지 라벨
 		errorLabel = new JLabel();
 		errorLabel.setForeground(Color.decode("#CBCBCB"));
-		errorLabel.setFont(DataManagers.getInstance().getFont("", 9));
+		errorLabel.setFont(DataManagers.getInstance().getFont("regular", 9));
 		errorLabel.setBounds(110, 390, 200, 30);
 		add(errorLabel);
 
