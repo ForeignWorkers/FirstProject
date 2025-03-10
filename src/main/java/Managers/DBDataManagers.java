@@ -51,6 +51,7 @@ public class DBDataManagers {
     public List<ReviewVO> getContentReviewsData(String contentName) {
         List<ReviewVO> allReviews = getDbReviewsData(); // 전체 리뷰 가져오기
         List<ReviewVO> filteredReviews = new ArrayList<>();
+        if(allReviews.isEmpty() || filteredReviews.isEmpty()) return null;
 
         for (ReviewVO review : allReviews) {
             if (review.getContentName().equals(contentName)) { // 콘텐츠명 비교

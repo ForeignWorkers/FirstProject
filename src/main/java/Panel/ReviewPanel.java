@@ -378,6 +378,8 @@ public class ReviewPanel extends JPanel {
 	private void loadReviews(String contentName) {
 		reviewListPanel.removeAll(); // 기존 리뷰 초기화
 
+		if(DBDataManagers.getInstance().getContentReviewsData(contentName) == null) return;
+
 		// DBDataManagers에서 해당 영화에 대한 리뷰를 불러옴
 		for (ReviewVO review : DBDataManagers.getInstance().getContentReviewsData(contentName)) {
 			// 각 리뷰 항목을 화면에 표시
