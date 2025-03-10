@@ -20,10 +20,14 @@ public class ContentDAO {
 
 	// 0부터 count개수만큼 순차적으로 가져오는 메소드
 	public void ContentData() {
-		int count = 49; // 원하는 개수(반드시 썸네일 요구하는 데이터 이상으로 넣어줘야함)
+		int count = 50; // 원하는 개수(반드시 썸네일 요구하는 데이터 이상으로 넣어줘야함)
 
 		for (int i = 0; i < count; i++) { // 0부터 count까지 순차적으로 들어오기 때문에 중복 발생 불가
-
+			
+			if (i == 17) {
+				continue; // id가 17번일 경우 추가하지 않고 건너뜀
+			}
+			
 			ItemVO item = DataManagers.getInstance().FindItemFromId(i);
 
 			if (item != null) { // 데이터가 존재할 때만 추가

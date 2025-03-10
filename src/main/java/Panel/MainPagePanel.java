@@ -10,6 +10,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
@@ -34,13 +35,12 @@ public class MainPagePanel extends JPanel {
 
 		// 메인 패널 자체 크기 설정
 		setLayout(null); // 전체 레이아웃 설정
-//		setBackground(new Color(0x404153));
 		setBounds(0, 0, 600, 600); // 패널 크기 설정
 
 		// 스크롤 적용 패널
 		contentPanel = new JPanel();
 		contentPanel.setLayout(null);
-		contentPanel.setBackground(new Color(0x404153));
+		contentPanel.setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 		// 스크롤 적용 패널 사이즈 조정
 		contentPanel.setPreferredSize(new Dimension(600, 830));
 
@@ -73,7 +73,7 @@ public class MainPagePanel extends JPanel {
 		// 작은 추천 컨텐츠 제목 TEXT
 		JLabel smallPanelTitle = new JLabel("오늘의 추천 컨텐츠", SwingConstants.LEFT);
 		smallPanelTitle.setBounds(16, 495, 250, 40); // 제목 위치 설정
-		smallPanelTitle.setForeground(new Color(0x78DBA6));
+		smallPanelTitle.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		smallPanelTitle.setFont(DataManagers.getInstance().getFont("bold", 20));
 		contentPanel.add(smallPanelTitle);
 
@@ -151,7 +151,7 @@ public class MainPagePanel extends JPanel {
 
 		JLabel ratingTextLabel = new JLabel(rating, SwingConstants.LEFT);
 		ratingTextLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
-		ratingTextLabel.setForeground(new Color(0x78DBA6));
+		ratingTextLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		// ratingX + n 평점 아이콘 기준으로 x값 + 좌측으로 이동
 		ratingTextLabel.setBounds(ratingX + 30, titleStandardY + 5, 50, 30);
 
@@ -166,7 +166,7 @@ public class MainPagePanel extends JPanel {
 		int genreX = labelX;
 		JLabel genreTextLabel = new JLabel(bigGenreText, SwingConstants.CENTER);
 		genreTextLabel.setFont(DataManagers.getInstance().getFont("regular", 11));
-		genreTextLabel.setForeground(new Color(0x78DBA6));
+		genreTextLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		genreTextLabel.setBounds(genreX, titleStandardY + 4, labelWidth, 35);
 
 		// 장르 라벨 아이콘 리사이징
@@ -246,14 +246,14 @@ public class MainPagePanel extends JPanel {
 
 		// 외부 라운드 패널
 		smallPanel.setLayout(null); // null 레이아웃 유지
-		smallPanel.setBackground(new Color(0xCBCBCB));
+		smallPanel.setBackground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		// 외부 라운드 패널 가로 세로 넓이 세팅(w,h -> MainPagePanel)
 		smallPanel.setSize(smallPanelWidth, smallPanelHeight);
 
 		// 스크롤 가능패널
 		JPanel itemPanel = new JPanel();
 		itemPanel.setLayout(null);
-		itemPanel.setBackground(new Color(0xCBCBCB)); // smallpanel과 동일하게
+		itemPanel.setBackground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX)); // smallpanel과 동일하게
 
 		int itemWidth = 150; // 아이템 넓이
 		int margin = 10; // 아이템 간격
@@ -282,12 +282,32 @@ public class MainPagePanel extends JPanel {
 		smallScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		smallScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER); // 세로 스크롤 없음
 		smallScroll.getHorizontalScrollBar().setUnitIncrement(10); // 스크롤 속도 증가
-		
+		          
 		// 스크롤바 투명/숨김 처리
 		smallScroll.setBorder(null);
 		smallScroll.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
 		smallScroll.getHorizontalScrollBar().setOpaque(false);
-
+		
+		//마우스 좌,우 드레그 구현
+		final int[] mouseX = {0}; // 이전 마우스 X 위치 저장
+		itemPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+		    @Override
+		    public void mousePressed(java.awt.event.MouseEvent e) {
+		        mouseX[0] = e.getX(); // 클릭한 위치 저장
+		    }
+		});
+		
+		itemPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+		    @Override
+		    public void mouseDragged(java.awt.event.MouseEvent e) {
+		        int deltaX = mouseX[0] - e.getX(); // 드래그한 거리 (이전 - 현재)
+		        JScrollBar hScroll = smallScroll.getHorizontalScrollBar(); // 수평 스크롤 바
+		        int newValue = hScroll.getValue() + deltaX; // 현재 스크롤 값에 드래그 거리 더하기
+		        hScroll.setValue(newValue); // 스크롤 이동
+		        mouseX[0] = e.getX(); // 현재 위치를 다시 저장
+		    }
+		});
+		
 		// 스크롤 패널 추가
 		smallPanel.add(smallScroll);
 
@@ -373,7 +393,7 @@ public class MainPagePanel extends JPanel {
 		int genreY = titleLabelY + 22; // 타이틀 라벨 기준 y+
 		JLabel genreTextLabel = new JLabel(smallGenreText, SwingConstants.CENTER);
 		genreTextLabel.setFont(DataManagers.getInstance().getFont("bold", 7));
-		genreTextLabel.setForeground(new Color(0x78DBA6));
+		genreTextLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		genreTextLabel.setBounds(x, genreY + 2, labelWidth, 20);
 
 		ImageIcon smallGenreLabelIcon = DataManagers.getInstance().getIcon("smallCategory", "main_Page");
@@ -406,7 +426,7 @@ public class MainPagePanel extends JPanel {
 		// 평점 텍스트
 		JLabel ratingValueLabel = new JLabel(rating, SwingConstants.LEFT);
 		ratingValueLabel.setFont(DataManagers.getInstance().getFont("bold", 8));
-		ratingValueLabel.setForeground(new Color(0x78DBA6));
+		ratingValueLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		ratingValueLabel.setBounds(ratingIconX + 10, ratingY + 3, 40, 20); // 별점 아이콘 오른쪽 정렬
 
 		// UI 배치
@@ -435,12 +455,12 @@ public class MainPagePanel extends JPanel {
 		// 검색 버튼 클릭 시 검색 페이지 이동
 		searchButton.addActionListener(e -> {
 			OpenPage openPage = new OpenPage();
-            try {
-                openPage.openSearchPage();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+			try {
+				openPage.openSearchPage();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		});
 
 		// 입력 필드 (기본 안내 문구)
 		JLabel searchField = new JLabel("보고 싶은 작품을 검색해보세요!", SwingConstants.LEFT);

@@ -2,97 +2,103 @@ package Panel;
 
 import javax.swing.*;
 
+import DAO.FavoriteDAO;
+import Data.AppConstants;
+import Helper.GenericFinder;
+import Helper.ImageHelper;
+import Managers.DBDataManagers;
 import Managers.DataManagers;
+import VO.FavoriteVO;
+import VO.ItemVO;
 
 import java.awt.*;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RankingPagePanel extends JPanel {
     
     private JPanel rankingContentPanel; // 랭킹 콘텐츠 리스트 패널
-    private JScrollPane scrollPane; // 스크롤 패널
+    private JScrollPane rankingListScroll; // 스크롤 패널
+    private JPanel RankingListPanel; // 스크롤 가능한 콘텐츠 패널
+    private JButton selectedOttFilterButton = null; // 현재 선택된 OTT 필터 버튼 저장
 
+    
     public RankingPagePanel() {
         setLayout(null); // 절대 위치 설정
-        setBackground(Color.GRAY); // 배경색 설정
+        setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX)); // 배경색 설정
         setBounds(0, 0, 600, 600); // 패널 크기 설정
 
         //OTT 필터 버튼 추가 (rankingContentPanel 외부 상단에 배치)
         addOttFilterButtons();
         
-        //OTT 필터와 랭킹 컨텐츠 리스트 패널 중앙에 위치한 바
-        JLabel ottFillterbar = new JLabel(DataManagers.getInstance().getIcon("bar","rank_Page"));
-        ottFillterbar.setBounds(30, 55, 536, 10);
-        add(ottFillterbar);
+        // 상단 구분선 바
+        JLabel ottFillterBar = new JLabel(DataManagers.getInstance().getIcon("bar","rank_Page"));
+        ottFillterBar.setBounds(30, 55, 536, 10);
+        add(ottFillterBar);
          
-        JLabel ottFillterTitle = new JLabel("이거볼래에서 추천하는 TOP10", SwingConstants.LEFT);
-        ottFillterTitle.setBounds(30, 70, 250, 40); // 제목 위치 설정
-        ottFillterTitle.setForeground(new Color(0x78DBA6));
-        ottFillterTitle.setFont(DataManagers.getInstance().getFont("regular", 20));
-        add(ottFillterTitle);
+        // 리스트 타이틀 텍스트
+        JLabel ottListTitle = new JLabel("이거볼래에서 추천하는 TOP10", SwingConstants.LEFT);
+        ottListTitle.setBounds(30, 70, 300, 40); // 제목 위치 설정
+        ottListTitle.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
+        ottListTitle.setFont(DataManagers.getInstance().getFont("regular", 20));
+        add(ottListTitle);
         
-        //595 - 536 /2
         //랭킹 콘텐츠 리스트 패널 추가
         rankingContentPanel = createRankingContentPanel();
         add(rankingContentPanel);
         
+    	//최초 실행 시 전체 필터 적용
+        updateRankingContentPanel("전체");
     }
     
     //랭킹 콘텐츠 리스트 패널 생성 메서드
     private JPanel createRankingContentPanel() {
-        int panelWidth = 595; // RankingPagePanel의 너비
-        int contentPanelWidth = 535; // rankingContentPanel의 너비
-        int contentPanelHeight = 431; // rankingContentPanel의 높이
-        int x = (panelWidth - contentPanelWidth) / 2; // 중앙 정렬 계산
+        int rankingPagePanelWidth = 595; // RankingPagePanel의 너비
+        int rankingContentPanelWidth = 535; // rankingContentPanel의 너비
+        int rankingContentPanelHeight = 431; // rankingContentPanel의 높이
+        int x = (rankingPagePanelWidth - rankingContentPanelWidth) / 2; // 중앙 정렬 계산
         
         RoundedPanel rankingContentPanel = new RoundedPanel(50, 50); // 모서리 둥근 패널 생성
-        rankingContentPanel.setBounds(x, 110, contentPanelWidth, contentPanelHeight); // 크기 설정
-        rankingContentPanel.setBackground(new Color(0xCBCBCB)); // 패널 배경색 설정
+        rankingContentPanel.setBounds(x, 110, rankingContentPanelWidth, rankingContentPanelHeight); // 크기 설정
+        rankingContentPanel.setBackground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX)); // 패널 배경색 설정
         rankingContentPanel.setLayout(null); // null 레이아웃 유지
         
         // 내부 스크롤 가능하도록 설정
-        JPanel scrollableContent = new JPanel();
-        scrollableContent.setLayout(null); // 내부 콘텐츠도 null 레이아웃
-        scrollableContent.setPreferredSize(new Dimension(contentPanelWidth - 20, 800)); //스크롤 높이 설정
+        RankingListPanel = new JPanel();
+        RankingListPanel.setLayout(null); // 내부 콘텐츠도 null 레이아웃
+        RankingListPanel.setPreferredSize(new Dimension(rankingContentPanelWidth - 20, 1370)); //스크롤 높이 설정
         
-        //임시 리스트 텍스트 데이터가 스크롤 되는지 확인
-        for (int i = 0; i < 20; i++) { // 20개의 더미 레이블 추가
-            JLabel label = new JLabel("랭킹 콘텐츠 " + (i + 1));
-            label.setBounds(20, i * 35, 200, 30); // 각 레이블 위치 설정
-            label.setForeground(Color.BLACK);
-            scrollableContent.add(label);
-        }
-        
-        //스크롤 패널 생성 RoundedPanel 내부에 약간의 여백 남겨서 처리 
-        scrollPane = new JScrollPane(scrollableContent);
+        //스크롤 생성 RoundedPanel 내부에 약간의 여백 남겨서 처리 
+        rankingListScroll = new JScrollPane(RankingListPanel);
         int padding = 7; // 둥근 테두리를 가리지 않도록 패딩 추가
-        scrollPane.setBounds(padding, padding, contentPanelWidth - (padding * 2), contentPanelHeight - (padding * 2));
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(10);//스크롤 속도 증가
+        rankingListScroll.setBounds(padding, padding, rankingContentPanelWidth - (padding * 2), rankingContentPanelHeight - (padding * 2));
+        rankingListScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        rankingListScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        rankingListScroll.getVerticalScrollBar().setUnitIncrement(10);//스크롤 속도 증가
         
-        //중요: 뷰포트를 불투명하게 만들고 배경색 강제 적용
-        scrollableContent.setBackground(new Color(0xCBCBCB)); // 내부 콘텐츠 배경색 설정
-        scrollPane.getViewport().setOpaque(true); // 뷰포트 불투명하게 설정
-        scrollPane.getViewport().setBackground(new Color(0xCBCBCB)); // 뷰포트 배경색 강제 설정
-        scrollPane.setBackground(new Color(0xCBCBCB)); // JScrollPane 배경색 설정
+        //뷰포트를 불투명하게 만들고 배경색 강제 적용
+        RankingListPanel.setBackground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX)); // 내부 콘텐츠 배경색 설정
+        rankingListScroll.getViewport().setOpaque(true); // 뷰포트 불투명하게 설정
+        rankingListScroll.getViewport().setBackground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX)); // 뷰포트 배경색 강제 설정
+        rankingListScroll.setBackground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX)); // JScrollPane 배경색 설정
 
         //스크롤 패널 테두리 제거
-        scrollPane.setBorder(null); 
+        rankingListScroll.setBorder(null); 
 
         //스크롤바 자체를 투명하게 설정 (숨김)
-        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0)); // 스크롤바 크기 최소화
-        scrollPane.getVerticalScrollBar().setOpaque(false); // 스크롤바 투명화
+        rankingListScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0)); // 스크롤바 크기 최소화
+        rankingListScroll.getVerticalScrollBar().setOpaque(false); // 스크롤바 투명화
 
         //RoundedPanel 내부에 추가
-        rankingContentPanel.add(scrollPane);
+        rankingContentPanel.add(rankingListScroll);
 
         return rankingContentPanel;
     }
     
-    private JButton selectedButton = null; // 현재 활성화된 버튼 저장
-
+    //OTT 필터 버튼 생성 및 추가
     private void addOttFilterButtons() {
-
         String[] ottNames = { "전체", "넷플릭스", "티빙", "라프텔", "왓챠" };
         String[] ottIconNames = { "allIcon", "netflexIcon", "TvingIcon", "laftelIcon", "WatchaIcon" };
         //필터 활성화 버튼을 배열로 저장
@@ -101,56 +107,237 @@ public class RankingPagePanel extends JPanel {
         String[] bgOffNames = { "allBGOff", "netflexBGOff", "tivingBGOff", "laftelBGOff", "WatchaBGOff" };
         String iconAndButtonPath = "rank_Page";
         
-        int buttonWidth = 80; //버튼 넓이
-        int buttonHeight = 60; //버튼 높이 
-        int iconSize = 24; //버튼 아이콘 사이즈
-        int spacing = 3; //각 버튼 간의 간격
-        int startX = 20; //첫 버튼 시작 x 좌표
-        int yPosition = 4; //y값
+        int buttonHeight = 60; // 버튼 높이 (고정)
+        int iconSize = 24; // 버튼 아이콘 크기
+        int spacing = 10; // 각 버튼 간의 간격
+        int startX = 30; // 첫 버튼 시작 x 좌표
+        int yPosition = 4; // y 좌표
 
         for (int i = 0; i < ottNames.length; i++) {
             final int index = i;
-            
-            ImageIcon buttonBgOff = DataManagers.getInstance().getIcon(bgOffNames[i], iconAndButtonPath);
-            ImageIcon buttonBgOn = DataManagers.getInstance().getIcon(bgOnNames[i], iconAndButtonPath);
+            //ott 필터링 버튼 세팅
+            ImageIcon ottButtonOff = DataManagers.getInstance().getIcon(bgOffNames[i], iconAndButtonPath);
+            ImageIcon ottButtonOn = DataManagers.getInstance().getIcon(bgOnNames[i], iconAndButtonPath);
+            int buttonWidth = ottButtonOff.getIconWidth(); // 버튼 너비를 이미지 크기에 맞춤
+            //ott 아이콘 세팅
             ImageIcon ottIcon = DataManagers.getInstance().getIcon(ottIconNames[i], iconAndButtonPath);
             
-            JButton ottButton = new JButton(i == 0 ? buttonBgOn : buttonBgOff);
-            ottButton.setBounds(startX + (i * (buttonWidth + spacing)), yPosition, buttonWidth, buttonHeight);
+            JButton ottButton = new JButton(i == 0 ? ottButtonOn : ottButtonOff);
+            ottButton.setBounds(startX, yPosition, buttonWidth, buttonHeight); // x 값 유지
             ottButton.setBorderPainted(false);
             ottButton.setContentAreaFilled(false);
             ottButton.setFocusPainted(false);
             ottButton.setLayout(null);
             ottButton.setActionCommand(ottNames[i]);
             
-            //무조건 전체 버튼이 디폴트 활성화 상태
+            // 무조건 전체 버튼이 디폴트 활성화 상태
             if (i == 0) {
-                selectedButton = ottButton;
+                selectedOttFilterButton = ottButton;
             }
-
-            JLabel iconLabel = new JLabel(ottIcon);
-            iconLabel.setBounds(10, (buttonHeight - iconSize) / 2, iconSize, iconSize);
-            ottButton.add(iconLabel);
-
-            JLabel textLabel = new JLabel(ottNames[i]);
-            textLabel.setBounds(40, (buttonHeight - 20) / 2, 60, 20);
-            textLabel.setForeground(Color.WHITE);
-            textLabel.setFont(DataManagers.getInstance().getFont("bold", 11));
-            ottButton.add(textLabel);
             
+            //ott icon 위치 세팅
+            JLabel ottButtonIconLabel = new JLabel(ottIcon);
+            ottButtonIconLabel.setBounds(5, (buttonHeight - iconSize) / 2, iconSize, iconSize);
+            ottButton.add(ottButtonIconLabel);
+            
+            //ott text 위치 세팅
+            JLabel ottButtontextLabel = new JLabel(ottNames[i], SwingConstants.CENTER);
+            ottButtontextLabel.setBounds(10, (buttonHeight - 15) / 2, buttonWidth, 20); // 버튼 내부에서 정렬
+            ottButtontextLabel.setForeground(Color.WHITE);
+            ottButtontextLabel.setFont(DataManagers.getInstance().getFont("bold", 11));
+            ottButton.add(ottButtontextLabel);
+            
+            // 클릭 이벤트: 필터링 및 버튼 아이콘 변경
             ottButton.addActionListener(e -> {
-                if (selectedButton != null) {
-                    int prevIndex = java.util.Arrays.asList(ottNames).indexOf(selectedButton.getActionCommand());
-                    // index 계산
-                    selectedButton.setIcon(DataManagers.getInstance().getIcon(bgOffNames[prevIndex], iconAndButtonPath));
+                if (selectedOttFilterButton != null) {
+                    int prevIndex = Arrays.asList(ottNames).indexOf(selectedOttFilterButton.getActionCommand());
+                    selectedOttFilterButton.setIcon(DataManagers.getInstance().getIcon(bgOffNames[prevIndex], iconAndButtonPath));
                 }
-                selectedButton = ottButton;
-                ottButton.setIcon(buttonBgOn);
-                
-                System.out.println(ottNames[index] + " 필터 선택됨");
+                selectedOttFilterButton = ottButton;
+                ottButton.setIcon(ottButtonOn);
+                updateRankingContentPanel(ottNames[index]);
             });
             
             this.add(ottButton);
+            
+            //다음 버튼의 x 위치를 현재 버튼 너비 + spacing 만큼 이동
+            startX += buttonWidth + spacing;
         }
     }
+    
+    // 필터링후 랭킹 콘텐츠 업데이트
+    private void updateRankingContentPanel(String selectedPlatform) {
+        RankingListPanel.removeAll();
+
+        //전체 데이터 가져오기
+        Collection<ItemVO> allItems = DataManagers.getInstance().getItems().values();
+
+        //플랫폼 필터링
+        List<ItemVO> filteredItems = allItems.stream()
+                .filter(item -> filterByPlatform(item, selectedPlatform)) //필터링 별도 메서드로 분리
+                //리스트 데이터를 getid기준으로 오름차순 정렬
+                .sorted(Comparator.comparingInt(ItemVO::getId)) // id로 정렬
+                .limit(10) // 상위 10개
+                //다시 리스트로 묶음
+                .collect(Collectors.toList());
+        
+        // 콘텐츠 라벨 추가
+        int yOffset = 10; //라벨 y 간격
+        for (ItemVO item : filteredItems) {
+            JLabel rankingItemLabel = createRankingItemLabel(item, filteredItems.indexOf(item) + 1);
+            
+            //RankingContentBG scrollableContent 기준 센터 정렬
+            int xCenter = (RankingListPanel.getPreferredSize().width - rankingItemLabel.getPreferredSize().width) / 2;
+            
+            rankingItemLabel.setBounds(xCenter + 3, yOffset, 510, 126);
+            RankingListPanel.add(rankingItemLabel);
+            yOffset += 136;
+        }
+
+        RankingListPanel.revalidate();
+        RankingListPanel.repaint();
+    }
+    
+    //플랫폼 필터링 조건 메서드
+    private boolean filterByPlatform(ItemVO item, String selectedPlatform) {
+    	// 전체 버튼이면 true
+        if (selectedPlatform.equals("전체")) {
+        	
+        	return true;
+        }
+        // 아니면 실행
+        if (item.getCategory() == null) {
+        	
+        	return false;
+        }
+        return item.getCategory().stream()
+                .anyMatch(map -> map.get("platform").equals(selectedPlatform));
+    }
+    
+    
+    private JLabel createRankingItemLabel(ItemVO item, int rank) {
+    	//랭킹 콘텐츠 배경
+        JLabel rankingLabel = new JLabel(DataManagers.getInstance().getIcon("RankingContentBG", "rank_Page"));
+        rankingLabel.setLayout(null);
+        
+        //순위 라벨
+        JLabel rankLabel = new JLabel(String.valueOf(rank), SwingConstants.LEFT);
+        rankLabel.setBounds(17, 47, 30, 40);
+        rankLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
+        rankLabel.setFont(DataManagers.getInstance().getFont("bold", 25));
+        rankingLabel.add(rankLabel);
+
+        //썸네일 버튼
+        JButton thumbnailButton = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 79, 99));
+        thumbnailButton.setBounds(50, 14, 79, 99);
+        thumbnailButton.setBorderPainted(false);
+        thumbnailButton.setContentAreaFilled(false);
+        thumbnailButton.setFocusPainted(false);
+        thumbnailButton.addActionListener(e -> showContentDetails(item));
+        rankingLabel.add(thumbnailButton);
+
+        //장르 바
+        JLabel categoryLabel = new JLabel(DataManagers.getInstance().getIcon("category", "rank_Page"));
+        categoryLabel.setBounds(122, 22, 80, 18);
+        rankingLabel.add(categoryLabel);
+        
+        // 장르 텍스트가 7글자 초과시 .. 처리
+     	String genreTextlength = item.getGenres();
+     	int overNum = 8;// 초과 제한 될 글자 개수
+     	if (genreTextlength.length() > overNum) {
+     		genreTextlength = genreTextlength.substring(0, 7) + "..";
+     		}
+        
+        //장르 텍스트
+        JLabel genreText = new JLabel(genreTextlength, SwingConstants.CENTER);
+        genreText.setBounds(0, 2, 80, 18);
+        genreText.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
+        genreText.setFont(DataManagers.getInstance().getFont("bold", 6));
+        categoryLabel.add(genreText);
+
+        //타이틀
+        JLabel titleLabel = new JLabel(item.getTitle(), SwingConstants.LEFT);
+        titleLabel.setBounds(140, 50, 250, 20);
+        titleLabel.setFont(DataManagers.getInstance().getFont("bold", 15));
+        rankingLabel.add(titleLabel);
+
+        //개봉일
+        JLabel dateLabel = new JLabel(item.getPromotionDay(), SwingConstants.LEFT);
+        dateLabel.setBounds(140, 75, 300, 15);
+        dateLabel.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
+        dateLabel.setFont(DataManagers.getInstance().getFont("bold", 10));
+        rankingLabel.add(dateLabel);
+
+        //평점 가져오기
+        String rating = GenericFinder.findInList(DBDataManagers.getInstance().getDbRatingData(),
+                findItem -> findItem.getItemId() == item.getId(),
+                findItem -> Double.toString(findItem.getRatingPoint()));
+
+        if (rating == null || rating.equals("0") || rating.equals("0.0")) {
+            rating = "0.0";
+        }
+
+        //평점 아이콘
+        JLabel ratingIcon = new JLabel(DataManagers.getInstance().getIcon("ratingIcon", "rank_Page"));
+        ratingIcon.setBounds(450, 15, 31, 29);
+        rankingLabel.add(ratingIcon);
+        
+        //평점 텍스트
+        JLabel ratingText = new JLabel(rating, SwingConstants.CENTER);
+        ratingText.setBounds(440, 45, 50, 15);
+        ratingText.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
+        ratingText.setFont(DataManagers.getInstance().getFont("bold", 12));
+        rankingLabel.add(ratingText);
+
+        // 로그인 유무에 따라 찜버튼 활성화 비활성화
+        boolean isLogin = DataManagers.getInstance().getMyUser() != null;
+
+        // 로그인 상태라면 찜버튼을 생성 및 추가
+        if (isLogin) {
+            JButton favoriteButton = new JButton(DataManagers.getInstance().getIcon("ggimIconOff", "rank_Page"));
+            favoriteButton.setBounds(450, 84, 30, 30);
+            favoriteButton.setBorderPainted(false);
+            favoriteButton.setContentAreaFilled(false);
+            favoriteButton.setFocusPainted(false);
+            favoriteButton.setMargin(new Insets(0, 0, 0, 0)); // 버튼 여백 제거
+
+            
+            favoriteButton.addActionListener(e -> {
+            // 현재 로그인한 유저 ID 가져오기
+            String userId = DataManagers.getInstance().getMyUser().getId();
+            int currentContentId = item.getId();
+            FavoriteVO myFavoriteVO = null;
+
+            // 기존 찜 리스트에서 현재 유저의 찜 데이터를 가져오기
+            for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
+                if (find.getUserId() == userId) {
+                    myFavoriteVO = find;
+                }
+            }
+
+            FavoriteDAO favoriteDAO = new FavoriteDAO();
+            favoriteDAO.setLocalFavoriteData(myFavoriteVO, currentContentId);
+
+            try {
+                favoriteDAO.addFavoriteToJson(myFavoriteVO, AppConstants.FAVORITE_FILE_NAME, userId);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+            boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
+            // 변경된 아이콘 세팅 -> 비주얼
+            favoriteButton.setIcon(
+                    DataManagers.getInstance().getIcon(isContains ? "ggimIconOn" : "ggimIconOff", "rank_Page"));
+            });
+            // 찜 버튼 UI 배치
+            rankingLabel.add(favoriteButton);
+        }
+        return rankingLabel;
+    }
+    
+    // 컨텐츠 페이지 이동
+ 	private void showContentDetails(ItemVO content) {
+ 		OpenPage openPage = new OpenPage();
+ 		openPage.openContentPage(content);// openpage의 opencontentpage호출
+ 	}
 }
