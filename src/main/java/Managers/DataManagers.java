@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 //Local Data 위주 클래스
 public class DataManagers {
@@ -201,5 +202,29 @@ public class DataManagers {
         } catch (IOException e) {
             System.err.println("❌ JSON 파일 읽기 오류: " + e.getMessage());
         }
+    }
+
+    public List<ItemVO> getSearchItemKeyword(String keyword)
+    {
+        // 검색어와 두 글자 이상 일치하는 요소 찾기
+        List<ItemVO> result = items.values().stream()
+                .filter(item -> containsTwoCharSubstring(item.getTitle(), keyword))
+                .collect(Collectors.toList());
+
+        System.out.println(result);
+
+        return result;
+    }
+
+    public static boolean containsTwoCharSubstring(String item, String query) {
+        if (query.length() < 2) return false;
+
+        for (int i = 0; i < item.length() - 1; i++) {
+            String sub = item.substring(i, i + 2);
+            if (query.contains(sub)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

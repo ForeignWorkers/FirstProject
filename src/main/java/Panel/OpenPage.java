@@ -42,8 +42,9 @@ public class OpenPage {
 	}
 
 	// 임시 검색 페이지 이동 확인
-	public void openSearchPage() {
-		JOptionPane.showMessageDialog(null, "검색 페이지로 이동");
+	public void openSearchPage() throws IOException {
+		FrameBase.getInstance().setInnerPanel(new SearchMainPanel(), "mid");
+		FrameBase.getInstance().setInnerPanel(new BottomNavBar("search"), "down");
 	}
 
 	//메인 컨텐츠 세부 페이지 이동 확인
