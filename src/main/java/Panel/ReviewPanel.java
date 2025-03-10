@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,15 +11,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
-
-import com.google.api.client.util.Data;
 
 import Component.CustomButton;
 import DAO.ReviewDAO;
@@ -43,6 +38,8 @@ public class ReviewPanel extends JPanel {
 	// 테스트용 필드 연결 완료 후 해당하는 컨텐츠명, 로그인 판별식, 유저명으로 연결.
 	private String contentName = "아는 영화"; // 영화 제목 테스트용.
 	private String reviewerName = "테스트 유저"; // 테스트용 유저 이름
+	private int contentId = 1234; // 테스트용 컨텐츠 ID
+	private String reviewerId = "5555"; // 테스트용 리뷰어 ID
 	private boolean isLoggedIn = true; // 로그인 여부 (테스트용)
 
 	public ReviewPanel() {
@@ -62,7 +59,7 @@ public class ReviewPanel extends JPanel {
 		backgroundReviewLabel.setBounds(0, -20, 510, 126);
 		inputPanel.setBorder(new LineBorder(Color.black,1,true));
 		inputPanel.setOpaque(true);
-		inputPanel.add(backgroundReviewLabel); // ##백그라운드 이슈 해결하기. ( 둥글진 않지만 일단 O ?? )
+		inputPanel.add(backgroundReviewLabel);
 
 		// 리뷰 입력 버튼과 별점 선택을 담을 패널
 		JPanel reviewButtonStarPanel = new JPanel();
@@ -72,21 +69,21 @@ public class ReviewPanel extends JPanel {
 		//리뷰 입력란
 		reviewInput = new JTextArea(20, 40);
 		reviewInput.setBackground(new Color(0xCBCBCB));
-		reviewInput.setFont(DataManagers.getInstance().getFont("", 12));
+		reviewInput.setFont(DataManagers.getInstance().getFont("regular", 12));
 		reviewInput.setBounds(0, 0, 510, 92);
 
 		// 등록 버튼
 		ImageIcon submitIcon = DataManagers.getInstance().getIcon("registerBtn", "detail_review_Page");
 		submitButton = new CustomButton(submitIcon);
 		submitButton.setFont(DataManagers.getInstance().getFont("", 10));
-		submitButton.setBounds(420, 4, 65, 28);
+		submitButton.setBounds(440, 4, 65, 28);
 		submitButton.setEnabled(false);
 		submitButton.setClickEffect(true, 0.3f);
 
 		// 등록 버튼의 등록 텍스트
 
 		JLabel submitText = new JLabel("등 록");
-		submitText.setFont(DataManagers.getInstance().getFont("", 12));
+		submitText.setFont(DataManagers.getInstance().getFont("bold", 12));
 		submitText.setLayout(null);
 		submitText.setBounds(20, 7, 49, 21);
 		submitButton.add(submitText);
@@ -159,13 +156,15 @@ public class ReviewPanel extends JPanel {
 				toggleSubmitButton();
 			}
 		}); // 등록 버튼 상호 작용 ( 작품명 / 사용자명 / 리뷰 내용 / 등록 평점 입력됨 )
-		submitButton.addMouseListener(new MouseAdapter() {
+		submitButton.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				addReview(contentName, reviewerName, reviewInput.getText(), selectedRating); //
+			public void actionPerformed(ActionEvent e) {
+				addReview(contentId, reviewerId, reviewInput.getText(), selectedRating); //
 
 				reviewInput.setText("");
 				submitButton.setEnabled(false);
+				//등록시 ratingCount + 1;
+				
 				checkReviewList(); // 리뷰 추가 후 리뷰 목록 상태 확인
 			}
 		});
@@ -175,14 +174,14 @@ public class ReviewPanel extends JPanel {
 		reviewListPanel.setBounds(43, 300, 510, 300);
 		reviewListPanel.setPreferredSize(new Dimension(510, 0)); // 크기 명시
 
-		// JScrollPane 생성 및 reviewListPanel 포함 ##스크롤 수정해야함 .. 전체 패널에 좀 붙어라 제발..
+		// JScrollPane 생성 및 reviewListPanel 부착 ##스크롤 수정해야함 .. 전체 패널에 좀 붙어라 제발..
 		JScrollPane scrollPane = new JScrollPane(reviewListPanel);
 		scrollPane.setBounds(26, 138, 540, 80); // 크기 조정
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		JLabel pleaseLogIn = new JLabel("로그인 후 리뷰를 작성할 수 있습니다.");
-		pleaseLogIn.setFont(DataManagers.getInstance().getFont("", 16));
+		pleaseLogIn.setFont(DataManagers.getInstance().getFont("bold", 16));
 
 		if (isLoggedIn) { // 로그인 여부 체크
 			add(inputPanel);
@@ -196,7 +195,7 @@ public class ReviewPanel extends JPanel {
 		add(scrollPane);
 
 		// 기존 리뷰 데이터 로드
-		loadReviews(contentName); // 영화 이름에 따라 리뷰 목록 받아오기.
+		loadReviews(contentId); // 영화 이름에 따라 리뷰 목록 받아오기.
 		checkReviewList(); // 초기 리뷰 목록 상태 확인
 	}
 
@@ -204,7 +203,7 @@ public class ReviewPanel extends JPanel {
 	private void checkReviewList() {
 		if (reviewListPanel.getComponentCount() == 0) {
 			JLabel noReviewLabel = new JLabel("기념스러운 첫 리뷰를 작성해주세요!", SwingConstants.CENTER);
-			noReviewLabel.setFont(DataManagers.getInstance().getFont("", 14));
+			noReviewLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
 			noReviewLabel.setForeground(Color.GRAY);
 			reviewListPanel.add(noReviewLabel);
 			reviewListPanel.revalidate();
@@ -233,9 +232,9 @@ public class ReviewPanel extends JPanel {
 	}
 
 	// 리뷰 추가 메서드
-	public void addReview(String contentName, String reviewerName, String content, double score) {
+	public void addReview(int contentId, String reviewerId, String content, double score) {
 
-		ReviewVO vo = new ReviewVO(contentName, reviewerName, content, score);
+		ReviewVO vo = new ReviewVO(contentId, reviewerId, content, score);
 		// ReviewDAO에 리뷰 추가
 		try {
 			reviewDAO.addReviewToJson(vo, AppConstants.REVIEW_FILE_NAME, AppConstants.FOLDER_ID);
@@ -289,14 +288,15 @@ public class ReviewPanel extends JPanel {
 		dateLabel.setLayout(null);
 		dateLabel.setForeground(new Color(0xCBCBCB));
 		dateLabel.setBounds(2, 24, 156, 16);
-		dateLabel.setFont(DataManagers.getInstance().getFont("", 10));
+		dateLabel.setFont(DataManagers.getInstance().getFont("bold", 10));
 		topPanel.add(dateLabel);
 
 		// 리뷰 내용 패널
 		JLabel contentLabel = new JLabel("<html>" + content + "</html>"); // 실제 리뷰 내용 3줄까진 날짜 표기 O 4줄에서 날짜 표기가 사라짐.
 		contentLabel.setLayout(null);
 		contentLabel.setForeground(new Color(0xA4A4A4));
-		contentLabel.setBounds(144, 40, 347, 50);
+		contentLabel.setBounds(144, 42, 347, 50);
+		contentLabel.setFont(DataManagers.getInstance().getFont("bold", 10));
 		reviewItem.add(contentLabel); // 리뷰내용 부착
 
 		// 컨텐츠이름
@@ -304,7 +304,7 @@ public class ReviewPanel extends JPanel {
 		contentNameLabel.setLayout(null);
 		contentNameLabel.setBounds(144, 87, 270, 30);
 		contentNameLabel.setForeground(new Color(0x78DBA6));
-		contentNameLabel.setFont(DataManagers.getInstance().getFont("", 10));
+		contentNameLabel.setFont(DataManagers.getInstance().getFont("bold", 10));
 		reviewItem.add(contentNameLabel);
 
 		// 별점 이미지
@@ -324,12 +324,12 @@ public class ReviewPanel extends JPanel {
 		// 좋아요 버튼
 		CustomButton iineButton = new CustomButton(
 				DataManagers.getInstance().getIcon("thumbUpOff", "detail_review_Page"));
-		iineButton.addMouseListener(new MouseAdapter() {
+		iineButton.addActionListener(new ActionListener() {
 			private int iineCount = 0;
 			private boolean liked = false;
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				if (liked) {
 					iineCount--; // 이미 좋아요가 눌렸다면 카운트 감소
 					liked = false;
@@ -343,7 +343,7 @@ public class ReviewPanel extends JPanel {
 				}
 
 				// 좋아요 버튼에 좋아요 카운트를 텍스트로 표시
-				iineButton.setFont(DataManagers.getInstance().getFont(" ", 14));
+				iineButton.setFont(DataManagers.getInstance().getFont("bold", 14));
 				iineButton.setForeground(new Color(0x78DBA6));
 				iineButton.setText("" + iineCount);
 			}
@@ -375,13 +375,13 @@ public class ReviewPanel extends JPanel {
 	}
 
 	// 리뷰 불러오기 (해당하는 영화 이름)
-	private void loadReviews(String contentName) {
+	private void loadReviews(int contentId) {
 		reviewListPanel.removeAll(); // 기존 리뷰 초기화
 
-		if(DBDataManagers.getInstance().getContentReviewsData(contentName) == null) return;
+		if(DBDataManagers.getInstance().getContentReviewsData(contentId) == null) return;
 
 		// DBDataManagers에서 해당 영화에 대한 리뷰를 불러옴
-		for (ReviewVO review : DBDataManagers.getInstance().getContentReviewsData(contentName)) {
+		for (ReviewVO review : DBDataManagers.getInstance().getContentReviewsData(contentId)) {
 			// 각 리뷰 항목을 화면에 표시
 			displayReview(review.getContentName(), review.getReviewName(), review.getReviewContent(),
 					review.getReviewScore(), review.getReviewDate());
