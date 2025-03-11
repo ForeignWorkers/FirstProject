@@ -35,7 +35,7 @@ public class MyPageReviewPanel extends JPanel {
 			
 			reviewDAO = new ReviewDAO(); // ReviewDAO 초기화
 			setLayout(null);
-			setBackground(new Color(0x404153));
+			setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 			setBounds(0, 316, AppConstants.PANEL_MID_WIDTH, 337); // 리뷰 패널 전체 위치 조정할 때는 여기로.
 
 			reviewListPanel = new JPanel();
@@ -64,7 +64,7 @@ public class MyPageReviewPanel extends JPanel {
 				noReviewLabel.setLayout(null);
 				noReviewLabel.setBounds(153, 62, 300, 100);
 				noReviewLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
-				noReviewLabel.setBackground(new Color(0xECECEC));
+				noReviewLabel.setBackground(Color.decode(AppConstants.UI_TEXT_BOX_HEX));
 				reviewListPanel.add(noReviewLabel);
 				reviewListPanel.revalidate();
 				reviewListPanel.repaint();
@@ -87,7 +87,7 @@ public class MyPageReviewPanel extends JPanel {
 			//리뷰 리스트에서 각각의 리뷰가 담길 칸 ( 이 목표임 )
 			JPanel reviewItem = new JPanel();
 			reviewItem.setLayout(null);
-			reviewItem.setBackground(new Color(0xECECEC));
+			reviewItem.setBackground(Color.decode(AppConstants.UI_TEXT_BOX_HEX));
 			reviewItem.setBounds(10, 8 + yPosition, 510, 126);
 
 			// 프로필 이미지 담기 - OK
@@ -105,7 +105,7 @@ public class MyPageReviewPanel extends JPanel {
 			// 사용자명
 			JLabel nameLabel = new JLabel(DBDataManagers.getInstance().getReviewerNameById(reviewerId));
 			nameLabel.setLayout(null);
-			nameLabel.setForeground(new Color(0x78DBA6));
+			nameLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 			nameLabel.setBounds(2, 2, 333, 26);
 			nameLabel.setFont(DataManagers.getInstance().getFont("", 14));
 			topPanel.add(nameLabel);
@@ -113,7 +113,7 @@ public class MyPageReviewPanel extends JPanel {
 			// 날짜
 			JLabel dateLabel = new JLabel(reviewDate); // 리뷰 작성 날짜 표시
 			dateLabel.setLayout(null);
-			dateLabel.setForeground(new Color(0xCBCBCB));
+			dateLabel.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 			dateLabel.setBounds(2, 24, 156, 16);
 			dateLabel.setFont(DataManagers.getInstance().getFont("", 10));
 			topPanel.add(dateLabel);
@@ -121,7 +121,7 @@ public class MyPageReviewPanel extends JPanel {
 			// 리뷰 내용 패널
 			JLabel contentLabel = new JLabel("<html>" + content + "</html>"); // 실제 리뷰 내용 3줄까진 날짜 표기 O 4줄에서 날짜 표기가 사라짐.
 			contentLabel.setLayout(null);
-			contentLabel.setForeground(new Color(0xA4A4A4));
+			contentLabel.setForeground(Color.decode(AppConstants.UI_SUB_TEXT_HEX));
 			contentLabel.setBounds(144, 40, 347, 50);
 			reviewItem.add(contentLabel); // 리뷰내용 부착
 
@@ -129,7 +129,7 @@ public class MyPageReviewPanel extends JPanel {
 			JLabel contentNameLabel = new JLabel("#" + contentName);
 			contentNameLabel.setLayout(null);
 			contentNameLabel.setBounds(144, 87, 270, 30);
-			contentNameLabel.setForeground(new Color(0x78DBA6));
+			contentNameLabel.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 			contentNameLabel.setFont(DataManagers.getInstance().getFont("", 10));
 			reviewItem.add(contentNameLabel);
 
@@ -143,7 +143,7 @@ public class MyPageReviewPanel extends JPanel {
 			JLabel scoreTextLabel = new JLabel(String.valueOf(score));
 			scoreTextLabel.setLayout(null);
 			scoreTextLabel.setBounds(63, 110, 27, 27);
-			scoreTextLabel.setForeground(new Color(0x78DBA6));
+			scoreTextLabel.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 			scoreTextLabel.setFont(DataManagers.getInstance().getFont("", 10));
 			reviewItem.add(scoreTextLabel);
 
@@ -170,7 +170,7 @@ public class MyPageReviewPanel extends JPanel {
 
 					// 좋아요 버튼에 좋아요 카운트를 텍스트로 표시
 					iineButton.setFont(DataManagers.getInstance().getFont(" ", 14));
-					iineButton.setForeground(new Color(0x78DBA6));
+					iineButton.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 					iineButton.setText("" + iineCount);
 				}
 			});
