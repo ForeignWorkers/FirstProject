@@ -19,11 +19,14 @@ import DAO.FavoriteDAO;
 import Data.AppConstants;
 import Helper.GenericFinder;
 import Helper.ImageHelper;
+import Interface.ContentDetailListener;
 import Managers.DBDataManagers;
 import Managers.DataManagers;
 import VO.FavoriteVO;
 import VO.ItemVO;
 import VO.RatingVO;
+import VO.ReviewVO;
+
 
 public class ContentsDetailImagePanel extends JPanel {
 	// 세 번째 패널 (버튼 클릭에 따라 변경)
@@ -33,9 +36,16 @@ public class ContentsDetailImagePanel extends JPanel {
 	private JPanel ReviewTabPanel; // 변경될 패널 (초록색)
 	private JPanel AccessOTTPanel; // 변경될 패널 (초록색)	
 
+	//업데이트 되어야하는 컴포넌트 맴버
+	private JLabel ratingLabel;
+	private JLabel reviewCountLabel;
+	private CustomButton reviewerCountbutton;
+	
 	// 콘텐츠 상세 이미지 패널 생성자
 	public ContentsDetailImagePanel(ItemVO content) {
 
+		this.content = content;
+		
 		// MID_PANEL의 공간 정의
 		setLayout(null);
 		setBounds(0, 0, AppConstants.PANEL_MID_WIDTH, AppConstants.PANEL_MID_HEIGHT);
@@ -68,7 +78,7 @@ public class ContentsDetailImagePanel extends JPanel {
 		}
 
 		// 평점 및 리뷰 개수
-		JLabel ratingLabel = new JLabel(rating);
+		ratingLabel = new JLabel(rating);
 		ratingLabel.setLayout(null);
 		ratingLabel.setBounds(96, 35, 75, 20);
 		ratingLabel.setFont(DataManagers.getInstance().getFont("", 15));
@@ -76,16 +86,17 @@ public class ContentsDetailImagePanel extends JPanel {
 
 		int reviewPersonNum = 0;
 		// 리뷰자 명수가 없을때 0으로 처리
-		for (RatingVO ratingVO : DBDataManagers.getInstance().getDbRatingData()) {
-			if(ratingVO.getItemId() == content.getId()){
-				reviewPersonNum = ratingVO.getRatingCount();
+		for (ReviewVO vo : DBDataManagers.getInstance().getDbReviewsData()) {
+			if(vo.getContentId() == content.getId()){
+				reviewPersonNum++;
 			}
 		}
-		JLabel reviewLabel = new JLabel(String.format("( %d )", reviewPersonNum));
-		reviewLabel.setLayout(null);
-		reviewLabel.setBounds(124, 36, 75, 18);
-		reviewLabel.setFont(DataManagers.getInstance().getFont("thin", 12));
-		reviewLabel.setForeground(Color.decode("#CBCBCB"));
+		
+		reviewCountLabel = new JLabel(String.format("(%d)", reviewPersonNum));
+		reviewCountLabel.setLayout(null);
+		reviewCountLabel.setBounds(124, 36, 75, 18);
+		reviewCountLabel.setFont(DataManagers.getInstance().getFont("thin", 12));
+		reviewCountLabel.setForeground(Color.decode("#CBCBCB"));
 		// 평점 별 아이콘
 		JLabel RatingStarIcon = new JLabel(DataManagers.getInstance().getIcon("ratingIcon", "detail_Content_Page"));
 		RatingStarIcon.setLayout(null);
@@ -186,7 +197,7 @@ public class ContentsDetailImagePanel extends JPanel {
 
 		// 만든 라벨들 firstPanel에 추가
 		firstPanel.add(ratingLabel);
-		firstPanel.add(reviewLabel);
+		firstPanel.add(reviewCountLabel);
 		firstPanel.add(RatingStarIcon);
 		firstPanel.add(titleLabel);
 		firstPanel.add(genreLabel);
@@ -201,10 +212,10 @@ public class ContentsDetailImagePanel extends JPanel {
 		contentTabString.setBounds(161, 279, 98, 36);
 		contentTabString.setFont(DataManagers.getInstance().getFont("bold", 24));
 		contentTabString.setForeground(Color.decode("#78DBA6"));
-		CustomButton reviewTabString = new CustomButton(String.format("리뷰(%d)", reviewPersonNum));
-		reviewTabString.setBounds(358, 279, 98, 36);
-		reviewTabString.setFont(DataManagers.getInstance().getFont("bold", 24));
-		reviewTabString.setForeground(Color.decode("#CBCBCB"));
+		reviewerCountbutton = new CustomButton(String.format("리뷰(%d)", reviewPersonNum));
+		reviewerCountbutton.setBounds(358, 279, 98, 36);
+		reviewerCountbutton.setFont(DataManagers.getInstance().getFont("bold", 24));
+		reviewerCountbutton.setForeground(Color.decode("#CBCBCB"));
 		// 탭버튼 하단의 바이미지 객체 생성 및 위치할당
 		CustomButton contentTabBarOn = new CustomButton(
 				DataManagers.getInstance().getIcon("barOn", "detail_Content_Page"));
@@ -237,7 +248,7 @@ public class ContentsDetailImagePanel extends JPanel {
 				try {
 					showContentPanel();
 					contentTabString.setForeground(Color.decode("#78DBA6"));
-					reviewTabString.setForeground(Color.decode("#CBCBCB"));
+					reviewerCountbutton.setForeground(Color.decode("#CBCBCB"));
 					contentTabBarOn.setVisible(true);
 					contentTabBarOff.setVisible(false);
 					reviewTabBarOn.setVisible(false);
@@ -260,7 +271,7 @@ public class ContentsDetailImagePanel extends JPanel {
 				try {
 					showReviewPanel();
 					contentTabString.setForeground(Color.decode("#CBCBCB"));
-					reviewTabString.setForeground(Color.decode("#78DBA6"));
+					reviewerCountbutton.setForeground(Color.decode("#78DBA6"));
 					contentTabBarOn.setVisible(false);
 					contentTabBarOff.setVisible(true);
 					reviewTabBarOn.setVisible(true);
@@ -279,7 +290,7 @@ public class ContentsDetailImagePanel extends JPanel {
 		firstPanel.add(ContentTabButton);
 		firstPanel.add(reviewTabButton);
 		firstPanel.add(contentTabString);
-		firstPanel.add(reviewTabString);
+		firstPanel.add(reviewerCountbutton);
 
 		// 작품상세설명 패널(디폴트로 표시되는 패널)\MID_Panel의 중단에 위치함
 		ContentDetailTabPanel = new JPanel();
@@ -300,6 +311,17 @@ public class ContentsDetailImagePanel extends JPanel {
 		ReviewPanel accessReviewPanel = new ReviewPanel();
 		ReviewTabPanel.add(accessReviewPanel);
 
+		//이벤트 추가
+		accessReviewPanel.eventListener.add(new ContentDetailListener() {
+			
+			@Override
+			public void onReviewEvent() {
+				// TODO Auto-generated method stub
+				System.out.println("리뷰 등록이 되었습니다!");
+				updateText();
+			}
+		});
+		
 		// ContentDetailTabPanel에 들어갈 [장르,개봉일,등급,러닝타임,국가,감독-출연] 라벨들 생성
 		JLabel genreLabelMenu = new JLabel("장르");
 		genreLabelMenu.setBounds(97, 15, 62, 30);
@@ -582,7 +604,8 @@ public class ContentsDetailImagePanel extends JPanel {
 		// 스크롤용 패널 생성
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(null);
-		contentPanel.setPreferredSize(new Dimension(AppConstants.PANEL_MID_WIDTH, 800)); // 높이를 크게 설정
+		contentPanel.setPreferredSize(new Dimension(AppConstants.PANEL_MID_WIDTH, 700)); // 높이를 크게 설정
+		contentPanel.setBackground(Color.decode("#404153"));
 		// 스크롤패널 재료 넣어주기
 		contentPanel.add(firstPanel);
 		contentPanel.add(ContentDetailTabPanel);
@@ -599,11 +622,33 @@ public class ContentsDetailImagePanel extends JPanel {
 		scrollPane.getVerticalScrollBar().setOpaque(false);
 		scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
 		scrollPane.getHorizontalScrollBar().setOpaque(false);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(10); // 스크롤 속도 증가
 		// 구현한 스크롤 패널 추가.
 		setLayout(null);
 		add(scrollPane);
 	}
 
+	//리뷰 등록
+	private void updateText()
+	{
+		//맴버변수에 만든 setText
+		//리뷰갯수 
+		int reviewPersonNum = 0;
+		// 리뷰자 명수가 없을때 0으로 처리
+		for (ReviewVO vo : DBDataManagers.getInstance().getDbReviewsData()) {
+			if(vo.getContentId() == content.getId()){
+				reviewPersonNum++;
+			}
+		}
+		
+		
+		reviewCountLabel.setText(String.format("( %d )", reviewPersonNum));
+		reviewerCountbutton.setText(String.format("리뷰(%d)", reviewPersonNum));
+		
+		this.repaint();
+		this.revalidate();
+	}
+	
 	// 패널 교환을 위한 메서드.
 	private void showContentPanel() {
 		ContentDetailTabPanel.setVisible(true);
