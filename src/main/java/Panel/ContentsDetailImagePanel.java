@@ -12,11 +12,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import Component.CustomButton;
 import DAO.FavoriteDAO;
@@ -27,6 +23,7 @@ import Managers.DBDataManagers;
 import Managers.DataManagers;
 import VO.FavoriteVO;
 import VO.ItemVO;
+import VO.RatingVO;
 
 public class ContentsDetailImagePanel extends JPanel {
 	// 세 번째 패널 (버튼 클릭에 따라 변경)
@@ -69,25 +66,24 @@ public class ContentsDetailImagePanel extends JPanel {
 		if (rating == null || rating.equals("0") || rating.equals("0.0")) {
 			rating = "0.0";
 		}
-//		// 리뷰자 명수가 없을때 0으로 처리
-//		String reviewPersonNum = GenericFinder.findInList(DBDataManagers.getInstance().getDbRatingData(),
-//				finditem -> finditem.getReviewedItemId() == content.getId(), // 조건: contentId가 일치하는지 확인
-//				finditem -> Double.toString(finditem.getrating뭐시기()) // 변환: double -> String??
-//		);	
-//		// 평점 정보가 없을 때 0.0으로 처리
-//		if (reviewPersonNum == null || reviewPersonNum.equals("0")) {
-//			reviewPersonNum = "0";
-//		}
 
 		// 평점 및 리뷰 개수
 		JLabel ratingLabel = new JLabel(rating);
 		ratingLabel.setLayout(null);
-		ratingLabel.setBounds(94, 32, 75, 18);
+		ratingLabel.setBounds(96, 35, 75, 20);
 		ratingLabel.setFont(DataManagers.getInstance().getFont("", 15));
 		ratingLabel.setForeground(Color.decode("#CBCBCB"));
-		JLabel reviewLabel = new JLabel("n개");
+
+		int reviewPersonNum = 0;
+		// 리뷰자 명수가 없을때 0으로 처리
+		for (RatingVO ratingVO : DBDataManagers.getInstance().getDbRatingData()) {
+			if(ratingVO.getItemId() == content.getId()){
+				reviewPersonNum = ratingVO.getRatingCount();
+			}
+		}
+		JLabel reviewLabel = new JLabel(String.format("( %d )", reviewPersonNum));
 		reviewLabel.setLayout(null);
-		reviewLabel.setBounds(151, 30, 75, 18);
+		reviewLabel.setBounds(124, 36, 75, 18);
 		reviewLabel.setFont(DataManagers.getInstance().getFont("thin", 12));
 		reviewLabel.setForeground(Color.decode("#CBCBCB"));
 		// 평점 별 아이콘
@@ -98,27 +94,28 @@ public class ContentsDetailImagePanel extends JPanel {
 		JLabel titleLabel = new JLabel(content.getTitle());
 		titleLabel.setLayout(null);
 		titleLabel.setBounds(64, 63, 343, 48);
-		titleLabel.setFont(DataManagers.getInstance().getFont("bold", 24));
+		titleLabel.setFont(DataManagers.getInstance().getFont("bold", 25));
 		titleLabel.setForeground(Color.decode("#78DBA6"));
 		// 장르
-		JLabel genreLabel = new JLabel(content.getGenres());
+		JLabel genreLabel = new JLabel(content.getGenres(), SwingConstants.LEFT);
 		genreLabel.setLayout(null);
-		genreLabel.setBounds(71, 128, 67, 15);
-		genreLabel.setFont(DataManagers.getInstance().getFont("regular", 10));
+		genreLabel.setBounds(71, 127, 75, 20);
+		genreLabel.setFont(DataManagers.getInstance().getFont("bold", 12));
 		genreLabel.setForeground(Color.decode("#404153"));
 		CustomButton genreIcon = new CustomButton(
 				DataManagers.getInstance().getIcon("categoryBtn", "detail_Content_Page"));
 		genreIcon.setLayout(null);
-		genreIcon.setBounds(64, 121, 58, 25);
+		genreIcon.setBounds(64, 121, 77, 25);
+
 		// 제작년도
 		JLabel yearLabel = new JLabel(content.getPromotionYear());
 		yearLabel.setLayout(null);
-		yearLabel.setBounds(71, 158, 42, 15);
-		yearLabel.setFont(DataManagers.getInstance().getFont("regular", 10));
+		yearLabel.setBounds(74, 164, 42, 15);
+		yearLabel.setFont(DataManagers.getInstance().getFont("bold", 11));
 		yearLabel.setForeground(Color.decode("#404153"));
 		CustomButton YearIcon = new CustomButton(DataManagers.getInstance().getIcon("dateBtn", "detail_Content_Page"));
 		YearIcon.setLayout(null);
-		YearIcon.setBounds(64, 150, 58, 25);
+		YearIcon.setBounds(64, 155, 58, 25);
 
 		// 로그인 유무에 따라 찜버튼 활성화 비활성화
 		boolean isLogin = DataManagers.getInstance().getMyUser() != null;
@@ -180,8 +177,8 @@ public class ContentsDetailImagePanel extends JPanel {
 		contentTabString.setBounds(161, 279, 98, 36);
 		contentTabString.setFont(DataManagers.getInstance().getFont("bold", 24));
 		contentTabString.setForeground(Color.decode("#78DBA6"));
-		CustomButton reviewTabString = new CustomButton("리뷰" + "(" + "99" + ")");
-		reviewTabString.setBounds(343, 279, 98, 36);
+		CustomButton reviewTabString = new CustomButton(String.format("리뷰(%d)", reviewPersonNum));
+		reviewTabString.setBounds(358, 279, 98, 36);
 		reviewTabString.setFont(DataManagers.getInstance().getFont("bold", 24));
 		reviewTabString.setForeground(Color.decode("#CBCBCB"));
 		// 탭버튼 하단의 바이미지 객체 생성 및 위치할당
@@ -287,7 +284,7 @@ public class ContentsDetailImagePanel extends JPanel {
 		JLabel genreLabelInfo = new JLabel(content.getGenres());
 		genreLabelInfo.setLayout(null);
 		genreLabelInfo.setBounds(162, 15, 131, 30);
-		genreLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 18));
+		genreLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 16));
 		genreLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		// 개봉일
 		JLabel promotionDayLabelMenu = new JLabel("개봉일");
@@ -296,8 +293,8 @@ public class ContentsDetailImagePanel extends JPanel {
 		promotionDayLabelMenu.setForeground(Color.decode("#CBCBCB"));
 		JLabel promotionDayLabelInfo = new JLabel(content.getPromotionDay());
 		promotionDayLabelInfo.setLayout(null);
-		promotionDayLabelInfo.setBounds(402, 15, 131, 30);
-		promotionDayLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 18));
+		promotionDayLabelInfo.setBounds(402, 15, 180, 30);
+		promotionDayLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 15));
 		promotionDayLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		// 등급
 		JLabel rateLabelMenu = new JLabel("등급");
@@ -306,17 +303,17 @@ public class ContentsDetailImagePanel extends JPanel {
 		rateLabelMenu.setForeground(Color.decode("#CBCBCB"));
 		JLabel rateLabelInfo = new JLabel(content.getAgeRating());
 		rateLabelInfo.setBounds(162, 45, 131, 30);
-		rateLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 18));
+		rateLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 16));
 		rateLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		// 러닝타임
 		JLabel runningTimeLabelMenu = new JLabel("러닝타임");
-		runningTimeLabelMenu.setBounds(297, 45, 62, 30);
-		runningTimeLabelMenu.setFont(DataManagers.getInstance().getFont("regular", 18));
+		runningTimeLabelMenu.setBounds(297, 45, 120, 30);
+		runningTimeLabelMenu.setFont(DataManagers.getInstance().getFont("regular", 17));
 		runningTimeLabelMenu.setForeground(Color.decode("#CBCBCB"));
 		JLabel runningTimeLabelInfo = new JLabel(content.getRunningTime());
 		runningTimeLabelInfo.setLayout(null);
 		runningTimeLabelInfo.setBounds(402, 45, 131, 30);
-		runningTimeLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 18));
+		runningTimeLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 16));
 		runningTimeLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		// 국가
 		JLabel nationLabelMenu = new JLabel("국가");
@@ -326,17 +323,17 @@ public class ContentsDetailImagePanel extends JPanel {
 		JLabel nationLabelInfo = new JLabel(content.getNation());
 		nationLabelInfo.setLayout(null);
 		nationLabelInfo.setBounds(162, 75, 131, 30);
-		nationLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 18));
+		nationLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 16));
 		nationLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		// 감독-출연
 		JLabel directorActorMenu = new JLabel("감독/출연");
-		directorActorMenu.setBounds(297, 75, 62, 30);
-		directorActorMenu.setFont(DataManagers.getInstance().getFont("regular", 18));
+		directorActorMenu.setBounds(297, 75, 120, 30);
+		directorActorMenu.setFont(DataManagers.getInstance().getFont("regular", 17));
 		directorActorMenu.setForeground(Color.decode("#CBCBCB"));
 		JLabel directorActorLabelInfo = new JLabel(content.getDirector() + "/" + content.getActor()[0]);
 		directorActorLabelInfo.setLayout(null);
 		directorActorLabelInfo.setBounds(402, 75, 161, 30);
-		directorActorLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 18));
+		directorActorLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 16));
 		directorActorLabelInfo.setForeground(Color.decode("#CBCBCB"));
 		ContentDetailTabPanel.add(genreLabelMenu);
 		ContentDetailTabPanel.add(genreLabelInfo);
