@@ -250,6 +250,8 @@ public class ReviewPanel extends JPanel {
 
 		// 화면에 리뷰 표시
 		displayReview(contentName, reviewerName, content, score, reviewDate);
+		
+		checkReviewList();
 	}
 
 	private void displayReview(String contentName, String reviewerName, String content, double score,
