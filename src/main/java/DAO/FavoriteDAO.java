@@ -18,13 +18,16 @@ public class FavoriteDAO {
         TypeToken<List<FavoriteVO>> typeToken = new TypeToken<>() {};
         List<FavoriteVO> favoriteDatas = GoogleDriveFileReader.getInstance().getListFromJson(fileName, folderId, typeToken);
         
+        // 기존에 같은 유저 아이디가 있다면 삭제 새로추가
+        favoriteDatas.removeIf(vo -> vo.getUserId().equals(favoriteData.getUserId()));
+        
         // 🆕 새 유저 추가
         favoriteDatas.add(favoriteData);
         
         // 📤 기존 데이터를 유지하면서 새로운 JSON 업로드
         String updatedJson = new GsonBuilder().setPrettyPrinting().create().toJson(favoriteDatas);
         GoogleDriveFileReader.getInstance().uploadJson(fileName, updatedJson, folderId);
-        System.out.println("✅ 찜리스트 추가 되었습니다.: " + favoriteData.getUserId());
+        System.out.println("✅ 찜리스트 동기화 완료: " + favoriteData.getUserId());
     }
     
     
