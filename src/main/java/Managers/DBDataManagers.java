@@ -33,20 +33,7 @@ public class DBDataManagers {
         }
         return dbDataManagers;
     }
-/*
-    // 더미 리뷰 데이터를 반환하는 메서드
-    public List<ReviewVO> getReviewerReviewsData(String reviewerId) {
-        List<ReviewVO> reviews = new ArrayList<>();
-        
-         더미 데이터 추가
-        if ("5555".equals(reviewerId)) { // 테스트용 reviewerId
-            reviews.add(new ReviewVO(1234, "5555", "정말 멋진 영화입니다!", 4.5)); // 첫 번째 리뷰
-            reviews.add(new ReviewVO(1235, "5555", "조금 아쉬웠던 점이 있지만 전반적으로 좋았어요.", 3.5)); // 두 번째 리뷰
-        }
-        
-        return reviews;
-    }
-    */
+
     // RatingVO 객체 가져오기 (contentId에 해당하는)
     public RatingVO getRatingData(int contentId) {
         // DB나 JSON에서 contentId에 맞는 RatingVO를 찾아서 반환

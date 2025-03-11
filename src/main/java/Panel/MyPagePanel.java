@@ -165,17 +165,9 @@ public class MyPagePanel extends JPanel {
                 add(myPageReviewPanel); // MyPageReviewPanel을 패널에 추가
                 revalidate(); // 레이아웃을 다시 갱신
                 repaint(); // 다시 그리기
-				
-				/*
-				 * for (ReviewVO reviewVO : (DBDataManagers.getInstance().getDbReviewsData())) {
-				 * if (reviewVO.getReviewName() ==
-				 * (DataManagers.getInstance().getMyUser().getNickName())) {
-				 * reviewlist.add(reviewVO.getReviewerId()); } }
-				 */
 			}
-
 		});
-
+		
 		// 찜 리스트 버튼
 		myiineHistory = new CustomButton("찜 리스트");
 		myiineHistory.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
