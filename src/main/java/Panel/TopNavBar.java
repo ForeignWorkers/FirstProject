@@ -8,6 +8,7 @@ import Managers.DataManagers;
 
 public class TopNavBar extends JPanel {
 	private OpenPage openPage = new OpenPage(); // 페이지 이동 관리 메서드
+	private JLabel welcomeLabel; // 필드로 선언 (닉네임 출력 라벨)
 
 	public TopNavBar() {
 		setLayout(null);
@@ -77,7 +78,7 @@ public class TopNavBar extends JPanel {
 		String nickname = DataManagers.getInstance().getMyUser().getNickName();
 
 		// 닉네임 라벨 생성
-		JLabel welcomeLabel = new JLabel(nickname + "님 반갑습니다.", SwingConstants.RIGHT);
+		welcomeLabel = new JLabel(nickname + "님 반갑습니다.", SwingConstants.RIGHT);
 		welcomeLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
 		welcomeLabel.setForeground(new Color(0x78DBA6)); // 텍스트 색상을 흰색으로 설정
 
@@ -103,12 +104,12 @@ public class TopNavBar extends JPanel {
 		myPageTextLabel.setBounds(495, 39, 90, 20); // 버튼 아래에 배치
 
 		myPageButton.addActionListener(e -> {
-            try {
-                openPage.openMyPage();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }); // 마이페이지 이동
+			try {
+				openPage.openMyPage();
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
+		}); // 마이페이지 이동
 
 		// UI 추가
 		add(myPageTextLabel);
@@ -144,4 +145,5 @@ public class TopNavBar extends JPanel {
 		add(loginTextLabel);
 		add(loginButton);
 	}
+
 }

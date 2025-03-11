@@ -51,6 +51,8 @@ public class RankingPagePanel extends JPanel {
         
     	//최초 실행 시 전체 필터 적용
         updateRankingContentPanel("전체");
+        rankingContentPanel.repaint();
+        rankingContentPanel.revalidate();
     }
     
     //랭킹 콘텐츠 리스트 패널 생성 메서드
