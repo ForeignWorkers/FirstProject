@@ -3,7 +3,6 @@ package Panel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.DataInput;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +42,7 @@ public class MyPagePanel extends JPanel {
 	public MyPagePanel() {
 
 		// MID_PANEL의 공간 정의
+
 		setLayout(null);
 		setBounds(0, 0, AppConstants.PANEL_MID_WIDTH, AppConstants.PANEL_MID_HEIGHT);
 		setOpaque(false);
@@ -105,6 +105,11 @@ public class MyPagePanel extends JPanel {
 						SignUPDAO signUpDAO = new SignUPDAO();
 						signUpDAO.updateUserNick(loggedInUser, true);
 						System.out.println("닉네임이 수정되었습니다: " + newNickname);
+
+						// ⭐ 닉네임 수정 후 상단 바와 마이페이지 재갱신
+						OpenPage openPage = new OpenPage();
+						openPage.openMyPage(); // 페이지 재호출로 자동 반영
+
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
@@ -211,6 +216,7 @@ public class MyPagePanel extends JPanel {
 		btnPanel.add(myiineHistory);
 		btnPanel.add(myReviewHistory);
 		add(btnPanel);
+
 	}
 
 	private void setMyWishList() {
@@ -281,29 +287,35 @@ public class MyPagePanel extends JPanel {
 	}
 
 	private JPanel createRankingContentPanel(int createCount) {
-		int rankingPagePanelWidth = 595; // RankingPagePanel의 너비
-		int rankingContentPanelWidth = 535; // rankingContentPanel의 너비
-		int rankingContentPanelHeight = 230; // rankingContentPanel의 높이
-		int x = (rankingPagePanelWidth - rankingContentPanelWidth) / 2; // 중앙 정렬 계산
+		int myPagePanelWidth = 595; // RankingPagePanel의 너비
+		int myPageContentPanelWidth = 535; // rankingContentPanel의 너비
+		int myPageContentPanelHeight = 230; // rankingContentPanel의 높이
+		int x = (myPagePanelWidth - myPageContentPanelWidth) / 2; // 중앙 정렬 계산
 
-		RoundedPanel rankingContentPanel = new RoundedPanel(50, 50); // 둥근 모서리 적용
-		rankingContentPanel.setBounds(x, 310, 535, 230); // 크기 설정
-		rankingContentPanel.setBackground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX)); // 배경색 적용
-		rankingContentPanel.setLayout(null);
+		RoundedPanel myPageContentPanel = new RoundedPanel(50, 50); // 둥근 모서리 적용
+		myPageContentPanel.setBounds(x, 310, 535, 230); // 크기 설정
+		myPageContentPanel.setBackground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX)); // 배경색 적용
+		myPageContentPanel.setLayout(null);
 
 		// 내부 스크롤 가능하도록 설정
 		myPageListPanel = new JPanel();
 		myPageListPanel.setLayout(null); // 내부 콘텐츠도 null 레이아웃
 		myPageListPanel.setOpaque(false);
 		myPageListPanel.setBackground(new Color(0, 0, 0, 0));
-		myPageListPanel.setPreferredSize(
-				new Dimension(rankingContentPanelWidth - 20, (rankingContentPanelHeight * createCount))); // 스크롤 높이 설정
+
+		// 리스트 스크롤 동적으로 개수에 맞게 높이 설정
+		int contentHeight = 136; // 한 개 콘텐츠 높이 + 간격
+		int minHeight = 230; // 최소 높이 (패널이 너무 작지 않게)
+		int totalHeight = Math.max(contentHeight * createCount, minHeight); // 최소 높이 보장
+		myPageListPanel.setPreferredSize(new Dimension(new Dimension(myPageContentPanelWidth - 20, totalHeight))); // 스크롤
+																													// 높이
+																													// 설정
 
 		// 스크롤 생성 RoundedPanel 내부에 약간의 여백 남겨서 처리
 		myPageListScroll = new JScrollPane(myPageListPanel);
 		int padding = 7; // 둥근 테두리를 가리지 않도록 패딩 추가
-		myPageListScroll.setBounds(padding, padding, rankingContentPanelWidth - (padding * 2),
-				rankingContentPanelHeight - (padding * 2));
+		myPageListScroll.setBounds(padding, padding, myPageContentPanelWidth - (padding * 2),
+				myPageContentPanelHeight - (padding * 2));
 		myPageListScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		myPageListScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		myPageListScroll.getVerticalScrollBar().setUnitIncrement(10);// 스크롤 속도 증가
@@ -320,9 +332,9 @@ public class MyPagePanel extends JPanel {
 		myPageListScroll.getVerticalScrollBar().setOpaque(false); // 스크롤바 투명화
 
 		// RoundedPanel 내부에 추가
-		rankingContentPanel.add(myPageListScroll);
+		myPageContentPanel.add(myPageListScroll);
 
-		return rankingContentPanel;
+		return myPageContentPanel;
 	}
 
 	private JLabel createRankingItemLabel(ItemVO item) {
@@ -422,7 +434,7 @@ public class MyPagePanel extends JPanel {
 			favoriteButton.setIcon(
 					DataManagers.getInstance().getIcon(isContains ? "ggimIconOn" : "ggimIconOff", "rank_Page"));
 
-			// 버튼 속성 설정 
+			// 버튼 속성 설정
 			favoriteButton.setBounds(450, 84, 30, 30);
 			favoriteButton.setBorderPainted(false);
 			favoriteButton.setContentAreaFilled(false);
@@ -458,7 +470,7 @@ public class MyPagePanel extends JPanel {
 				// 찜 리스트 즉시 갱신(이 메서드로 전체 리스트를 다시 그려줌)
 				setMyWishList();
 			});
-			
+
 			// 찜 버튼 UI 배치
 			rankingLabel.add(favoriteButton);
 		}
