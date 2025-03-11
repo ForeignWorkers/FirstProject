@@ -32,9 +32,9 @@ public class MyPagePanel extends JPanel {
 	private CustomButton myiineHistoryBar;
 	private CustomButton myiineBtn;
 
-	private JPanel rankingContentPanel; // 랭킹 콘텐츠 리스트 패널
-	private JScrollPane rankingListScroll; // 스크롤 패널
-	private JPanel RankingListPanel; // 스크롤 가능한 콘텐츠 패널
+	private JPanel myPageContentPanel; // 콘텐츠 리스트 패널
+	private JScrollPane myPageListScroll; // 스크롤 패널
+	private JPanel myPageListPanel; // 스크롤 가능한 패널
 
 	// 위에 //버튼 //밑에
 	public MyPagePanel() {
@@ -194,7 +194,7 @@ public class MyPagePanel extends JPanel {
 			}
 		});
 
-		//WishList Set
+		// WishList Set
 		setMyWishList();
 
 		btnPanel.add(myiineBtn);
@@ -206,69 +206,74 @@ public class MyPagePanel extends JPanel {
 		add(btnPanel);
 	}
 
-	private void setMyWishList(){
-		//기존 데이터 지우기
-		if(RankingListPanel != null) {
-			RankingListPanel.removeAll();
+	private void setMyWishList() {
+
+		// 기존 랭킹 콘텐츠 패널이 존재하면 제거
+		if (myPageContentPanel != null) {
+			this.remove(myPageContentPanel);
+			myPageContentPanel = null; // 반드시 null 처리
 		}
 
 		List<Integer> favoriteList = new ArrayList<Integer>();
 
 		for (FavoriteVO favoriteVO : (DBDataManagers.getInstance().getDbFavoriteData())) {
-			if (favoriteVO.getUserId() == DataManagers.getInstance().getMyUser().getId()) {
+			if (favoriteVO.getUserId().equals(DataManagers.getInstance().getMyUser().getId())) {
 				System.out.println(favoriteVO.getMyFavoriteList());
 				favoriteList = favoriteVO.getMyFavoriteList();
 			}
 		}
 
+		// 패널 재생성 및 추가 (기존 패널 제거 후)
 		InsertScrollPanel(favoriteList.size());
 
-		if(!favoriteList.isEmpty()) {
+		if (!favoriteList.isEmpty()) {
 			// 콘텐츠 라벨 추가
-			int yOffset = 10; //라벨 y 간격
+			int yOffset = 10; // 라벨 y 간격
 			for (int i = 0; i < favoriteList.size(); i++) {
 				Integer favoriteId = favoriteList.get(i);
 				ItemVO findItem = DataManagers.getInstance().FindItemFromId(favoriteId);
 				JLabel rankingItemLabel = createRankingItemLabel(findItem);
 
-				//RankingContentBG scrollableContent 기준 센터 정렬
-				int xCenter = (RankingListPanel.getPreferredSize().width - rankingItemLabel.getPreferredSize().width) / 2;
+				// RankingContentBG scrollableContent 기준 센터 정렬
+				int xCenter = (myPageListPanel.getPreferredSize().width - rankingItemLabel.getPreferredSize().width)
+						/ 2;
 
 				rankingItemLabel.setBounds(xCenter + 3, yOffset, 510, 126);
-				RankingListPanel.add(rankingItemLabel);
+				myPageListPanel.add(rankingItemLabel);
 				yOffset += 136;
 			}
-		}
-		else {
-			//위시 리스트 없을 때
+		} else {
+			// 위시 리스트 없을 때
 			System.out.println("위시 리스트가 없습니다!");
 			JLabel noWish = new JLabel("아직 찜리스트가 없습니다!", SwingConstants.CENTER);
 			noWish.setBorder(null);
 			noWish.setForeground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 			noWish.setFont(DataManagers.getInstance().getFont("bold", 24));
-			noWish.setBounds(0,0,535,200);
+			noWish.setBounds(0, 0, 535, 200);
 
-			RankingListPanel.add(noWish);
+			myPageListPanel.add(noWish);
 		}
 
-		RankingListPanel.repaint();
-		RankingListPanel.revalidate();
-
+		// 패널 새로고침
+		myPageListPanel.repaint();
+		myPageListPanel.revalidate();
+		this.revalidate();
+		this.repaint();
 		updatePanel();
 	}
 
-	private void InsertScrollPanel(int count){
-		//랭킹 콘텐츠 리스트 패널 추가
-		rankingContentPanel = createRankingContentPanel(count);
-		this.add(rankingContentPanel);
+	private void InsertScrollPanel(int count) {
+		// 랭킹 콘텐츠 리스트 패널 추가
+		myPageContentPanel = createRankingContentPanel(count);
+		this.add(myPageContentPanel);
 	}
 
-	private void updatePanel(){
+	private void updatePanel() {
 		this.revalidate();
 		this.repaint();
 	}
 
-	private JPanel createRankingContentPanel(int createCount){
+	private JPanel createRankingContentPanel(int createCount) {
 		int rankingPagePanelWidth = 595; // RankingPagePanel의 너비
 		int rankingContentPanelWidth = 535; // rankingContentPanel의 너비
 		int rankingContentPanelHeight = 230; // rankingContentPanel의 높이
@@ -280,43 +285,45 @@ public class MyPagePanel extends JPanel {
 		rankingContentPanel.setLayout(null);
 
 		// 내부 스크롤 가능하도록 설정
-		RankingListPanel = new JPanel();
-		RankingListPanel.setLayout(null); // 내부 콘텐츠도 null 레이아웃
-		RankingListPanel.setOpaque(false);
-		RankingListPanel.setBackground(new Color(0, 0, 0, 0));
-		RankingListPanel.setPreferredSize(new Dimension(rankingContentPanelWidth - 20, (rankingContentPanelHeight * createCount))); //스크롤 높이 설정
+		myPageListPanel = new JPanel();
+		myPageListPanel.setLayout(null); // 내부 콘텐츠도 null 레이아웃
+		myPageListPanel.setOpaque(false);
+		myPageListPanel.setBackground(new Color(0, 0, 0, 0));
+		myPageListPanel.setPreferredSize(
+				new Dimension(rankingContentPanelWidth - 20, (rankingContentPanelHeight * createCount))); // 스크롤 높이 설정
 
-		//스크롤 생성 RoundedPanel 내부에 약간의 여백 남겨서 처리
-		rankingListScroll = new JScrollPane(RankingListPanel);
+		// 스크롤 생성 RoundedPanel 내부에 약간의 여백 남겨서 처리
+		myPageListScroll = new JScrollPane(myPageListPanel);
 		int padding = 7; // 둥근 테두리를 가리지 않도록 패딩 추가
-		rankingListScroll.setBounds(padding, padding, rankingContentPanelWidth - (padding * 2), rankingContentPanelHeight - (padding * 2));
-		rankingListScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		rankingListScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		rankingListScroll.getVerticalScrollBar().setUnitIncrement(10);//스크롤 속도 증가
-		rankingListScroll.setOpaque(false);
+		myPageListScroll.setBounds(padding, padding, rankingContentPanelWidth - (padding * 2),
+				rankingContentPanelHeight - (padding * 2));
+		myPageListScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		myPageListScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		myPageListScroll.getVerticalScrollBar().setUnitIncrement(10);// 스크롤 속도 증가
+		myPageListScroll.setOpaque(false);
 
-		//뷰포트를 불투명하게 만들고 배경색 강제 적용
-		rankingListScroll.getViewport().setOpaque(false); // 뷰포트 불투명하게 설정
+		// 뷰포트를 불투명하게 만들고 배경색 강제 적용
+		myPageListScroll.getViewport().setOpaque(false); // 뷰포트 불투명하게 설정
 
-		//스크롤 패널 테두리 제거
-		rankingListScroll.setBorder(null);
+		// 스크롤 패널 테두리 제거
+		myPageListScroll.setBorder(null);
 
-		//스크롤바 자체를 투명하게 설정 (숨김)
-		rankingListScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0)); // 스크롤바 크기 최소화
-		rankingListScroll.getVerticalScrollBar().setOpaque(false); // 스크롤바 투명화
+		// 스크롤바 자체를 투명하게 설정 (숨김)
+		myPageListScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0)); // 스크롤바 크기 최소화
+		myPageListScroll.getVerticalScrollBar().setOpaque(false); // 스크롤바 투명화
 
-		//RoundedPanel 내부에 추가
-		rankingContentPanel.add(rankingListScroll);
+		// RoundedPanel 내부에 추가
+		rankingContentPanel.add(myPageListScroll);
 
 		return rankingContentPanel;
 	}
 
 	private JLabel createRankingItemLabel(ItemVO item) {
-		//랭킹 콘텐츠 배경
+		// 랭킹 콘텐츠 배경
 		JLabel rankingLabel = new JLabel(DataManagers.getInstance().getIcon("RankingContentBG", "rank_Page"));
 		rankingLabel.setLayout(null);
 
-		//썸네일 버튼
+		// 썸네일 버튼
 		JButton thumbnailButton = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 79, 99));
 		thumbnailButton.setBounds(50, 14, 79, 99);
 		thumbnailButton.setBorderPainted(false);
@@ -325,7 +332,7 @@ public class MyPagePanel extends JPanel {
 		thumbnailButton.addActionListener(e -> showContentDetails(item));
 		rankingLabel.add(thumbnailButton);
 
-		//장르 바
+		// 장르 바
 		JLabel categoryLabel = new JLabel(DataManagers.getInstance().getIcon("category", "rank_Page"));
 		categoryLabel.setBounds(122, 22, 80, 18);
 		rankingLabel.add(categoryLabel);
@@ -337,27 +344,27 @@ public class MyPagePanel extends JPanel {
 			genreTextlength = genreTextlength.substring(0, 7) + "..";
 		}
 
-		//장르 텍스트
+		// 장르 텍스트
 		JLabel genreText = new JLabel(genreTextlength, SwingConstants.CENTER);
 		genreText.setBounds(0, 2, 80, 18);
 		genreText.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		genreText.setFont(DataManagers.getInstance().getFont("bold", 6));
 		categoryLabel.add(genreText);
 
-		//타이틀
+		// 타이틀
 		JLabel titleLabel = new JLabel(item.getTitle(), SwingConstants.LEFT);
 		titleLabel.setBounds(140, 50, 250, 20);
 		titleLabel.setFont(DataManagers.getInstance().getFont("bold", 15));
 		rankingLabel.add(titleLabel);
 
-		//개봉일
+		// 개봉일
 		JLabel dateLabel = new JLabel(item.getPromotionDay(), SwingConstants.LEFT);
 		dateLabel.setBounds(140, 75, 300, 15);
 		dateLabel.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		dateLabel.setFont(DataManagers.getInstance().getFont("bold", 10));
 		rankingLabel.add(dateLabel);
 
-		//평점 가져오기
+		// 평점 가져오기
 		String rating = GenericFinder.findInList(DBDataManagers.getInstance().getDbRatingData(),
 				findItem -> findItem.getItemId() == item.getId(),
 				findItem -> Double.toString(findItem.getRatingPoint()));
@@ -366,57 +373,85 @@ public class MyPagePanel extends JPanel {
 			rating = "0.0";
 		}
 
-		//평점 아이콘
+		// 평점 아이콘
 		JLabel ratingIcon = new JLabel(DataManagers.getInstance().getIcon("ratingIcon", "rank_Page"));
 		ratingIcon.setBounds(450, 15, 31, 29);
 		rankingLabel.add(ratingIcon);
 
-		//평점 텍스트
+		// 평점 텍스트
 		JLabel ratingText = new JLabel(rating, SwingConstants.CENTER);
 		ratingText.setBounds(440, 45, 50, 15);
 		ratingText.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		ratingText.setFont(DataManagers.getInstance().getFont("bold", 12));
 		rankingLabel.add(ratingText);
 
+		// --------------------------- 찜 버튼 ---------------------------
 		// 로그인 유무에 따라 찜버튼 활성화 비활성화
 		boolean isLogin = DataManagers.getInstance().getMyUser() != null;
 
 		// 로그인 상태라면 찜버튼을 생성 및 추가
 		if (isLogin) {
-			JButton favoriteButton = new JButton(DataManagers.getInstance().getIcon("ggimIconOff", "rank_Page"));
+			// 우측 하단 (찜하기 버튼)
+			JButton favoriteButton = new JButton(); // 버튼 생성
+
+			// 초기 찜 여부 확인
+			String userId = DataManagers.getInstance().getMyUser().getId();
+			int currentContentId = item.getId();
+			FavoriteVO myFavoriteVO = null;
+
+			for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
+				if (find.getUserId().equals(userId)) {
+					myFavoriteVO = find;
+					break;
+				}
+			}
+
+			if (myFavoriteVO == null) {
+				myFavoriteVO = new FavoriteVO();
+				myFavoriteVO.setUserId(userId);
+			}
+
+			boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
+			favoriteButton.setIcon(
+					DataManagers.getInstance().getIcon(isContains ? "ggimIconOn" : "ggimIconOff", "rank_Page"));
+
+			// 버튼 속성 설정 
 			favoriteButton.setBounds(450, 84, 30, 30);
 			favoriteButton.setBorderPainted(false);
 			favoriteButton.setContentAreaFilled(false);
 			favoriteButton.setFocusPainted(false);
-			favoriteButton.setMargin(new Insets(0, 0, 0, 0)); // 버튼 여백 제거
+			favoriteButton.setMargin(new Insets(0, 0, 0, 0));
 
+			// 찜 토글 클릭 이벤트
+			FavoriteVO finalMyFavoriteVO = myFavoriteVO;
 			favoriteButton.addActionListener(e -> {
-				// 현재 로그인한 유저 ID 가져오기
-				String userId = DataManagers.getInstance().getMyUser().getId();
-				int currentContentId = item.getId();
-				FavoriteVO myFavoriteVO = null;
 
-				// 기존 찜 리스트에서 현재 유저의 찜 데이터를 가져오기
-				for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
-					if (find.getUserId() == userId) {
-						myFavoriteVO = find;
-					}
+				boolean isNowContains = finalMyFavoriteVO.getMyFavoriteList().contains(currentContentId);
+				if (isNowContains) {
+					finalMyFavoriteVO.getMyFavoriteList().remove(Integer.valueOf(currentContentId)); // 찜 해제
+				} else {
+					finalMyFavoriteVO.getMyFavoriteList().add(currentContentId); // 찜 추가
 				}
 
-				FavoriteDAO favoriteDAO = new FavoriteDAO();
-				favoriteDAO.setLocalFavoriteData(myFavoriteVO, currentContentId);
+				System.out.println("현재 찜 목록: " + finalMyFavoriteVO.getMyFavoriteList());
 
+				FavoriteDAO favoriteDAO = new FavoriteDAO();
+				favoriteDAO.setLocalFavoriteData(finalMyFavoriteVO, currentContentId);
 				try {
-					favoriteDAO.addFavoriteToJson(myFavoriteVO, AppConstants.FAVORITE_FILE_NAME, userId);
+					favoriteDAO.addFavoriteToJson(finalMyFavoriteVO, AppConstants.FAVORITE_FILE_NAME,
+							AppConstants.FOLDER_ID);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 
-				boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
-				// 변경된 아이콘 세팅 -> 비주얼
+				boolean nowContains = finalMyFavoriteVO.getMyFavoriteList().contains(currentContentId);
 				favoriteButton.setIcon(
-						DataManagers.getInstance().getIcon(isContains ? "ggimIconOn" : "ggimIconOff", "rank_Page"));
+						DataManagers.getInstance().getIcon(nowContains ? "ggimIconOn" : "ggimIconOff", "rank_Page"));
+
+				// 찜 리스트 즉시 갱신(이 메서드로 전체 리스트를 다시 그려줌)
+				setMyWishList();
 			});
+			
 			// 찜 버튼 UI 배치
 			rankingLabel.add(favoriteButton);
 		}
@@ -430,7 +465,9 @@ public class MyPagePanel extends JPanel {
 	}
 
 	private void ChangeButtonColor(CustomButton textButton, CustomButton bar, boolean isOn) {
-		textButton.setForeground(isOn == true ? Color.decode(AppConstants.UI_POINT_COLOR_HEX) : Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
+		textButton.setForeground(isOn == true ? Color.decode(AppConstants.UI_POINT_COLOR_HEX)
+				: Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		bar.setIcon((DataManagers.getInstance().getIcon(isOn == true ? "barOn" : "barOff", "detail_Content_Page")));
 	}
+
 }
