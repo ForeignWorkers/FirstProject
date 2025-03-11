@@ -1,8 +1,6 @@
 package Panel;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -10,19 +8,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -42,6 +36,7 @@ public class SignUPPanel extends JPanel {
 	private boolean isIdChecked = false;
 	private boolean isNicknameChecked = false;
 	private JPanel panel;
+
 	// 이메일 조건
 	private boolean isValidEmail(String email) {
 		return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
@@ -53,13 +48,12 @@ public class SignUPPanel extends JPanel {
 		setLayout(null);
 		setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 		setPreferredSize(new Dimension(700, 900));
-		
+
 		panel = new JPanel();
 		panel.setLayout(null);
 		panel.setPreferredSize(new Dimension(700, 1050));
 		panel.setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 
-		
 		// 스크롤 추가
 		JScrollPane loginsignUpScroll = new JScrollPane(panel);
 		loginsignUpScroll.setBounds(0, 0, 700, 900);
@@ -81,9 +75,7 @@ public class SignUPPanel extends JPanel {
 		loginsignUpScroll.repaint();
 
 		add(loginsignUpScroll);
-	
 
-		
 		JLabel SignUp = new JLabel("회원가입");
 		SignUp.setBounds(83, 28, 461, 85);
 		SignUp.setFont(DataManagers.getInstance().getFont("bold", 30));
@@ -175,8 +167,6 @@ public class SignUPPanel extends JPanel {
 		pwErrorLabel.setFont(DataManagers.getInstance().getFont("regular", 9));
 		pwErrorLabel.setBounds(110, 260, 260, 30); // PW 필드 옆에 배치
 		panel.add(pwErrorLabel);
-		
-		
 
 		// email입력라벨
 		JLabel emailBG = new JLabel();
@@ -233,19 +223,23 @@ public class SignUPPanel extends JPanel {
 		myNum7B7G77.setOpaque(false);
 
 		// 주민번호 한자리 텍스트필드
-		myNum7 = createMynum7Field("한자리", 290, 368, 40, 28);
+		myNum7 = createMynum7Field("한자리", 293, 368, 40, 28);
 		myNum7.setFont(DataManagers.getInstance().getFont("bold", 13));
 		myNum7.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		myNum7.setBorder(null);
 		myNum7.setVisible(true);
 		myNum7.setOpaque(false);
-		
+
+		panel.add(myNum7);
 		panel.add(myNum7B7G77);
 		panel.add(myNum7BG7);
 		panel.add(myNum7B7G7);
 		panel.add(myNum7BG);
-		panel.add(myNum7);
-		setComponentZOrder(myNum7, 0);
+
+		panel.revalidate();
+		panel.repaint();
+		this.repaint();
+		this.revalidate();
 
 		// 전번 라벨
 		JLabel phoneNumBG = new JLabel();
@@ -352,18 +346,18 @@ public class SignUPPanel extends JPanel {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				String password = new String(pw.getPassword());
-				
+
 				if (pwErrorLabel.getText().isEmpty()) {
-		            pwErrorLabel.setForeground(Color.WHITE);  // 초기에는 하얀색
-		        }
-		        
-		        if (!isValidPassword(password)) {
-		            pwErrorLabel.setText("비밀번호는 8자이상의 영문, 숫자, 특수문자를 포함해야 합니다.");
-		            pwErrorLabel.setForeground(Color.RED); // 조건 불일치 시 빨간색
-		        } else {
-		            pwErrorLabel.setText(""); // 조건 만족하면 메시지 숨김
-		        }
-		    }
+					pwErrorLabel.setForeground(Color.WHITE); // 초기에는 하얀색
+				}
+
+				if (!isValidPassword(password)) {
+					pwErrorLabel.setText("비밀번호는 8자이상의 영문, 숫자, 특수문자를 포함해야 합니다.");
+					pwErrorLabel.setForeground(Color.RED); // 조건 불일치 시 빨간색
+				} else {
+					pwErrorLabel.setText(""); // 조건 만족하면 메시지 숨김
+				}
+			}
 		});
 
 		// 닉네임 커스텀 버튼
@@ -379,14 +373,6 @@ public class SignUPPanel extends JPanel {
 
 		finaljoinButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				// 로그인 페이지로 넘기기
-				LoginPanel loginpanel = new LoginPanel();
-		try {
-		    FrameBase frameBase = FrameBase.getInstance();
-		    frameBase.setInnerPanel(loginpanel, "mid");
-		} catch (Exception t) {
-		    System.out.println("로그인 페이지 로드 실패 :" + t.getMessage());
-		}
 
 				String password = new String(pw.getPassword());
 
@@ -446,7 +432,6 @@ public class SignUPPanel extends JPanel {
 
 				JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
 
-				
 				// 입력 필드 초기화
 				id.setText("ID");
 
@@ -465,6 +450,15 @@ public class SignUPPanel extends JPanel {
 
 				isIdChecked = false;
 				isNicknameChecked = false;
+
+				// 로그인 페이지로 넘기기
+				LoginPanel loginpanel = new LoginPanel();
+				try {
+					FrameBase frameBase = FrameBase.getInstance();
+					frameBase.setInnerPanel(loginpanel, "mid");
+				} catch (Exception t) {
+					System.out.println("로그인 페이지 로드 실패 :" + t.getMessage());
+				}
 			}
 
 		});
