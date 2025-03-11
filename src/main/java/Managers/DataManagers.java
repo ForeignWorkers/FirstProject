@@ -28,6 +28,9 @@ public class DataManagers {
     private Map<String,ImageIcon> icons = new HashMap<>();
     //로드된 영화 데이터
     private Map<Integer, ItemVO> items = new HashMap<>();
+    //로드된 썸네일 데이터
+    private Map<Integer, ImageIcon> tempThumbnail = new HashMap<>();
+
     private UserVO myUser;
 
     //싱글턴 생성 로직
@@ -50,7 +53,11 @@ public class DataManagers {
 
         isInitialized = true;
     }
-    
+
+    public Map<Integer, ImageIcon> getTempThumbnail() {
+        return tempThumbnail;
+    }
+
     public UserVO getMyUser() {
 		return myUser;
 	}
