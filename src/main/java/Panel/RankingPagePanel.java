@@ -290,50 +290,72 @@ public class RankingPagePanel extends JPanel {
         ratingText.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
         ratingText.setFont(DataManagers.getInstance().getFont("bold", 12));
         rankingLabel.add(ratingText);
-
+        
+        // --------------------------- ranking 찜 버튼 ---------------------------
         // 로그인 유무에 따라 찜버튼 활성화 비활성화
         boolean isLogin = DataManagers.getInstance().getMyUser() != null;
-
-        // 로그인 상태라면 찜버튼을 생성 및 추가
+        
         if (isLogin) {
-            JButton favoriteButton = new JButton(DataManagers.getInstance().getIcon("ggimIconOff", "rank_Page"));
-            favoriteButton.setBounds(450, 84, 30, 30);
-            favoriteButton.setBorderPainted(false);
-            favoriteButton.setContentAreaFilled(false);
-            favoriteButton.setFocusPainted(false);
-            favoriteButton.setMargin(new Insets(0, 0, 0, 0)); // 버튼 여백 제거
+			// 우측 하단 (찜하기 버튼)
+			JButton favoriteButton = new JButton(); // 버튼 생성
 
-            
-            favoriteButton.addActionListener(e -> {
-            // 현재 로그인한 유저 ID 가져오기
-            String userId = DataManagers.getInstance().getMyUser().getId();
-            int currentContentId = item.getId();
-            FavoriteVO myFavoriteVO = null;
+	        // 초기 찜 여부 확인
+	        String userId = DataManagers.getInstance().getMyUser().getId();
+	        int currentContentId = item.getId();
+	        FavoriteVO myFavoriteVO = null;
 
-            // 기존 찜 리스트에서 현재 유저의 찜 데이터를 가져오기
-            for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
-                if (find.getUserId() == userId) {
-                    myFavoriteVO = find;
-                }
-            }
+	        for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
+	            if (find.getUserId().equals(userId)) {
+	                myFavoriteVO = find;
+	                break;
+	            }
+	        }
 
-            FavoriteDAO favoriteDAO = new FavoriteDAO();
-            favoriteDAO.setLocalFavoriteData(myFavoriteVO, currentContentId);
+	        if (myFavoriteVO == null) {
+	            myFavoriteVO = new FavoriteVO();
+	            myFavoriteVO.setUserId(userId);
+	        }
 
-            try {
-                favoriteDAO.addFavoriteToJson(myFavoriteVO, AppConstants.FAVORITE_FILE_NAME, userId);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+	        boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
+	        favoriteButton.setIcon(DataManagers.getInstance().getIcon(
+	                isContains ? "ggimIconOn" : "ggimIconOff", "rank_Page"));
 
-            boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
-            // 변경된 아이콘 세팅 -> 비주얼
-            favoriteButton.setIcon(
-                    DataManagers.getInstance().getIcon(isContains ? "ggimIconOn" : "ggimIconOff", "rank_Page"));
-            });
+	        // 버튼 속성 설정
+	        favoriteButton.setBounds(450, 84, 30, 30);
+	        favoriteButton.setBorderPainted(false);
+	        favoriteButton.setContentAreaFilled(false);
+	        favoriteButton.setFocusPainted(false);
+	        favoriteButton.setMargin(new Insets(0, 0, 0, 0));
+
+	        // 토글 클릭 이벤트
+	        FavoriteVO finalMyFavoriteVO = myFavoriteVO;
+	        favoriteButton.addActionListener(e -> {
+	        	
+	            boolean isNowContains = finalMyFavoriteVO.getMyFavoriteList().contains(currentContentId);
+	            if (isNowContains) {
+	                finalMyFavoriteVO.getMyFavoriteList().remove(Integer.valueOf(currentContentId));
+	            } else {
+	                finalMyFavoriteVO.getMyFavoriteList().add(currentContentId);
+	            }
+
+	            System.out.println("현재 찜 목록: " + finalMyFavoriteVO.getMyFavoriteList());
+
+	            FavoriteDAO favoriteDAO = new FavoriteDAO();
+	            favoriteDAO.setLocalFavoriteData(finalMyFavoriteVO, currentContentId);
+	            try {
+	                favoriteDAO.addFavoriteToJson(finalMyFavoriteVO, AppConstants.FAVORITE_FILE_NAME, AppConstants.FOLDER_ID);
+	            } catch (IOException e1) {
+	                e1.printStackTrace();
+	            }
+	            
+	            boolean nowContains = finalMyFavoriteVO.getMyFavoriteList().contains(currentContentId);
+	            favoriteButton.setIcon(DataManagers.getInstance().getIcon(
+	                    nowContains ? "ggimIconOn" : "ggimIconOff", "rank_Page"));
+	        });    
             // 찜 버튼 UI 배치
             rankingLabel.add(favoriteButton);
         }
+
         return rankingLabel;
     }
     
