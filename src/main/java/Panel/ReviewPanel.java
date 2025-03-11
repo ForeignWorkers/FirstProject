@@ -36,20 +36,22 @@ public class ReviewPanel extends JPanel {
 	private String reviewDate;
 	private CustomButton submitButton;
 	private JScrollPane scrollPane;
+	private boolean isLoggedIn = (DataManagers.getInstance().getMyUser() != null); // 로그인 여부
 
 	// 테스트용 필드 연결 완료 후 해당하는 컨텐츠명, 로그인 판별식, 유저명으로 연결.
-	private String contentName = "아는 영화"; // 영화 제목 테스트용.
-	private String reviewerName = "테스트 유저"; // 테스트용 유저 이름
-	private int contentId = 12343; // 테스트용 컨텐츠 ID
+	private String contentName = "SCV의 모험"; // 영화 제목 테스트용.
+	private String reviewerName = "테란 유저"; // 테스트용 유저 이름
+	private int contentId = 1123; // 테스트용 컨텐츠 ID
 	private String reviewerId = "5555"; // 테스트용 리뷰어 ID
-	private boolean isLoggedIn = true; // 로그인 여부 (테스트용)
-
+	
+	
+	
 	public ReviewPanel() {
 
 		reviewDAO = new ReviewDAO(); // ReviewDAO 초기화
 		setLayout(null);
 		setBackground(new Color(0x404153));
-		setBounds(0, 316, AppConstants.PANEL_MID_WIDTH, 337); // 리뷰 패널 전체 위치 조정할 때는 여기로.
+		setBounds(0, 0, AppConstants.PANEL_MID_WIDTH, 337); // 리뷰 패널 전체 위치 조정할 때는 여기로.
 
 		// 상단 리뷰 입력 영역 (로그인한 경우만 표시)
 		JPanel inputPanel = new JPanel();

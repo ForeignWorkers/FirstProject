@@ -55,7 +55,7 @@ public class SignUPPanel extends JPanel {
 		JLabel SignUp = new JLabel("회원가입");
 		SignUp.setBounds(83, 28, 461, 85);
 		SignUp.setFont(DataManagers.getInstance().getFont("bold", 30));
-		SignUp.setForeground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
+		SignUp.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		add(SignUp);
 
 		// id입력라벨
@@ -143,6 +143,8 @@ public class SignUPPanel extends JPanel {
 		pwErrorLabel.setFont(DataManagers.getInstance().getFont("regular", 9));
 		pwErrorLabel.setBounds(110, 260, 260, 30); // PW 필드 옆에 배치
 		add(pwErrorLabel);
+		
+		
 
 		// email입력라벨
 		JLabel emailBG = new JLabel();
@@ -318,12 +320,18 @@ public class SignUPPanel extends JPanel {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				String password = new String(pw.getPassword());
-				if (!isValidPassword(password)) {
-					pwErrorLabel.setText("비밀번호는 8자이상의 영문, 숫자, 특수문자를 포함해야 합니다.");
-				} else {
-					pwErrorLabel.setText(""); // 조건 만족하면 메시지 숨김
-				}
-			}
+				
+				if (pwErrorLabel.getText().isEmpty()) {
+		            pwErrorLabel.setForeground(Color.WHITE);  // 초기에는 하얀색
+		        }
+		        
+		        if (!isValidPassword(password)) {
+		            pwErrorLabel.setText("비밀번호는 8자이상의 영문, 숫자, 특수문자를 포함해야 합니다.");
+		            pwErrorLabel.setForeground(Color.RED); // 조건 불일치 시 빨간색
+		        } else {
+		            pwErrorLabel.setText(""); // 조건 만족하면 메시지 숨김
+		        }
+		    }
 		});
 
 		// 닉네임 커스텀 버튼
@@ -402,15 +410,30 @@ public class SignUPPanel extends JPanel {
 				LoginPanel loginpanel = new LoginPanel();
 				// 스크롤 추가
 				JScrollPane loginsignUpScroll = new JScrollPane(loginpanel);
-				loginsignUpScroll.setBounds(0, 0, 600, 800);
+				loginsignUpScroll.setBounds(3, 3, 600, 800);
 				loginsignUpScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 				loginsignUpScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
+				// 세로 스크롤 속도 증가 (더 빠르게)
+				loginsignUpScroll.getVerticalScrollBar().setUnitIncrement(30);
+
+				// 가로 스크롤 완전 비활성화
+				loginsignUpScroll.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
+				loginsignUpScroll.getHorizontalScrollBar().setOpaque(false);
+
+				// 🔥 스크롤을 정상적으로 작동하게 만들기 위한 추가 코드
+				loginpanel.setPreferredSize(new Dimension(600, 2000)); // 패널 크기를 충분히 크게 설정
+				loginpanel.revalidate();  // UI 갱신
+				loginpanel.repaint();     // UI 갱신
+
+				// 🔥 add 위치 조정 (먼저 추가한 후 프레임 설정)
+				add(loginsignUpScroll);
+
 				try {
-					FrameBase frameBase = FrameBase.getInstance();
-					frameBase.setInnerPanel(loginsignUpScroll, "mid");
+				    FrameBase frameBase = FrameBase.getInstance();
+				    frameBase.setInnerPanel(loginpanel, "mid");
 				} catch (Exception t) {
-					System.out.println("로그인 페이지 로드 실패 :" + t.getMessage());
+				    System.out.println("로그인 페이지 로드 실패 :" + t.getMessage());
 				}
 
 				// 입력 필드 초기화
