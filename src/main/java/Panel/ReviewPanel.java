@@ -19,6 +19,9 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
+import Interface.ContentDetailListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import Component.CustomButton;
 import DAO.ReviewDAO;
@@ -44,7 +47,7 @@ public class ReviewPanel extends JPanel {
 	private int contentId = 1123; // 테스트용 컨텐츠 ID
 	private String reviewerId = "5555"; // 테스트용 리뷰어 ID
 	
-	
+	public List<ContentDetailListener> eventListener = new ArrayList<>();
 	
 	public ReviewPanel() {
 
@@ -118,6 +121,7 @@ public class ReviewPanel extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					selectedRating = rating;
 					updateStarButtons();
+					
 				}
 			});
 			add(starButtons[i]); // 패널에 추가
@@ -168,8 +172,11 @@ public class ReviewPanel extends JPanel {
 				reviewInput.setText("");
 				submitButton.setEnabled(false);
 				
-				
 				checkReviewList(); // 리뷰 추가 후 리뷰 목록 상태 확인
+				
+				for(ContentDetailListener vo : eventListener) {
+					vo.onReviewEvent();
+				}
 			}
 		});
 
