@@ -158,7 +158,7 @@ public class DBDataManagers {
         }
 
         //리뷰 데이터 셋업
-        TypeToken<List<ReviewVO>>  reviewListToken = new TypeToken<>() {};
+        TypeToken<List<ReviewVO>> reviewListToken = new TypeToken<>() {};
         List<ReviewVO> reviewDatas = GoogleDriveFileReader.getInstance().getListFromJson(AppConstants.REVIEW_FILE_NAME, AppConstants.FOLDER_ID, reviewListToken);
         if(reviewDatas != null)
         {
@@ -180,7 +180,7 @@ public class DBDataManagers {
         List<FavoriteVO> favoriteDatas = GoogleDriveFileReader.getInstance().getListFromJson(AppConstants.FAVORITE_FILE_NAME, AppConstants.FOLDER_ID, favoriteListToken);
         if(favoriteDatas != null)
         {
-        	System.out.println("평점 데이터를 셋업했습니다.");
+        	System.out.println("찜 데이터를 셋업했습니다.");
         	dbFavoriteData.addAll(favoriteDatas);
         }
         
