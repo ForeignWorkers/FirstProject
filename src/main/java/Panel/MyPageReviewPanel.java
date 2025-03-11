@@ -2,10 +2,9 @@ package Panel;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -25,13 +24,11 @@ public class MyPageReviewPanel extends JPanel {
 		private ReviewDAO reviewDAO; // ReviewDAO 추가
 		private String reviewDate;
 		private JScrollPane scrollPane;
-
 		// 테스트용 필드 연결 완료 후 해당하는 컨텐츠명, 로그인 판별식, 유저명으로 연결.
 		private String contentName = "아는 영화"; // 영화 제목 테스트용.
 		private String reviewName = "테스트 유저"; // 테스트용 유저 이름
 		private int contentId = 1234; // 테스트용 컨텐츠 ID
 		private String reviewerId = "5555"; // 테스트용 리뷰어 ID
-		private boolean isLoggedIn = false; // 로그인 여부 (테스트용)
 
 		public MyPageReviewPanel() {
 			
@@ -197,10 +194,15 @@ public class MyPageReviewPanel extends JPanel {
 		private void loadReviews(String reviewerId) {
 			reviewListPanel.removeAll(); // 기존 리뷰 초기화
 
-			for (ReviewVO review : DBDataManagers.getInstance().getReviewerReviewsData(reviewerId)) {
-				displayReview(review.getContentName(), review.getReviewName(), review.getReviewContent(),
-						review.getReviewScore(), review.getReviewDate());
+			if(DBDataManagers.getInstance().getReviewerReviewsData(reviewerId) != null) {
+				for (ReviewVO review : DBDataManagers.getInstance().getReviewerReviewsData(reviewerId)) {
+					System.out.println("review : " + review.getContentName());
+					
+					displayReview(review.getContentName(), review.getReviewName(), review.getReviewContent(),
+							review.getReviewScore(), review.getReviewDate());
+				}
 			}
+			
 			
 			
 			reviewListPanel.revalidate();
