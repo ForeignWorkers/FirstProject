@@ -201,15 +201,24 @@ public class MainPagePanel extends JPanel {
 				FavoriteVO myFavoriteVO = null;
 
 				for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
-					if (find.getUserId() == userId) {
+					if (find.getUserId().equals(userId)) {
 						myFavoriteVO = find;
 					}
+				}
+
+				if(myFavoriteVO == null) {
+					myFavoriteVO = new FavoriteVO();
+					myFavoriteVO.setUserId(userId);
+					myFavoriteVO.getMyFavoriteList().add(content.getId());
+				}
+				else {
+					myFavoriteVO.getMyFavoriteList().add(content.getId());
 				}
 
 				FavoriteDAO favoriteDAO = new FavoriteDAO();
 				favoriteDAO.setLocalFavoriteData(myFavoriteVO, currentContentId);
 				try {
-					favoriteDAO.addFavoriteToJson(myFavoriteVO, AppConstants.FAVORITE_FILE_NAME, userId);
+					favoriteDAO.addFavoriteToJson(myFavoriteVO, AppConstants.FAVORITE_FILE_NAME, AppConstants.FOLDER_ID);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -486,5 +495,4 @@ public class MainPagePanel extends JPanel {
 		OpenPage openPage = new OpenPage();
 		openPage.openContentPage(content);// openpage의 opencontentpage호출
 	}
-
 }

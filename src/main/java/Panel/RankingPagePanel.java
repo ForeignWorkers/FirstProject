@@ -114,16 +114,16 @@ public class RankingPagePanel extends JPanel {
         int yPosition = 4; // y 좌표
 
         for (int i = 0; i < ottNames.length; i++) {
-            final int index = i;
-            //ott 필터링 버튼 세팅
-            ImageIcon ottButtonOff = DataManagers.getInstance().getIcon(bgOffNames[i], iconAndButtonPath);
-            ImageIcon ottButtonOn = DataManagers.getInstance().getIcon(bgOnNames[i], iconAndButtonPath);
-            int buttonWidth = ottButtonOff.getIconWidth(); // 버튼 너비를 이미지 크기에 맞춤
-            //ott 아이콘 세팅
-            ImageIcon ottIcon = DataManagers.getInstance().getIcon(ottIconNames[i], iconAndButtonPath);
-            
-            JButton ottButton = new JButton(i == 0 ? ottButtonOn : ottButtonOff);
-            ottButton.setBounds(startX, yPosition, buttonWidth, buttonHeight); // x 값 유지
+                final int index = i;
+                //ott 필터링 버튼 세팅
+                ImageIcon ottButtonOff = DataManagers.getInstance().getIcon(bgOffNames[i], iconAndButtonPath);
+                ImageIcon ottButtonOn = DataManagers.getInstance().getIcon(bgOnNames[i], iconAndButtonPath);
+                int buttonWidth = ottButtonOff.getIconWidth(); // 버튼 너비를 이미지 크기에 맞춤
+                //ott 아이콘 세팅
+                ImageIcon ottIcon = DataManagers.getInstance().getIcon(ottIconNames[i], iconAndButtonPath);
+
+                JButton ottButton = new JButton(i == 0 ? ottButtonOn : ottButtonOff);
+                ottButton.setBounds(startX, yPosition, buttonWidth, buttonHeight); // x 값 유지
             ottButton.setBorderPainted(false);
             ottButton.setContentAreaFilled(false);
             ottButton.setFocusPainted(false);

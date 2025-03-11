@@ -3,6 +3,7 @@ package DAO;
 import java.io.IOException;
 import java.util.List;
 
+import Managers.DataManagers;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -28,14 +29,24 @@ public class FavoriteDAO {
     
     
     public void setLocalFavoriteData(FavoriteVO myFavoriteVO, int currentContentId) {
-		if(myFavoriteVO.getMyFavoriteList().contains(currentContentId))
+		if(DBDataManagers.getInstance().getDbFavoriteData().contains(myFavoriteVO))
     	{
-    		//이거 이미 추가된 얘야 빼줘
-    		myFavoriteVO.getMyFavoriteList().remove(currentContentId);
+            FavoriteVO tempVO = new FavoriteVO();
+            for(FavoriteVO vo : DBDataManagers.getInstance().getDbFavoriteData())
+            {
+                if(vo == myFavoriteVO){
+                    tempVO = vo;
+                }
+            }
+
+            if(tempVO != null){
+                DBDataManagers.getInstance().getDbFavoriteData().remove(tempVO);
+                DBDataManagers.getInstance().getDbFavoriteData().add(myFavoriteVO);
+            }
     	}
     	else {
     		//추가 되어야함
-    		myFavoriteVO.getMyFavoriteList().add(currentContentId);
+            DBDataManagers.getInstance().getDbFavoriteData().add(myFavoriteVO);
     	}
     }
 	
