@@ -341,7 +341,7 @@ public class SignUPPanel extends JPanel {
 			}
 		});
 
-		// 비밀번호 입력 시 조건 검사 이벤트 추가
+		// 비밀번호 입력 시 조건검사 이벤트 추가
 		pw.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
