@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -156,9 +158,9 @@ public class ReviewPanel extends JPanel {
 				toggleSubmitButton();
 			}
 		}); // 등록 버튼 상호 작용 ( 작품명 / 사용자명 / 리뷰 내용 / 등록 평점 입력됨 )
-		submitButton.addActionListener(new ActionListener() {
+		submitButton.addMouseListener(new MouseAdapter() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void mouseClicked(MouseEvent e) {
 				addReview(contentId, reviewerId, reviewInput.getText(), selectedRating); //
 
 				reviewInput.setText("");
@@ -330,12 +332,12 @@ public class ReviewPanel extends JPanel {
 		// 좋아요 버튼
 		CustomButton iineButton = new CustomButton(
 				DataManagers.getInstance().getIcon("thumbUpOff", "detail_review_Page"));
-		iineButton.addActionListener(new ActionListener() {
+		iineButton.addMouseListener(new MouseAdapter() {
 			private int iineCount = 0;
 			private boolean liked = false;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void mouseClicked(MouseEvent e) {
 				if (liked) {
 					iineCount--; // 이미 좋아요가 눌렸다면 카운트 감소
 					liked = false;

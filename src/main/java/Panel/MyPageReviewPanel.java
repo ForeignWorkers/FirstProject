@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -150,12 +152,12 @@ public class MyPageReviewPanel extends JPanel {
 			// 좋아요 버튼
 			CustomButton iineButton = new CustomButton(
 					DataManagers.getInstance().getIcon("thumbUpOff", "detail_review_Page"));
-			iineButton.addActionListener(new ActionListener() {
+			iineButton.addMouseListener(new MouseAdapter() {
 				private int iineCount = 0;
 				private boolean liked = false;
 
 				@Override
-				public void actionPerformed(ActionEvent e) {
+				public void mouseClicked (MouseEvent e) {
 					if (liked) {
 						iineCount--; // 이미 좋아요가 눌렸다면 카운트 감소
 						liked = false;
@@ -164,8 +166,7 @@ public class MyPageReviewPanel extends JPanel {
 					} else {
 						iineCount++; // 좋아요를 누르면 카운트 증가
 						liked = true;
-						iineButton.setIcon(DataManagers.getInstance().getIcon("thumbUpOn", "detail_review_Page")); 
-																																																		
+						iineButton.setIcon(DataManagers.getInstance().getIcon("thumbUpOn", "detail_review_Page"));
 					}
 
 					// 좋아요 버튼에 좋아요 카운트를 텍스트로 표시

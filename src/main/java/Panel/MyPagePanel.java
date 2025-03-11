@@ -157,7 +157,7 @@ public class MyPagePanel extends JPanel {
 
 				for (ReviewVO reviewVO : (DBDataManagers.getInstance().getDbReviewsData())) {
 					if (reviewVO.getReviewName() == (DataManagers.getInstance().getMyUser().getNickName())) {
-						reviewlist.add(reviewVO.getReviewid());
+						reviewlist.add(reviewVO.getContentId());
 					}
 				}
 
