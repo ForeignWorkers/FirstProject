@@ -12,7 +12,12 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 
 import Component.CustomButton;
 import DAO.FavoriteDAO;
@@ -31,8 +36,8 @@ public class ContentsDetailImagePanel extends JPanel {
 	private List<Map<String, String>> category;
 	private JPanel ContentDetailTabPanel; // 기본 패널 (검은색)
 	private JPanel ReviewTabPanel; // 변경될 패널 (초록색)
-	private JPanel AccessOTTPanel; // 변경될 패널 (초록색)	
-
+	private JPanel AccessOTTPanel; // 변경될 패널 (초록색)
+	
 	// 콘텐츠 상세 이미지 패널 생성자
 	public ContentsDetailImagePanel(ItemVO content) {
 
@@ -77,7 +82,7 @@ public class ContentsDetailImagePanel extends JPanel {
 		int reviewPersonNum = 0;
 		// 리뷰자 명수가 없을때 0으로 처리
 		for (RatingVO ratingVO : DBDataManagers.getInstance().getDbRatingData()) {
-			if(ratingVO.getItemId() == content.getId()){
+			if (ratingVO.getItemId() == content.getId()) {
 				reviewPersonNum = ratingVO.getRatingCount();
 			}
 		}
@@ -132,30 +137,52 @@ public class ContentsDetailImagePanel extends JPanel {
 			favoriteButton.setFocusPainted(false);
 			favoriteButton.setMargin(new Insets(0, 0, 0, 0)); // 버튼 여백 제거
 
-			favoriteButton.addActionListener(e -> {
-				String userId = DataManagers.getInstance().getMyUser().getId();
-				int currentContentId = content.getId();
-				FavoriteVO myFavoriteVO = null;
+			String userId = DataManagers.getInstance().getMyUser().getId();
+			int currentContentId = content.getId();
+			FavoriteVO myFavoriteVO = null;
 
-				for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
-					if (find.getUserId() == userId) {
-						myFavoriteVO = find;
-					}
+			for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
+				if (find.getUserId() == userId) {
+					myFavoriteVO = find;
+					break;
+				}
+			}
+
+			if (myFavoriteVO == null) {
+				myFavoriteVO = new FavoriteVO();
+				myFavoriteVO.setUserId(userId);
+			}
+			boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
+			// 변경된 아이콘 세팅 -> 비주얼
+			favoriteButton
+					.setIcon(DataManagers.getInstance().getIcon(isContains ? "ggimBtnOn" : "ggimBtnOff", "main_Page"));
+
+			FavoriteVO finalMyFavoriteVO = myFavoriteVO;
+			favoriteButton.addActionListener(e -> {
+
+				boolean isNowContains = finalMyFavoriteVO.getMyFavoriteList().contains(currentContentId);
+				if (isNowContains) {
+					finalMyFavoriteVO.getMyFavoriteList().remove(Integer.valueOf(currentContentId));
+				} else {
+					finalMyFavoriteVO.getMyFavoriteList().add(currentContentId);
 				}
 
+				System.out.println("현재 찜 목록: " + finalMyFavoriteVO.getMyFavoriteList());
+
 				FavoriteDAO favoriteDAO = new FavoriteDAO();
-				favoriteDAO.setLocalFavoriteData(myFavoriteVO, currentContentId);
+				favoriteDAO.setLocalFavoriteData(finalMyFavoriteVO, currentContentId);
 				try {
-					favoriteDAO.addFavoriteToJson(myFavoriteVO, AppConstants.FAVORITE_FILE_NAME, userId);
+					favoriteDAO.addFavoriteToJson(finalMyFavoriteVO, AppConstants.FAVORITE_FILE_NAME,
+							AppConstants.FOLDER_ID);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 
-				boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
-				// 변경된 아이콘 세팅 -> 비주얼
-				favoriteButton.setIcon(
-						DataManagers.getInstance().getIcon(isContains ? "ggimBtnOn" : "ggimBtnOff", "main_Page"));
+				boolean nowContains = finalMyFavoriteVO.getMyFavoriteList().contains(currentContentId);
+				favoriteButton.setIcon(DataManagers.getInstance()
+						.getIcon(nowContains ? "bigWishBtnOn" : "bigWishBtnOff", "main_Page"));
 			});
+
 			// 찜버튼 UI 배치
 			firstPanel.add(favoriteButton);
 		}
