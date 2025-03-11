@@ -50,7 +50,7 @@ public class ContentsDetailImagePanel extends JPanel {
 		firstPanel.setBorder(null);
 
 		// 이미지 라벨
-		ImageIcon thumbnailIcon = ImageHelper.getResizedImageIconFromUrl(content.getThumbnail(), 222, 271);
+		ImageIcon thumbnailIcon = ImageHelper.getResizedImageIconFromUrl(content.getThumbnail(), 222, 271,content.getId());
 		Image scaledthumbnailImage = thumbnailIcon.getImage().getScaledInstance(129, 161, Image.SCALE_SMOOTH);
 		ImageIcon resizedthumbnailIcon = new ImageIcon(scaledthumbnailImage);
 

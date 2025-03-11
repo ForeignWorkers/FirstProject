@@ -343,7 +343,7 @@ public class MyPagePanel extends JPanel {
 		rankingLabel.setLayout(null);
 
 		// 썸네일 버튼
-		JButton thumbnailButton = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 79, 99));
+		JButton thumbnailButton = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 79, 99, item.getId()));
 		thumbnailButton.setBounds(50, 14, 79, 99);
 		thumbnailButton.setBorderPainted(false);
 		thumbnailButton.setContentAreaFilled(false);

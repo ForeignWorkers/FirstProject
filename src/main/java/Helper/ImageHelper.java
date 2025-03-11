@@ -1,5 +1,7 @@
 package Helper;
 
+import Managers.DataManagers;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -67,12 +69,19 @@ public class ImageHelper {
     /**
      * 주어진 URL 문자열을 사용하여 지정한 크기의 ImageIcon을 반환하는 메서드
      */
-    public static ImageIcon getResizedImageIconFromUrl(String urlString, int width, int height) {
+    public static ImageIcon getResizedImageIconFromUrl(String urlString, int width, int height, int itemID) {
+        //아이템 아이디 체크
+        if(DataManagers.getInstance().getTempThumbnail().containsKey(itemID)){
+            return DataManagers.getInstance().getTempThumbnail().get(itemID);
+        }
+
         BufferedImage image = getImageFromUrl(urlString);
         System.out.println(image);
         if (image != null) {
             BufferedImage resizedImage = resizeImage(image, width, height);
-            return new ImageIcon(resizedImage);
+            ImageIcon icon = new ImageIcon(resizedImage);
+            DataManagers.getInstance().getTempThumbnail().put(itemID,icon);
+            return icon;
         } else {
             return getDefaultImageIcon(width, height); // 기본 아이콘 반환
         }

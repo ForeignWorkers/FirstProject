@@ -426,7 +426,7 @@ public class SearchMainPanel extends JPanel {
             lastItemY = y + perHeight; // 🔥 마지막 Y값 업데이트
             ItemVO itemVO = items.get(i);
 
-            data.setThumbImage(ImageHelper.getResizedImageIconFromUrl(itemVO.getThumbnail(), data.getThumbRect().width, data.getThumbRect().height));
+            data.setThumbImage(ImageHelper.getResizedImageIconFromUrl(itemVO.getThumbnail(), data.getThumbRect().width, data.getThumbRect().height, itemVO.getId()));
             JLabel item = createItem(itemVO, data, isRowOnly);
             item.setOpaque(false);
             item.setBounds(isRowOnly ? 0 : x, y, perWidth, perHeight);

@@ -32,10 +32,17 @@ public class GoogleDriveService {
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, JSON_FACTORY, clientSecrets, Collections.singletonList(DriveScopes.DRIVE))
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-                .setAccessType("offline")
+                .setAccessType("offline") // 📌 리프레시 토큰 저장 설정
                 .build();
 
-        return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+        Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+
+        // ✅ 만약 리프레시 토큰이 있다면 자동 갱신
+        if (credential.getRefreshToken() != null) {
+            credential.refreshToken();
+        }
+
+        return credential;
     }
 
     /**

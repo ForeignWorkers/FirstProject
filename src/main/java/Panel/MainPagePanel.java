@@ -112,7 +112,7 @@ public class MainPagePanel extends JPanel {
 		bigLabel.setLayout(null); // 내부 요소 배치 가능
 		bigLabel.setBounds(140, 5, 282, 400); // 기존보다 크기를 조금 키움
 
-		content = contentDAO.getRandomContent(); // 랜덤 컨텐츠 가져와 저장
+		content = contentDAO.getAllContents().get(5); // 랜덤 컨텐츠 가져와 저장
 		System.out.println("랜덤 컨텐츠 로드 완료: " + content.getTitle());
 
 		// 컨텐츠 중앙 정렬을 위한 좌표 계산 setbound와 동일
@@ -125,7 +125,7 @@ public class MainPagePanel extends JPanel {
 		int labelX = (bigLabelWidth - labelWidth) / 2; // 제목과 장르 라벨 중앙 정렬
 
 		// 썸네일 이미지를 버튼 크기에 맞게 리사이징
-		ImageIcon thumbnailIcon = ImageHelper.getResizedImageIconFromUrl(content.getThumbnail(), 222, 271);
+		ImageIcon thumbnailIcon = ImageHelper.getResizedImageIconFromUrl(content.getThumbnail(), 222, 271, content.getId());
 		Image scaledthumbnailImage = thumbnailIcon.getImage().getScaledInstance(thumbWidth, thumbHeight,
 				Image.SCALE_SMOOTH);
 		ImageIcon resizedthumbnailIcon = new ImageIcon(scaledthumbnailImage);
@@ -431,7 +431,7 @@ public class MainPagePanel extends JPanel {
 			itemsPanel.add(favoriteButton);
 		}
 
-		JButton thumbnail = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 134, 164));
+		JButton thumbnail = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 134, 164, item.getId()));
 		thumbnail.setBounds(x, y + 20, thumbWidth, 181);
 		thumbnail.setBorderPainted(false);
 		thumbnail.setContentAreaFilled(false);
