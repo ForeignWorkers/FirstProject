@@ -110,10 +110,7 @@ public class DBDataManagers {
         
         System.out.println("allReviews : " + allReviews.size());
         for (ReviewVO review : allReviews) {
-        	System.out.println("ddddd" + review.getReviewerId());
-        	System.out.println("ccccccccccc" + reviewerId);
             if (review.getReviewerId().equals(reviewerId)) {
-            	System.out.println("AAAAAAAAAAAAA");// 작성자명 비교
                 filteredReviews.add(review);
             }
         }
