@@ -36,6 +36,9 @@ public class MyPagePanel extends JPanel {
 	private JScrollPane myPageListScroll; // 스크롤 패널
 	private JPanel myPageListPanel; // 스크롤 가능한 패널
 
+	//리뷰 
+	private MyPageReviewPanel myPageReviewPanel; // MyPageReviewPanel 객체
+	
 	// 위에 //버튼 //밑에
 	public MyPagePanel() {
 
@@ -44,6 +47,10 @@ public class MyPagePanel extends JPanel {
 		setBounds(0, 0, AppConstants.PANEL_MID_WIDTH, AppConstants.PANEL_MID_HEIGHT);
 		setOpaque(false);
 
+		// 리뷰 패널 객체 생성 + 보이지 않게 처리
+		myPageReviewPanel = new MyPageReviewPanel();
+	    myPageReviewPanel.setVisible(false);
+	     
 		// 위쪽 패널 닉네임 변경하는 쪽
 		JPanel firstPanel = new JPanel();
 		firstPanel.setLayout(null);
@@ -152,15 +159,19 @@ public class MyPagePanel extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				ChangeButtonColor(myReviewHistory, myReviewHistoryBar, true);
 				ChangeButtonColor(myiineHistory, myiineHistoryBar, false);
-
-				List<Integer> reviewlist = new ArrayList<Integer>();
-
-				for (ReviewVO reviewVO : (DBDataManagers.getInstance().getDbReviewsData())) {
-					if (reviewVO.getReviewName() == (DataManagers.getInstance().getMyUser().getNickName())) {
-						reviewlist.add(reviewVO.getContentId());
-					}
-				}
-
+				
+				myPageContentPanel.setVisible(false);
+				myPageReviewPanel.setVisible(true); // MyPageReviewPanel 보이게 설정
+                add(myPageReviewPanel); // MyPageReviewPanel을 패널에 추가
+                revalidate(); // 레이아웃을 다시 갱신
+                repaint(); // 다시 그리기
+				
+				/*
+				 * for (ReviewVO reviewVO : (DBDataManagers.getInstance().getDbReviewsData())) {
+				 * if (reviewVO.getReviewName() ==
+				 * (DataManagers.getInstance().getMyUser().getNickName())) {
+				 * reviewlist.add(reviewVO.getReviewerId()); } }
+				 */
 			}
 
 		});
@@ -190,7 +201,11 @@ public class MyPagePanel extends JPanel {
 				ChangeButtonColor(myReviewHistory, myReviewHistoryBar, false);
 				ChangeButtonColor(myiineHistory, myiineHistoryBar, true);
 
+				myPageContentPanel.setVisible(true);
+				myPageReviewPanel.setVisible(false); // MyPageReviewPanel 안보이게 설정
 				setMyWishList();
+				revalidate();
+                repaint();
 			}
 		});
 
