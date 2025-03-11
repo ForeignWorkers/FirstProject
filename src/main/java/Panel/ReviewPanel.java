@@ -183,6 +183,9 @@ public class ReviewPanel extends JPanel {
 		scrollPane.setBounds(26, 138, 540, 80); // 크기 조정
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+		scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+		scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
 
 		JLabel pleaseLogIn = new JLabel("로그인 후 리뷰를 작성할 수 있습니다.");
 		pleaseLogIn.setFont(DataManagers.getInstance().getFont("bold", 16));

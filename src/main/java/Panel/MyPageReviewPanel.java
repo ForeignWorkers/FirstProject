@@ -48,6 +48,9 @@ public class MyPageReviewPanel extends JPanel {
 			scrollPane.setBounds(26, 20, 540, 200); // 크기 조정
 			scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+			scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+			scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
 			
 			 add(scrollPane);
 			
