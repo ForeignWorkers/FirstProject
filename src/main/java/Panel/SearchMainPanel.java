@@ -113,7 +113,7 @@ public class SearchMainPanel extends JPanel {
         searchBG.setIcon(DataManagers.getInstance().getIcon("searchBar", "search_Main_Page"));
 
         searchField = new JTextField(watchWantText);
-        searchField.setBounds(26, 18, 419, 22);
+        searchField.setBounds(26, 17, 419, 30);
         searchField.setFont(DataManagers.getInstance().getFont("", 16));
         searchField.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
         searchField.setOpaque(false);
@@ -205,6 +205,14 @@ public class SearchMainPanel extends JPanel {
         );
 
         bottomPanel.add(setScrollLayoutNull(itemPanel, eachContentData, findList,510,126, findList.size(), 1,10,10,10,true));
+
+        if(findList.isEmpty()){
+            JLabel noResultText =new JLabel(String.format("'%s'에 대한 검색 결과가 없습니다!", searchText));
+            noResultText.setFont(DataManagers.getInstance().getFont("bold", 20));
+            noResultText.setForeground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
+            noResultText.setBounds(165,140,536,200);
+            bottomPanel.add(noResultText);
+        }
 
         bottomPanel.add(itemBG);
     }
@@ -351,31 +359,20 @@ public class SearchMainPanel extends JPanel {
             data.setThumbImage(ImageHelper.getResizedImageIconFromUrl(itemVO.getThumbnail(), data.getThumbRect().width, data.getThumbRect().height));
             JLabel item = createItem(itemVO, data, isRowOnly);
             item.setOpaque(false);
-            item.setBounds(x, y, perWidth, perHeight);
+            item.setBounds(isRowOnly ? 0 : x, y, perWidth, perHeight);
             itemPanel.add(item);
         }
 
         // 🚀 패널 크기 강제 설정 (세로 크기 고려)
         int panelWidth = isRowOnly ? lastItemX + padding : 536; // 🔥 고정된 너비 사용
-        int panelHeight = lastItemY + padding + 50; // 🔥 아이템 끝 + 여유 공간 추가
-        itemPanel.setPreferredSize(new Dimension(panelWidth, panelHeight)); // **스크롤 가능하도록 설정**
+        int panelHeight = lastItemY + padding; // 🔥 아이템 끝 + 여유 공간 추가
+        itemPanel.setPreferredSize(new Dimension(panelWidth, (panelHeight - 20))); // **스크롤 가능하도록 설정**
 
         // 🚀 **스크롤 패널 설정**
         scrollPane = new JScrollPane(itemPanel);
-        scrollPane.setBounds(31, 47, 536, 367); // **JScrollPane 크기 고정**
+        scrollPane.setBounds(46, 53, 536, (367 - 20)); // **JScrollPane 크기 고정**
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); // 🌟 세로 스크롤 활성화
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // 🌟 가로 스크롤 제거
-        scrollPane.getVerticalScrollBar().setUnitIncrement(10);
-
-        // 🚀 itemPanel을 완전히 투명하게 설정
-        itemPanel.setOpaque(false);
-        itemPanel.setBackground(new Color(0, 0, 0, 0));
-
-        // 🚀 JScrollPane을 완전히 투명하게 설정
-        scrollPane = new JScrollPane(itemPanel);
-        scrollPane.setBounds(31, 47, 536, 367);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(10);
 
         // 🚀 Viewport도 완전히 투명하게 설정

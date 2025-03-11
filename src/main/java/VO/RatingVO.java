@@ -6,7 +6,7 @@ public class RatingVO {
 	private int ItemId;
 	private double ratingPoint;
 	private int ratingCount;
-	
+
 	public void updateRating(int contentId, double score) {
 	    // DB에서 contentId에 해당하는 RatingVO 객체를 가져옵니다.
 	    RatingVO rating = DBDataManagers.getInstance().getRatingData(contentId);
@@ -33,7 +33,7 @@ public class RatingVO {
 	    DBDataManagers.getInstance().updateRatingData(rating);
 	}
 	
-	private int getRatingCount() {
+	public int getRatingCount() {
 		return ratingCount;
 	}
 
@@ -60,5 +60,9 @@ public class RatingVO {
 
 	public void setRatingPoint(double ratingPoint) {
 		this.ratingPoint = ratingPoint;
+	}
+
+	public void setRatingCount(int ratingCount) {
+		this.ratingCount = ratingCount;
 	}
 }
