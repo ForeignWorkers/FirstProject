@@ -1,13 +1,18 @@
 package Managers;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import com.google.gson.reflect.TypeToken;
 
 import Data.AppConstants;
 import Data.GoogleDriveFileReader;
+import Panel.ReviewPanel;
 import VO.FavoriteVO;
 import VO.RatingVO;
 import VO.ReviewVO;
@@ -92,12 +97,13 @@ public class DBDataManagers {
         return dbFavoriteData;
     }
 
+    
+    
+    
     //컨텐츠 ID로 분류해서 리뷰 목록 생성
     public List<ReviewVO> getContentReviewsData(int contentId) {
         List<ReviewVO> allReviews = getDbReviewsData(); // 전체 리뷰 가져오기
         List<ReviewVO> filteredReviews = new ArrayList<>();
-        if(allReviews.isEmpty() || filteredReviews.isEmpty()) return null;
-
         for (ReviewVO review : allReviews) {
             if (review.getContentId() == contentId) { // 콘텐츠명 비교
                 filteredReviews.add(review);

@@ -38,7 +38,7 @@ public class ReviewPanel extends JPanel {
 	// 테스트용 필드 연결 완료 후 해당하는 컨텐츠명, 로그인 판별식, 유저명으로 연결.
 	private String contentName = "아는 영화"; // 영화 제목 테스트용.
 	private String reviewerName = "테스트 유저"; // 테스트용 유저 이름
-	private int contentId = 1234; // 테스트용 컨텐츠 ID
+	private int contentId = 12343; // 테스트용 컨텐츠 ID
 	private String reviewerId = "5555"; // 테스트용 리뷰어 ID
 	private boolean isLoggedIn = true; // 로그인 여부 (테스트용)
 
@@ -163,7 +163,7 @@ public class ReviewPanel extends JPanel {
 
 				reviewInput.setText("");
 				submitButton.setEnabled(false);
-				//등록시 ratingCount + 1;
+				
 				
 				checkReviewList(); // 리뷰 추가 후 리뷰 목록 상태 확인
 			}
@@ -200,16 +200,22 @@ public class ReviewPanel extends JPanel {
 	}
 
 	// 리뷰 목록이 비어 있는지 확인하고 문구 표시
-	private void checkReviewList() {
+	public void checkReviewList() {
 		if (reviewListPanel.getComponentCount() == 0) {
+			
 			JLabel noReviewLabel = new JLabel("기념스러운 첫 리뷰를 작성해주세요!", SwingConstants.CENTER);
 			noReviewLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
+			noReviewLabel.setBounds(0, 0, 250, 50);
 			noReviewLabel.setForeground(Color.GRAY);
 			reviewListPanel.add(noReviewLabel);
 			reviewListPanel.revalidate();
-			reviewListPanel.repaint();
-
+			reviewListPanel.repaint();	
+		}else {
+			reviewListPanel.removeAll();
+			loadReviews(contentId);
 		}
+		reviewListPanel.revalidate();
+	    reviewListPanel.repaint();
 	}
 
 	// 별점 버튼 업데이트
