@@ -116,48 +116,72 @@ public class ContentsDetailImagePanel extends JPanel {
 		CustomButton YearIcon = new CustomButton(DataManagers.getInstance().getIcon("dateBtn", "detail_Content_Page"));
 		YearIcon.setLayout(null);
 		YearIcon.setBounds(64, 155, 58, 25);
-
+		
+		// --------------------------- contents 디테일 찜 버튼 ---------------------------
 		// 로그인 유무에 따라 찜버튼 활성화 비활성화
 		boolean isLogin = DataManagers.getInstance().getMyUser() != null;
 
 		// 로그인 상태라면 찜버튼을 생성 및 추가
 		if (isLogin) {
-			// (찜하기 버튼)
-			JButton favoriteButton = new JButton(
-					DataManagers.getInstance().getIcon("ggimBtnOff", "detail_Content_Page"));
-			favoriteButton.setLayout(null);
-			favoriteButton.setBounds(511, 168, 22, 22);
-			favoriteButton.setBorderPainted(false);
-			favoriteButton.setContentAreaFilled(false);
-			favoriteButton.setFocusPainted(false);
-			favoriteButton.setMargin(new Insets(0, 0, 0, 0)); // 버튼 여백 제거
+			// 우측 하단 (찜하기 버튼)
+			JButton favoriteButton = new JButton(); // 버튼 생성
 
-			favoriteButton.addActionListener(e -> {
-				String userId = DataManagers.getInstance().getMyUser().getId();
-				int currentContentId = content.getId();
-				FavoriteVO myFavoriteVO = null;
+	        // 초기 찜 여부 확인
+	        String userId = DataManagers.getInstance().getMyUser().getId();
+	        int currentContentId = content.getId();
+	        FavoriteVO myFavoriteVO = null;
 
-				for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
-					if (find.getUserId() == userId) {
-						myFavoriteVO = find;
-					}
-				}
+	        for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
+	            if (find.getUserId().equals(userId)) {
+	                myFavoriteVO = find;
+	                break;
+	            }
+	        }
 
-				FavoriteDAO favoriteDAO = new FavoriteDAO();
-				favoriteDAO.setLocalFavoriteData(myFavoriteVO, currentContentId);
-				try {
-					favoriteDAO.addFavoriteToJson(myFavoriteVO, AppConstants.FAVORITE_FILE_NAME, userId);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+	        if (myFavoriteVO == null) {
+	            myFavoriteVO = new FavoriteVO();
+	            myFavoriteVO.setUserId(userId);
+	        }
 
-				boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
-				// 변경된 아이콘 세팅 -> 비주얼
-				favoriteButton.setIcon(
-						DataManagers.getInstance().getIcon(isContains ? "ggimBtnOn" : "ggimBtnOff", "main_Page"));
-			});
+	        boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
+	        favoriteButton.setIcon(DataManagers.getInstance().getIcon(
+	                isContains ? "bigWishBtnOn" : "bigWishBtnOff", "main_Page"));
+
+	        // 버튼 속성 설정
+	        favoriteButton.setBounds(511, 168, 22, 22);
+	        favoriteButton.setBorderPainted(false);
+	        favoriteButton.setContentAreaFilled(false);
+	        favoriteButton.setFocusPainted(false);
+	        favoriteButton.setMargin(new Insets(0, 0, 0, 0));
+
+	        // 토글 클릭 이벤트
+	        FavoriteVO finalMyFavoriteVO = myFavoriteVO;
+	        favoriteButton.addActionListener(e -> {
+	        	
+	            boolean isNowContains = finalMyFavoriteVO.getMyFavoriteList().contains(currentContentId);
+	            if (isNowContains) {
+	                finalMyFavoriteVO.getMyFavoriteList().remove(Integer.valueOf(currentContentId));
+	            } else {
+	                finalMyFavoriteVO.getMyFavoriteList().add(currentContentId);
+	            }
+
+	            System.out.println("현재 찜 목록: " + finalMyFavoriteVO.getMyFavoriteList());
+
+	            FavoriteDAO favoriteDAO = new FavoriteDAO();
+	            favoriteDAO.setLocalFavoriteData(finalMyFavoriteVO, currentContentId);
+	            try {
+	                favoriteDAO.addFavoriteToJson(finalMyFavoriteVO, AppConstants.FAVORITE_FILE_NAME, AppConstants.FOLDER_ID);
+	            } catch (IOException e1) {
+	                e1.printStackTrace();
+	            }
+	            
+	            boolean nowContains = finalMyFavoriteVO.getMyFavoriteList().contains(currentContentId);
+	            favoriteButton.setIcon(DataManagers.getInstance().getIcon(
+	                    nowContains ? "bigWishBtnOn" : "bigWishBtnOff", "main_Page"));
+	        });
+
 			// 찜버튼 UI 배치
-			firstPanel.add(favoriteButton);
+	        firstPanel.add(favoriteButton);
 		}
 
 		// 만든 라벨들 firstPanel에 추가

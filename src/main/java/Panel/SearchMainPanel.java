@@ -6,6 +6,8 @@ import Helper.ImageHelper;
 import Managers.DBDataManagers;
 import Managers.DataManagers;
 import Component.CustomButton;
+import DAO.FavoriteDAO;
+import VO.FavoriteVO;
 import VO.ItemVO;
 import VO.RatingVO;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.awt.*;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class SearchMainPanel extends JPanel {
@@ -311,6 +314,73 @@ public class SearchMainPanel extends JPanel {
         genreBG.setBounds(eachContentData.getCategoryBgRect());
         itemLabel.add(genreBG);
 
+     // --------------------------- Serch 찜 버튼 ---------------------------
+     		// 로그인 유무에 따라 찜버튼 활성화 비활성화
+     		boolean isLogin = DataManagers.getInstance().getMyUser() != null;
+
+     		// 로그인 상태라면 찜버튼을 생성 및 추가
+     		if (isLogin) {
+     			// 우측 하단 (찜하기 버튼)
+     			JButton favoriteButton = new JButton(); // 버튼 생성
+
+     	        // 초기 찜 여부 확인
+     	        String userId = DataManagers.getInstance().getMyUser().getId();
+     	        int currentContentId = itemVO.getId();
+     	        FavoriteVO myFavoriteVO = null;
+
+     	        for (FavoriteVO find : DBDataManagers.getInstance().getDbFavoriteData()) {
+     	            if (find.getUserId().equals(userId)) {
+     	                myFavoriteVO = find;
+     	                break;
+     	            }
+     	        }
+
+     	        if (myFavoriteVO == null) {
+     	            myFavoriteVO = new FavoriteVO();
+     	            myFavoriteVO.setUserId(userId);
+     	        }
+
+     	        boolean isContains = myFavoriteVO.getMyFavoriteList().contains(currentContentId);
+     	        favoriteButton.setIcon(DataManagers.getInstance().getIcon(
+     	                isContains ? "ggimOn" : "ggimOff", "search_Main_Page"));
+
+     	        // 버튼 속성 설정
+     	        favoriteButton.setBounds(eachContentData.getCategoryTextRect().x + 40,eachContentData.getCategoryTextRect().y - 1, itemLabel.getWidth(), eachContentData.getCategoryTextRect().height);
+     	        favoriteButton.setBorderPainted(false);
+     	        favoriteButton.setContentAreaFilled(false);
+     	        favoriteButton.setFocusPainted(false);
+     	        favoriteButton.setMargin(new Insets(0, 0, 0, 0));
+
+     	        // 토글 클릭 이벤트
+     	        FavoriteVO finalMyFavoriteVO = myFavoriteVO;
+     	        favoriteButton.addActionListener(e -> {
+     	        	
+     	            boolean isNowContains = finalMyFavoriteVO.getMyFavoriteList().contains(currentContentId);
+     	            if (isNowContains) {
+     	                finalMyFavoriteVO.getMyFavoriteList().remove(Integer.valueOf(currentContentId));
+     	            } else {
+     	                finalMyFavoriteVO.getMyFavoriteList().add(currentContentId);
+     	            }
+
+     	            System.out.println("현재 찜 목록: " + finalMyFavoriteVO.getMyFavoriteList());
+
+     	            FavoriteDAO favoriteDAO = new FavoriteDAO();
+     	            favoriteDAO.setLocalFavoriteData(finalMyFavoriteVO, currentContentId);
+     	            try {
+     	                favoriteDAO.addFavoriteToJson(finalMyFavoriteVO, AppConstants.FAVORITE_FILE_NAME, AppConstants.FOLDER_ID);
+     	            } catch (IOException e1) {
+     	                e1.printStackTrace();
+     	            }
+     	            
+     	            boolean nowContains = finalMyFavoriteVO.getMyFavoriteList().contains(currentContentId);
+     	            favoriteButton.setIcon(DataManagers.getInstance().getIcon(
+     	                    nowContains ? "ggimOn" : "ggimOff", "search_Main_Page"));
+     	        });
+
+     			// 찜버튼 UI 배치
+     	       itemLabel.add(favoriteButton);
+     		}
+/*
         //찜하기 세팅
         Icon on = DataManagers.getInstance().getIcon("ggimOn", "search_Main_Page");
         Icon off = DataManagers.getInstance().getIcon("ggimOff", "search_Main_Page");
@@ -318,7 +388,7 @@ public class SearchMainPanel extends JPanel {
 //        if(DataManagers.getInstance().getMyUser() != null){
 //            itemLabel.add(createFavoritesButton(itemVO, on, off, 93, 147, 8));
 //        }
-
+*/
         //개봉 연도 세팅
         if(isHorizontal)
         {

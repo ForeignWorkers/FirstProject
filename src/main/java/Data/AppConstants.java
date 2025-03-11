@@ -24,7 +24,7 @@ public final class AppConstants {
 
     public static final String FOLDER_ID = "1aVfkmsLg7lMD5Znk7Fh9669nGn21s_R9"; // 특정 폴더 ID
     public static final String USER_FILE_NAME = "users_v02.json";
-    public static final String REVIEW_FILE_NAME = "reviews_v01.json";
+    public static final String REVIEW_FILE_NAME = "reviews_v02.json";
     public static final String RATING_FILE_NAME = "rating_v01.json";
     public static final String FAVORITE_FILE_NAME = "favorite_v02.json";
     public static final String ITEM_FILE_PATH = "resources/data/kinolights_movie_details.json";
