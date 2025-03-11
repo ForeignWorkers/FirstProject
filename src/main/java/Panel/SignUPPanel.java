@@ -1,6 +1,8 @@
 package Panel;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -17,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -38,7 +41,7 @@ public class SignUPPanel extends JPanel {
 	private JComboBox<String> nationalityBox;
 	private boolean isIdChecked = false;
 	private boolean isNicknameChecked = false;
-
+	private JPanel panel;
 	// 이메일 조건
 	private boolean isValidEmail(String email) {
 		return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
@@ -50,13 +53,42 @@ public class SignUPPanel extends JPanel {
 		setLayout(null);
 		setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 		setPreferredSize(new Dimension(700, 900));
-		// addNationalityDropdown();
+		
+		panel = new JPanel();
+		panel.setLayout(null);
+		panel.setPreferredSize(new Dimension(700, 1050));
+		panel.setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 
+		
+		// 스크롤 추가
+		JScrollPane loginsignUpScroll = new JScrollPane(panel);
+		loginsignUpScroll.setBounds(0, 0, 700, 900);
+		loginsignUpScroll.setBackground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
+		loginsignUpScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		loginsignUpScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		loginsignUpScroll.getVerticalScrollBar().setUnitIncrement(10); // 스크롤 속도 증가
+
+		// 스크롤바를 숨김
+		loginsignUpScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+		loginsignUpScroll.getVerticalScrollBar().setOpaque(false);
+
+		// 테두리 영역 제거
+		loginsignUpScroll.setBorder(null);
+
+		// JScrollPane이 변경 사항을 인식하도록 설정
+		loginsignUpScroll.setViewportView(panel);
+		loginsignUpScroll.revalidate();
+		loginsignUpScroll.repaint();
+
+		add(loginsignUpScroll);
+	
+
+		
 		JLabel SignUp = new JLabel("회원가입");
 		SignUp.setBounds(83, 28, 461, 85);
 		SignUp.setFont(DataManagers.getInstance().getFont("bold", 30));
 		SignUp.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
-		add(SignUp);
+		panel.add(SignUp);
 
 		// id입력라벨
 		JLabel idBG = new JLabel();
@@ -69,8 +101,8 @@ public class SignUPPanel extends JPanel {
 		id.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		id.setOpaque(false);
 		id.setBorder(null);
-		add(id);
-		add(idBG);
+		panel.add(id);
+		panel.add(idBG);
 
 		// ID중복 확인 버튼 라벨 JLabel
 		JLabel checkIDButtonBG = new JLabel("중복확인");
@@ -85,8 +117,8 @@ public class SignUPPanel extends JPanel {
 		checkIDButton.setOpaque(false);
 		checkIDButton.setBorder(null);
 
-		add(checkIDButtonBG);
-		add(checkIDButton);
+		panel.add(checkIDButtonBG);
+		panel.add(checkIDButton);
 		checkIDButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -120,8 +152,8 @@ public class SignUPPanel extends JPanel {
 		pw.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		pw.setOpaque(false);
 		pw.setBorder(null);
-		add(pw);
-		add(pwBG);
+		panel.add(pw);
+		panel.add(pwBG);
 
 		// pw체크 입력라벨
 		JLabel pwCheckBG = new JLabel();
@@ -134,15 +166,15 @@ public class SignUPPanel extends JPanel {
 		pwCheck.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		pwCheck.setOpaque(false);
 		pwCheck.setBorder(null);
-		add(pwCheck);
-		add(pwCheckBG);
+		panel.add(pwCheck);
+		panel.add(pwCheckBG);
 
 		// pw체크 테스트 밑에 뜨는 경고문구
 		JLabel pwErrorLabel = new JLabel("• 비밀번호는 8자이상의 영문, 숫자, 특수문자를 포함해야 합니다.");
 		pwErrorLabel.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		pwErrorLabel.setFont(DataManagers.getInstance().getFont("regular", 9));
 		pwErrorLabel.setBounds(110, 260, 260, 30); // PW 필드 옆에 배치
-		add(pwErrorLabel);
+		panel.add(pwErrorLabel);
 		
 		
 
@@ -157,8 +189,8 @@ public class SignUPPanel extends JPanel {
 		email.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		email.setOpaque(false);
 		email.setBorder(null);
-		add(email);
-		add(emailBG);
+		panel.add(email);
+		panel.add(emailBG);
 
 		// 주민번호 앞자리 입력라벨
 		JLabel myNumBG = new JLabel();
@@ -171,13 +203,13 @@ public class SignUPPanel extends JPanel {
 		myNum.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		myNum.setOpaque(false);
 		myNum.setBorder(null);
-		add(myNum);
-		add(myNumBG);
+		panel.add(myNum);
+		panel.add(myNumBG);
 
 		JLabel myNumSL = new JLabel();
 		myNumSL.setBounds(253, 375, 23, 7);
 		myNumSL.setIcon(DataManagers.getInstance().getIcon("textBoxIntervalBar", "signUp_Page"));
-		add(myNumSL);
+		panel.add(myNumSL);
 		// 주민번호 7번째자리 입력라벨 배경
 		JLabel myNum7BG = new JLabel();
 		myNum7BG.setBounds(283, 359, 161, 37);
@@ -207,12 +239,12 @@ public class SignUPPanel extends JPanel {
 		myNum7.setBorder(null);
 		myNum7.setVisible(true);
 		myNum7.setOpaque(false);
-
-		add(myNum7B7G77);
-		add(myNum7BG7);
-		add(myNum7B7G7);
-		add(myNum7BG);
-		add(myNum7);
+		
+		panel.add(myNum7B7G77);
+		panel.add(myNum7BG7);
+		panel.add(myNum7B7G7);
+		panel.add(myNum7BG);
+		panel.add(myNum7);
 		setComponentZOrder(myNum7, 0);
 
 		// 전번 라벨
@@ -226,8 +258,8 @@ public class SignUPPanel extends JPanel {
 		phoneNum.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		phoneNum.setOpaque(false);
 		phoneNum.setBorder(null);
-		add(phoneNum);
-		add(phoneNumBG);
+		panel.add(phoneNum);
+		panel.add(phoneNumBG);
 
 		// 국적 선택 라벨
 		JLabel nationalitiesBG = new JLabel();
@@ -243,9 +275,9 @@ public class SignUPPanel extends JPanel {
 		JLabel nationalitiesDropBox = new JLabel();
 		nationalitiesDropBox.setBounds((int) 275.34, 489, (int) 39.66, 37);
 		nationalitiesDropBox.setIcon(DataManagers.getInstance().getIcon("dropBoxBtn", "signUp_Page"));
-		add(nationalityLabel);
-		add(nationalitiesDropBox);
-		add(nationalitiesBG);
+		panel.add(nationalityLabel);
+		panel.add(nationalitiesDropBox);
+		panel.add(nationalitiesBG);
 
 		JComboBox<String> nationDrop = addNationalityDropdown();
 
@@ -276,8 +308,8 @@ public class SignUPPanel extends JPanel {
 		nickName.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		nickName.setOpaque(false);
 		nickName.setBorder(null);
-		add(nickName);
-		add(nickNameBG);
+		panel.add(nickName);
+		panel.add(nickNameBG);
 
 		// 닉네임 중복 확인 버튼 라벨 JLabel
 		JLabel checkNicknameButtonBG = new JLabel("중복확인");
@@ -291,8 +323,8 @@ public class SignUPPanel extends JPanel {
 		checkNicknameButton.setBounds(330, 549, 101, 37);
 		checkNicknameButton.setOpaque(false);
 		checkNicknameButton.setBorder(null);
-		add(checkNicknameButtonBG);
-		add(checkNicknameButton);
+		panel.add(checkNicknameButtonBG);
+		panel.add(checkNicknameButton);
 
 		checkNicknameButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
@@ -347,6 +379,14 @@ public class SignUPPanel extends JPanel {
 
 		finaljoinButton.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
+				// 로그인 페이지로 넘기기
+				LoginPanel loginpanel = new LoginPanel();
+		try {
+		    FrameBase frameBase = FrameBase.getInstance();
+		    frameBase.setInnerPanel(loginpanel, "mid");
+		} catch (Exception t) {
+		    System.out.println("로그인 페이지 로드 실패 :" + t.getMessage());
+		}
 
 				String password = new String(pw.getPassword());
 
@@ -406,36 +446,7 @@ public class SignUPPanel extends JPanel {
 
 				JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다!", "확인", JOptionPane.INFORMATION_MESSAGE);
 
-				// 로그인 페이지로 넘기기
-				LoginPanel loginpanel = new LoginPanel();
-				// 스크롤 추가
-				JScrollPane loginsignUpScroll = new JScrollPane(loginpanel);
-				loginsignUpScroll.setBounds(3, 3, 600, 800);
-				loginsignUpScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-				loginsignUpScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-				// 세로 스크롤 속도 증가 (더 빠르게)
-				loginsignUpScroll.getVerticalScrollBar().setUnitIncrement(30);
-
-				// 가로 스크롤 완전 비활성화
-				loginsignUpScroll.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
-				loginsignUpScroll.getHorizontalScrollBar().setOpaque(false);
-
-				// 🔥 스크롤을 정상적으로 작동하게 만들기 위한 추가 코드
-				loginpanel.setPreferredSize(new Dimension(600, 2000)); // 패널 크기를 충분히 크게 설정
-				loginpanel.revalidate();  // UI 갱신
-				loginpanel.repaint();     // UI 갱신
-
-				// 🔥 add 위치 조정 (먼저 추가한 후 프레임 설정)
-				add(loginsignUpScroll);
-
-				try {
-				    FrameBase frameBase = FrameBase.getInstance();
-				    frameBase.setInnerPanel(loginpanel, "mid");
-				} catch (Exception t) {
-				    System.out.println("로그인 페이지 로드 실패 :" + t.getMessage());
-				}
-
+				
 				// 입력 필드 초기화
 				id.setText("ID");
 
@@ -457,8 +468,8 @@ public class SignUPPanel extends JPanel {
 			}
 
 		});
-		add(finaljoinButtonLabel);
-		add(finaljoinButton);
+		panel.add(finaljoinButtonLabel);
+		panel.add(finaljoinButton);
 
 	}
 
@@ -489,7 +500,7 @@ public class SignUPPanel extends JPanel {
 			}
 		});
 
-		add(field);
+		panel.add(field);
 		return field;
 	}
 
@@ -520,7 +531,7 @@ public class SignUPPanel extends JPanel {
 			}
 		});
 
-		add(field);
+		panel.add(field);
 		return field;
 	}
 
@@ -528,7 +539,7 @@ public class SignUPPanel extends JPanel {
 		JTextField field = new JTextField(placeholder);
 		field.setBounds(x, y, width, height);
 		field.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX)); // 기본 텍스트 색상을 회색으로 설정
-		add(field);
+		panel.add(field);
 
 		field.addFocusListener(new FocusAdapter() {
 			@Override
@@ -555,7 +566,7 @@ public class SignUPPanel extends JPanel {
 		errorLabel.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
 		errorLabel.setFont(DataManagers.getInstance().getFont("regular", 9));
 		errorLabel.setBounds(110, 390, 200, 30);
-		add(errorLabel);
+		panel.add(errorLabel);
 
 		// 입력된 값 검사
 		field.addKeyListener(new KeyAdapter() {
@@ -566,6 +577,7 @@ public class SignUPPanel extends JPanel {
 					errorLabel.setText("");
 				} else {
 					errorLabel.setText("•잘못된 주민번호 형식입니다.");
+					errorLabel.setForeground(Color.RED);
 				}
 			}
 		});
@@ -578,7 +590,7 @@ public class SignUPPanel extends JPanel {
 		nationalityBox = new JComboBox<>(nationalities);
 		nationalityBox.setBounds(95, 489, 200, 31);
 		nationalityBox.setOpaque(false);
-		add(nationalityBox);
+		panel.add(nationalityBox);
 
 		return nationalityBox;
 	}
