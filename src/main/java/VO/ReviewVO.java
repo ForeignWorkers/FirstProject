@@ -19,7 +19,6 @@ public class ReviewVO {
 
 	//
 	public ReviewVO(int contentId, String reviewerId, String reviewContent, double reviewScore) {
-		
 		this.contentId = contentId; // 작품 ID
 		this.reviewerId = reviewerId; // 작성자ID
 		this.reviewContent = reviewContent; // 리뷰 내용
@@ -31,8 +30,8 @@ public class ReviewVO {
 		this.reviewDate = LocalDateTime.now().format(formatter);
 	}
 	
-	public void getReviewAvgScore(int reviewedItemId) {
-		avgReviewScore = Math.round((reviewTotal / personNum) * 10.0) / 10.0; // 소수 첫째 자리로 반올림
+	public double getReviewAvgScore() {
+		return Math.round((reviewTotal / personNum) * 10.0) / 10.0; // 소수 첫째 자리로 반올림
 	}
 
 	public String getReviewerId() {

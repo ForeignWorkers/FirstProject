@@ -285,10 +285,10 @@ public class RankingPagePanel extends JPanel {
         JLabel ratingIcon = new JLabel(DataManagers.getInstance().getIcon("ratingIcon", "rank_Page"));
         ratingIcon.setBounds(450, 15, 31, 29);
         rankingLabel.add(ratingIcon);
-        
+
         //평점 텍스트
         JLabel ratingText = new JLabel(rating, SwingConstants.CENTER);
-        ratingText.setBounds(440, 45, 50, 15);
+        ratingText.setBounds(440, 45, 50, 20);
         ratingText.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
         ratingText.setFont(DataManagers.getInstance().getFont("bold", 12));
         rankingLabel.add(ratingText);
