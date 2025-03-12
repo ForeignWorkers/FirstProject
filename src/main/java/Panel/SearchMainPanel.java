@@ -3,6 +3,7 @@ package Panel;
 import Data.AppConstants;
 import Data.EachContentData;
 import Helper.ImageHelper;
+import Helper.SmoothLabel;
 import Managers.DBDataManagers;
 import Managers.DataManagers;
 import Component.CustomButton;
@@ -152,6 +153,7 @@ public class SearchMainPanel extends JPanel {
                 //검색 기능 호출
                 System.out.println(searchField.getText());
                 EditResultText(String.format("'%s'에 대한 검색 결과", searchField.getText()), searchedText);
+                bottomPanel.add(searchedText); // 다시 추가 (상단 텍스트 유지)
                 SearchItems(searchField.getText());
             }
 
@@ -173,16 +175,16 @@ public class SearchMainPanel extends JPanel {
     }
 
     private void SearchItems(String searchText) {
+    	
+    	//기존 컴포넌트 모두 제거 (중첩 방지)
+    	clearBottomPanel();
+        
         //검색 페이지로 넘기기
         List<ItemVO> findList= new ArrayList<>();
         findList = DataManagers.getInstance().getSearchItemKeyword(searchText);
         for (ItemVO itemVO : findList) {
             System.out.println(itemVO.getTitle());
         }
-
-        bottomPanel.remove(itemBG);
-        bottomPanel.remove(itemPanel);
-        bottomPanel.remove(scrollPane);
 
         itemPanel.setOpaque(false);
         itemPanel.setBackground(new Color(0, 0, 0, 0)); // 🔥 완전 투명 배경 설정
@@ -207,7 +209,7 @@ public class SearchMainPanel extends JPanel {
                 new Rectangle(128,23,47,17)
         );
 
-        bottomPanel.add(setScrollLayoutNull(itemPanel, eachContentData, findList,510,126, findList.size(), 1,10,10,10,true));
+        //bottomPanel.add(setScrollLayoutNull(itemPanel, eachContentData, findList,510,126, findList.size(), 1,10,10,10,true));
 
         if(findList.isEmpty()){
             JLabel noResultText =new JLabel(String.format("'%s'에 대한 검색 결과가 없습니다!", searchText));
@@ -215,11 +217,21 @@ public class SearchMainPanel extends JPanel {
             noResultText.setForeground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
             noResultText.setBounds(165,140,536,200);
             bottomPanel.add(noResultText);
+        } else {
+            // 결과 있을 때만 아이템 리스트 추가
+            bottomPanel.add(setScrollLayoutNull(itemPanel, eachContentData, findList, 510, 126, findList.size(), 1, 10, 10, 10, true));
         }
 
         bottomPanel.add(itemBG);
     }
-
+    
+    // 검색 전 초기화
+    private void clearBottomPanel() {
+        bottomPanel.removeAll();
+        bottomPanel.revalidate();
+        bottomPanel.repaint();
+    }
+    
     private JLabel SetResultText(String searchText) {
         JLabel recommendText = new JLabel(searchText);
         recommendText.setBounds(31,12,434,28);
@@ -302,7 +314,7 @@ public class SearchMainPanel extends JPanel {
         }
 
         //장르 세팅
-        JLabel genreText = new JLabel(genresText, SwingConstants.CENTER);
+        SmoothLabel genreText = new SmoothLabel(genresText);
         genreText.setHorizontalAlignment(SwingConstants.CENTER);
         genreText.setBorder(null);
         genreText.setBounds(eachContentData.getCategoryTextRect().x,eachContentData.getCategoryTextRect().y, itemLabel.getWidth(), eachContentData.getCategoryTextRect().height);
@@ -426,7 +438,7 @@ public class SearchMainPanel extends JPanel {
             lastItemY = y + perHeight; // 🔥 마지막 Y값 업데이트
             ItemVO itemVO = items.get(i);
 
-            data.setThumbImage(ImageHelper.getResizedImageIconFromUrl(itemVO.getThumbnail(), data.getThumbRect().width, data.getThumbRect().height, itemVO.getId()));
+            data.setThumbImage(ImageHelper.getResizedImageIconFromUrl(itemVO.getThumbnail(), data.getThumbRect().width, data.getThumbRect().height, itemVO.getId(), false, true));
             JLabel item = createItem(itemVO, data, isRowOnly);
             item.setOpaque(false);
             item.setBounds(isRowOnly ? 0 : x, y, perWidth, perHeight);
@@ -436,7 +448,7 @@ public class SearchMainPanel extends JPanel {
         // 🚀 패널 크기 강제 설정 (세로 크기 고려)
         int panelWidth = isRowOnly ? lastItemX + padding : 536; // 🔥 고정된 너비 사용
         int panelHeight = lastItemY + padding; // 🔥 아이템 끝 + 여유 공간 추가
-        itemPanel.setPreferredSize(new Dimension(panelWidth, (panelHeight - 20))); // **스크롤 가능하도록 설정**
+        itemPanel.setPreferredSize(new Dimension(panelWidth, (panelHeight - 10))); // **스크롤 가능하도록 설정**
 
         // 🚀 **스크롤 패널 설정**
         scrollPane = new JScrollPane(itemPanel);

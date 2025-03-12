@@ -6,6 +6,7 @@ import DAO.FavoriteDAO;
 import Data.AppConstants;
 import Helper.GenericFinder;
 import Helper.ImageHelper;
+import Helper.SmoothLabel;
 import Managers.DBDataManagers;
 import Managers.DataManagers;
 import VO.FavoriteVO;
@@ -230,7 +231,7 @@ public class RankingPagePanel extends JPanel {
         rankingLabel.add(rankLabel);
 
         //썸네일 버튼
-        JButton thumbnailButton = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 79, 99,item.getId()));
+        JButton thumbnailButton = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 79, 99,item.getId(), false, true));
         thumbnailButton.setBounds(50, 14, 79, 99);
         thumbnailButton.setBorderPainted(false);
         thumbnailButton.setContentAreaFilled(false);
@@ -251,10 +252,11 @@ public class RankingPagePanel extends JPanel {
      		}
         
         //장르 텍스트
-        JLabel genreText = new JLabel(genreTextlength, SwingConstants.CENTER);
+     	SmoothLabel genreText = new SmoothLabel(genreTextlength);
+     	genreText.setHorizontalAlignment(SwingConstants.CENTER);
         genreText.setBounds(0, 2, 80, 18);
         genreText.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
-        genreText.setFont(DataManagers.getInstance().getFont("bold", 6));
+        genreText.setFont(DataManagers.getInstance().getFont("bold", 7));
         categoryLabel.add(genreText);
 
         //타이틀

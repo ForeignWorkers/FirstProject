@@ -35,19 +35,32 @@ public class ContentDAO {
 			}
 		}
 	}
-
+	
 	// 전체 컨텐츠 목록 반환(중복 제거된 데이터)
 	public List<ItemVO> getAllContents() {
 		return contentList;
 	}
 
 	// 랜덤 컨텐츠 반환
-	public ItemVO getRandomContent() {
-		if (contentList.isEmpty()) {
-			return null; // 남은 컨텐츠 없을 경우 null 반환
-		}
-		Random random = new Random();
-		int index = random.nextInt(contentList.size());
-		return contentList.remove(index); // 뽑은 컨텐츠 삭제 후 반환 다시 뽑힐 수 없게 함
+	public ItemVO getRandomContent(List<Integer> excludeIds) {
+		// 제외되지 않은 리스트 생성
+	    List<ItemVO> filteredList = new ArrayList<>();
+	    for (ItemVO item : contentList) {
+	        if (!excludeIds.contains(item.getId())) {
+	            filteredList.add(item);
+	        }
+	    }
+
+	    // 사용할 수 있는 게 없으면 null
+	    if (filteredList.isEmpty()) {
+	        return null;
+	    }
+
+	    // 랜덤 반환
+	    Random random = new Random();
+	    int index = random.nextInt(filteredList.size());
+	    ItemVO selectedItem = filteredList.get(index);
+	    contentList.remove(selectedItem); // 사용한 데이터 제거 (중복 방지)
+	    return selectedItem;
 	}
 }

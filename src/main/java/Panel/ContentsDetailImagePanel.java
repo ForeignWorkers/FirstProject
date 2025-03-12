@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -60,11 +61,9 @@ public class ContentsDetailImagePanel extends JPanel {
 		firstPanel.setBorder(null);
 
 		// 이미지 라벨
-		ImageIcon thumbnailIcon = ImageHelper.getResizedImageIconFromUrl(content.getThumbnail(), 222, 271,content.getId());
-		Image scaledthumbnailImage = thumbnailIcon.getImage().getScaledInstance(129, 161, Image.SCALE_SMOOTH);
-		ImageIcon resizedthumbnailIcon = new ImageIcon(scaledthumbnailImage);
+		ImageIcon thumbnailIcon = ImageHelper.getResizedImageIconFromUrl(content.getThumbnail(), 129, 161,content.getId(), false, true);
 
-		JLabel thumbnailPoster = new JLabel(resizedthumbnailIcon);
+		JLabel thumbnailPoster = new JLabel(thumbnailIcon);
 		thumbnailPoster.setLayout(null);
 		thumbnailPoster.setBounds(405, 30, 129, 161);
 
@@ -376,7 +375,9 @@ public class ContentsDetailImagePanel extends JPanel {
 		directorActorMenu.setBounds(297, 75, 120, 30);
 		directorActorMenu.setFont(DataManagers.getInstance().getFont("regular", 17));
 		directorActorMenu.setForeground(Color.decode("#CBCBCB"));
-		JLabel directorActorLabelInfo = new JLabel(content.getDirector() + "/" + content.getActor()[0]);
+		// 감독/출연 라벨 세팅 (배우가 없을 경우 방어 처리)
+		String actorName = (content.getActor() != null && content.getActor().length > 0) ? content.getActor()[0] : "정보 없음";
+		JLabel directorActorLabelInfo = new JLabel(content.getDirector() + " / " + actorName);
 		directorActorLabelInfo.setLayout(null);
 		directorActorLabelInfo.setBounds(402, 75, 161, 30);
 		directorActorLabelInfo.setFont(DataManagers.getInstance().getFont("thin", 16));
@@ -522,7 +523,7 @@ public class ContentsDetailImagePanel extends JPanel {
 
 		// ItemVO의 List<Map<String, String>>구조를 갖고있는 categories를 활용하여
 		List<Map<String, String>> categories = content.getCategory();
-
+		
 		// platform을 기준으로 해당 기준에 만족되는 url만 접속할 수 있는 버튼을 표시해주는 switch/case 구문
 		for (Map<String, String> category : categories) {
 			String platform = category.get("platform");

@@ -29,7 +29,7 @@ public class DataManagers {
     //로드된 영화 데이터
     private Map<Integer, ItemVO> items = new HashMap<>();
     //로드된 썸네일 데이터
-    private Map<Integer, ImageIcon> tempThumbnail = new HashMap<>();
+    private Map<String, ImageIcon> tempThumbnail = new HashMap<>();
 
     private UserVO myUser;
 
@@ -54,7 +54,7 @@ public class DataManagers {
         isInitialized = true;
     }
 
-    public Map<Integer, ImageIcon> getTempThumbnail() {
+    public Map<String, ImageIcon> getTempThumbnail() {
         return tempThumbnail;
     }
 
@@ -233,5 +233,10 @@ public class DataManagers {
             }
         }
         return false;
+    }
+    
+    //아이콘 캐시초기화 
+    public void clearIconCache() {
+        this.icons.clear(); // 캐시 초기화
     }
 }

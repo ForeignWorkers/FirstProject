@@ -64,6 +64,13 @@
             <artifactId>imageio-webp</artifactId>
             <version>3.8.1</version>
         </dependency>
+        
+        <dependency>
+    		<groupId>net.coobird</groupId>
+    		<artifactId>thumbnailator</artifactId>
+    		<version>0.4.19</version> <!-- 최신 버전, 필요 시 확인 -->
+		</dependency>
+        
     </dependencies>
 
 </project>
