@@ -27,12 +27,14 @@ import Managers.DataManagers;
 import VO.FavoriteVO;
 import VO.ItemVO;
 
+
 // 컨텐츠 패널
 public class MainPagePanel extends JPanel {
 	private ItemVO content; // 현재 패널이 표시하는 컨텐츠 정보
 	private ContentDAO contentDAO = new ContentDAO(); // DAO 객체 생성
 	private JPanel contentPanel; // 스크롤될 전체 컨텐츠 패널
 	private int countContent = 10; // 작은 추천 컨텐츠 개수
+	int staticItemID = 258;
 
 	public MainPagePanel() {
 
@@ -102,7 +104,7 @@ public class MainPagePanel extends JPanel {
         }
         return false;
     }
-	
+
 	// 큰 추천 컨텐츠 라벨
 	private JLabel bigRecommendContentLabel() {
 
@@ -115,7 +117,7 @@ public class MainPagePanel extends JPanel {
 		bigLabel.setLayout(null); // 내부 요소 배치 가능
 		bigLabel.setBounds(140, 5, 282, 400); // 기존보다 크기를 조금 키움
 
-		content = contentDAO.getAllContents().get(2); // 랜덤 컨텐츠 가져와 저장
+		content = DataManagers.getInstance().FindItemFromId(staticItemID);
 		System.out.println("랜덤 컨텐츠 로드 완료: " + content.getTitle());
 
 		// 컨텐츠 중앙 정렬을 위한 좌표 계산 setbound와 동일

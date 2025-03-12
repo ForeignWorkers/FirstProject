@@ -292,7 +292,9 @@ public class ReviewPanel extends JPanel {
 					eventListener.get(i).onReviewEvent();
 				}
 
-				contentPanel.remove(firstReview);
+				if (firstReview != null && firstReview.getParent() != null) {
+					contentPanel.remove(firstReview);
+				}
 			}
 		});
 
