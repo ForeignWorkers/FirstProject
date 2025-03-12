@@ -176,6 +176,9 @@ public class SearchMainPanel extends JPanel {
 
     private void SearchItems(String searchText) {
     	
+    	//검색할 때마다 캐시를 초기화 (중복 이미지 사이즈 오류 방지)
+        ImageHelper.clearImageCache();
+        
     	//기존 컴포넌트 모두 제거 (중첩 방지)
     	clearBottomPanel();
         
