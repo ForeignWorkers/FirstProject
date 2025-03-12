@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Insets;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,6 +21,7 @@ import DAO.FavoriteDAO;
 import Data.AppConstants;
 import Helper.GenericFinder;
 import Helper.ImageHelper;
+import Helper.SmoothLabel;
 import Managers.DBDataManagers;
 import Managers.DataManagers;
 import VO.FavoriteVO;
@@ -125,12 +128,9 @@ public class MainPagePanel extends JPanel {
 		int labelX = (bigLabelWidth - labelWidth) / 2; // 제목과 장르 라벨 중앙 정렬
 
 		// 썸네일 이미지를 버튼 크기에 맞게 리사이징
-		ImageIcon thumbnailIcon = ImageHelper.getResizedImageIconFromUrl(content.getThumbnail(), 222, 271, content.getId());
-		Image scaledthumbnailImage = thumbnailIcon.getImage().getScaledInstance(thumbWidth, thumbHeight,
-				Image.SCALE_SMOOTH);
-		ImageIcon resizedthumbnailIcon = new ImageIcon(scaledthumbnailImage);
+		ImageIcon thumbnailIcon = ImageHelper.getResizedImageIconFromUrl(content.getThumbnail(), 266, 325, content.getId(), true, false);
 
-		JButton thumbnailButton = new JButton(resizedthumbnailIcon);
+		JButton thumbnailButton = new JButton(thumbnailIcon);
 		thumbnailButton.setBounds(thumbX, 10, thumbWidth, thumbHeight);
 		thumbnailButton.setBorderPainted(false); // 테두리 없음
 		thumbnailButton.setContentAreaFilled(false); // 버튼 배경색 제거
@@ -175,7 +175,8 @@ public class MainPagePanel extends JPanel {
 
 		// 중앙 하단 (장르 텍스트 데이터)
 		int genreX = labelX;
-		JLabel genreTextLabel = new JLabel(bigGenreText, SwingConstants.CENTER);
+		SmoothLabel genreTextLabel = new SmoothLabel(bigGenreText);
+		genreTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		genreTextLabel.setFont(DataManagers.getInstance().getFont("regular", 11));
 		genreTextLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		genreTextLabel.setBounds(genreX, titleStandardY + 4, labelWidth, 35);
@@ -300,9 +301,19 @@ public class MainPagePanel extends JPanel {
 		int totalWidth = leftPadding + (itemWidth + margin) * countContent;
 		itemPanel.setPreferredSize(new Dimension(totalWidth, smallPanelHeight)); // 전체 사이즈
 
-		for (int i = 0; i < countContent; i++) { // N개의 컨텐츠 추가
-			item = contentDAO.getRandomContent(); // 랜덤 컨텐츠 가져오기
+		// big에서 가져온 ID 저장
+		int bigContentId = content.getId();
 
+		// small 패널 채우기 (중복 제거하며 가져오기)
+		List<Integer> excludeList = new ArrayList<>();
+		excludeList.add(bigContentId); // 빅 추천 콘텐츠 ID 추가
+		
+		for (int i = 0; i < countContent; i++) { // N개의 컨텐츠 추가
+			item = contentDAO.getRandomContent(excludeList); // 랜덤 컨텐츠 가져오기
+			
+			if (item == null) break; // 남은 컨텐츠 없으면 중단
+			excludeList.add(item.getId()); // 이미 사용한 ID 추가 (혹시 중복 막기 위해)
+			
 			// 각 아이템 x 좌표를 조정하여 가로 정렬
 			int x = leftPadding + i * (itemWidth + margin);
 
@@ -431,7 +442,7 @@ public class MainPagePanel extends JPanel {
 			itemsPanel.add(favoriteButton);
 		}
 
-		JButton thumbnail = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 134, 164, item.getId()));
+		JButton thumbnail = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 134, 164, item.getId(), true, false));
 		thumbnail.setBounds(x, y + 20, thumbWidth, 181);
 		thumbnail.setBorderPainted(false);
 		thumbnail.setContentAreaFilled(false);
@@ -453,7 +464,8 @@ public class MainPagePanel extends JPanel {
 
 		// 장르 텍스트
 		int genreY = titleLabelY + 22; // 타이틀 라벨 기준 y+
-		JLabel genreTextLabel = new JLabel(smallGenreText, SwingConstants.CENTER);
+		SmoothLabel genreTextLabel = new SmoothLabel(smallGenreText);
+		genreTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		genreTextLabel.setFont(DataManagers.getInstance().getFont("bold", 7));
 		genreTextLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
 		genreTextLabel.setBounds(x, genreY + 2, labelWidth, 20);
