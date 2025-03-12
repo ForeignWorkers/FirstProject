@@ -202,7 +202,7 @@ public class SearchMainPanel extends JPanel {
                 18,
                 DataManagers.getInstance().getIcon("ratingIcon", "search_Result_Page"),
                 new Rectangle(450,15,28,28),
-                new Rectangle(456,53,31,14),
+                new Rectangle(456,53,31,20),
                 12,
                 new Rectangle(-105,24, 47, 18),
                 6,

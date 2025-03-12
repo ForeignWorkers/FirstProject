@@ -83,7 +83,6 @@ public class ContentsDetailImagePanel extends JPanel {
 		ratingLabel.setFont(DataManagers.getInstance().getFont("", 15));
 		ratingLabel.setForeground(Color.decode("#CBCBCB"));
 
-		int reviewPersonNum = 0;
 		// 리뷰자 명수가 없을때 0으로 처리
 		for (ReviewVO vo : DBDataManagers.getInstance().getDbReviewsData()) {
 			if(vo.getContentId() == content.getId()){
@@ -307,7 +306,7 @@ public class ContentsDetailImagePanel extends JPanel {
 		ReviewTabPanel.setBorder(null);
 		add(ReviewTabPanel);
 		// ReviewPanelLast을 따오기 위한 객체, accessReviewPanelLast
-		ReviewPanel accessReviewPanel = new ReviewPanel();
+		ReviewPanel accessReviewPanel = new ReviewPanel(content.getId(), false);
 		ReviewTabPanel.add(accessReviewPanel);
 
 		//이벤트 추가
@@ -629,20 +628,20 @@ public class ContentsDetailImagePanel extends JPanel {
 		add(scrollPane);
 	}
 
+	int reviewPersonNum = 0;
 	//리뷰 등록
 	private void updateText()
 	{
 		//맴버변수에 만든 setText
-		//리뷰갯수 
-		int reviewPersonNum = 0;
+		//리뷰갯수
 		// 리뷰자 명수가 없을때 0으로 처리
 		for (ReviewVO vo : DBDataManagers.getInstance().getDbReviewsData()) {
 			if(vo.getContentId() == content.getId()){
-				reviewPersonNum++;
+//				reviewPersonNum++;
 			}
 		}
-		
-		
+
+		reviewPersonNum++;
 		reviewCountLabel.setText(String.format("( %d )", reviewPersonNum));
 		reviewerCountbutton.setText(String.format("리뷰(%d)", reviewPersonNum));
 		

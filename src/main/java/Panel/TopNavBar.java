@@ -78,7 +78,7 @@ public class TopNavBar extends JPanel {
 		String nickname = DataManagers.getInstance().getMyUser().getNickName();
 
 		// 닉네임 라벨 생성
-		welcomeLabel = new JLabel(nickname + "님 반갑습니다.", SwingConstants.RIGHT);
+		welcomeLabel = new JLabel(nickname + "님 반갑습니다.", SwingConstants.LEFT);
 		welcomeLabel.setFont(DataManagers.getInstance().getFont("bold", 14));
 		welcomeLabel.setForeground(new Color(0x78DBA6)); // 텍스트 색상을 흰색으로 설정
 
@@ -87,7 +87,7 @@ public class TopNavBar extends JPanel {
 
 		int labelRightX = 485; // 마이페이지 버튼의 X 좌표
 		int labelX = labelRightX - labelWidth; // 오른쪽 기준으로 X 위치 계산
-		welcomeLabel.setBounds(labelX, 39, labelWidth, 20);
+		welcomeLabel.setBounds((labelX - 10), 39, 200, 20);
 
 		// 마이페이지 버튼 로그인 버튼 대체
 		ImageIcon myPageIcon = DataManagers.getInstance().getIcon("loginButton", "panel_UP");

@@ -36,7 +36,7 @@ public class MyPagePanel extends JPanel {
 	private JPanel myPageListPanel; // 스크롤 가능한 패널
 
 	//리뷰 
-	private MyPageReviewPanel myPageReviewPanel; // MyPageReviewPanel 객체
+	private JPanel myPageReviewPanel; // MyPageReviewPanel 객체
 	
 	// 위에 //버튼 //밑에
 	public MyPagePanel() {
@@ -47,10 +47,6 @@ public class MyPagePanel extends JPanel {
 		setBounds(0, 0, AppConstants.PANEL_MID_WIDTH, AppConstants.PANEL_MID_HEIGHT);
 		setOpaque(false);
 
-		// 리뷰 패널 객체 생성 + 보이지 않게 처리
-		myPageReviewPanel = new MyPageReviewPanel();
-	    myPageReviewPanel.setVisible(false);
-	     
 		// 위쪽 패널 닉네임 변경하는 쪽
 		JPanel firstPanel = new JPanel();
 		firstPanel.setLayout(null);
@@ -159,6 +155,22 @@ public class MyPagePanel extends JPanel {
 		myReviewBtn.setBackground(new Color(0, 0, 0, 0));
 		myReviewBtn.setOpaque(true);
 
+		int myPagePanelWidth = 595; // RankingPagePanel의 너비
+		int myPageContentPanelWidth = 535; // rankingContentPanel의 너비
+		int myPageContentPanelHeight = 230; // rankingContentPanel의 높이
+		int x = (myPagePanelWidth - myPageContentPanelWidth) / 2; // 중앙 정렬 계산
+
+		myPageReviewPanel = new RoundedPanel(50, 50); // 둥근 모서리 적용
+		myPageReviewPanel.setBounds(x, 310, 535, 230); // 크기 설정
+		myPageReviewPanel.setBackground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX)); // 배경색 적용
+		myPageReviewPanel.setLayout(null);
+		myPageReviewPanel.setVisible(false);
+		add(myPageReviewPanel);
+
+		// 리뷰 패널 객체 생성 + 보이지 않게 처리
+		ReviewPanel myReview = new ReviewPanel(0, true);	//컴텐츠 없으니깐 0으로 넣음
+		myPageReviewPanel.add(myReview);
+
 		myReviewBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -166,8 +178,7 @@ public class MyPagePanel extends JPanel {
 				ChangeButtonColor(myiineHistory, myiineHistoryBar, false);
 				
 				myPageContentPanel.setVisible(false);
-				myPageReviewPanel.setVisible(true); // MyPageReviewPanel 보이게 설정
-                add(myPageReviewPanel); // MyPageReviewPanel을 패널에 추가
+				myPageReviewPanel.setVisible(true); // MyPageReviewPane
                 revalidate(); // 레이아웃을 다시 갱신
                 repaint(); // 다시 그리기
 			}
@@ -343,7 +354,7 @@ public class MyPagePanel extends JPanel {
 		rankingLabel.setLayout(null);
 
 		// 썸네일 버튼
-		JButton thumbnailButton = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 79, 99, item.getId(), false, true));
+		JButton thumbnailButton = new JButton(ImageHelper.getResizedImageIconFromUrl(item.getThumbnail(), 79, 99, item.getId(),true, true));
 		thumbnailButton.setBounds(50, 14, 79, 99);
 		thumbnailButton.setBorderPainted(false);
 		thumbnailButton.setContentAreaFilled(false);
