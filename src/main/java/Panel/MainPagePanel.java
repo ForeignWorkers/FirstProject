@@ -115,7 +115,7 @@ public class MainPagePanel extends JPanel {
 		bigLabel.setLayout(null); // 내부 요소 배치 가능
 		bigLabel.setBounds(140, 5, 282, 400); // 기존보다 크기를 조금 키움
 
-		content = contentDAO.getAllContents().get(5); // 랜덤 컨텐츠 가져와 저장
+		content = contentDAO.getAllContents().get(2); // 랜덤 컨텐츠 가져와 저장
 		System.out.println("랜덤 컨텐츠 로드 완료: " + content.getTitle());
 
 		// 컨텐츠 중앙 정렬을 위한 좌표 계산 setbound와 동일

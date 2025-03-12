@@ -81,6 +81,7 @@ public class MyPagePanel extends JPanel {
 		CustomButton mypageNicknameEditBtn = new CustomButton(
 				DataManagers.getInstance().getIcon("nickNameEditBtn", "myPage_Page"));
 		mypageNicknameEditBtn.setBounds(439, 74, 37, 37);
+		mypageNicknameEditBtn.setClickEffect(true,0.3f);
 		mypageNicknameEditBtn.setOpaque(false);
 		mypageNicknameEditBtn.setBorder(null);
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import Frame.FrameBase;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -86,7 +87,7 @@ public class SignUPDAO {
         
         // 📤 기존 데이터를 유지하면서 새로운 JSON 업로드
         String updatedJson = new GsonBuilder().setPrettyPrinting().create().toJson(userList);
-        GoogleDriveFileReader.getInstance().uploadJson(fileName, updatedJson, folderId);
+        GoogleDriveFileReader.getInstance().uploadJsonWithLoading(fileName, updatedJson, folderId, FrameBase.getInstance());
         System.out.println("✅ 새로운 유저가 추가되었습니다: " + newUser.getId());
 
         //새로운 유저 로컬 디비 리스트에 추가

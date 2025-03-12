@@ -1,5 +1,7 @@
 package Data;
 
+import Frame.FrameBase;
+import Panel.LoadingDialog;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
@@ -8,6 +10,7 @@ import com.google.api.services.drive.model.Permission;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
+import javax.swing.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,10 +66,32 @@ public class GoogleDriveFileReader {
                     .execute();
             System.out.println("✅ JSON 파일이 업데이트됨: " + fileName);
         }
-        
+
         //파일 공유 받기 - 메일추가히믄 됩니다.
         if(fileId != null)
         	shareFileWithMyGoogleAccount(fileId,"minquu@gmail.com");
+    }
+
+
+    // 📌 **비동기 업로드 함수 추가 (로딩 팝업 포함)**
+    public void uploadJsonWithLoading(String fileName, String jsonData, String folderId, JFrame parentFrame) {
+        LoadingDialog loadingDialog = new LoadingDialog(parentFrame);
+
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                uploadJson(fileName, jsonData, folderId); // 기존 API 호출
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                loadingDialog.dispose(); // API 호출 완료 후 팝업 닫기
+            }
+        };
+
+        worker.execute();
+        loadingDialog.setVisible(true); // 로딩 팝업 띄우기
     }
 
     public <T> List<T> getListFromJson(String fileName, String folderId, TypeToken<List<T>> typeToken) throws IOException {

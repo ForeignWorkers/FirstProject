@@ -71,8 +71,7 @@ public class SignUPPanel extends JPanel {
 
 		// JScrollPane이 변경 사항을 인식하도록 설정
 		loginsignUpScroll.setViewportView(panel);
-		loginsignUpScroll.revalidate();
-		loginsignUpScroll.repaint();
+		loginsignUpScroll.getViewport().setOpaque(false);
 
 		add(loginsignUpScroll);
 
@@ -105,6 +104,7 @@ public class SignUPPanel extends JPanel {
 		// ID 중복 확인 버튼
 		CustomButton checkIDButton = new CustomButton(
 				DataManagers.getInstance().getIcon("signUpCheckBtn", "signUp_Page"));
+		checkIDButton.setClickEffect(true, 0.3f);
 		checkIDButton.setBounds(455, 110, 101, 37);
 		checkIDButton.setOpaque(false);
 		checkIDButton.setBorder(null);
@@ -314,6 +314,7 @@ public class SignUPPanel extends JPanel {
 		// 닉네임 커스텀 버튼
 		CustomButton checkNicknameButton = new CustomButton(
 				DataManagers.getInstance().getIcon("signUpCheckBtn", "signUp_Page"));
+		checkNicknameButton.setClickEffect(true,0.3f);
 		checkNicknameButton.setBounds(330, 549, 101, 37);
 		checkNicknameButton.setOpaque(false);
 		checkNicknameButton.setBorder(null);
@@ -363,6 +364,7 @@ public class SignUPPanel extends JPanel {
 		// 닉네임 커스텀 버튼
 		CustomButton finaljoinButton = new CustomButton(DataManagers.getInstance().getIcon("signUpBtn", "signUp_Page"));
 		finaljoinButton.setBounds(83, 609, 461, 43);
+		finaljoinButton.setClickEffect(true,0.3f);
 		finaljoinButton.setOpaque(false);
 		finaljoinButton.setBorder(null);
 
@@ -465,6 +467,10 @@ public class SignUPPanel extends JPanel {
 		panel.add(finaljoinButtonLabel);
 		panel.add(finaljoinButton);
 
+		loginsignUpScroll.revalidate();
+		loginsignUpScroll.repaint();
+		this.repaint();
+		this.revalidate();
 	}
 
 	private boolean isValidPassword(String password) {

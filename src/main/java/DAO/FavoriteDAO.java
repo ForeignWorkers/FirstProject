@@ -3,6 +3,7 @@ package DAO;
 import java.io.IOException;
 import java.util.List;
 
+import Frame.FrameBase;
 import Managers.DataManagers;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -26,7 +27,7 @@ public class FavoriteDAO {
         
         // 📤 기존 데이터를 유지하면서 새로운 JSON 업로드
         String updatedJson = new GsonBuilder().setPrettyPrinting().create().toJson(favoriteDatas);
-        GoogleDriveFileReader.getInstance().uploadJson(fileName, updatedJson, folderId);
+        GoogleDriveFileReader.getInstance().uploadJsonWithLoading(fileName, updatedJson, folderId, FrameBase.getInstance());
         System.out.println("✅ 찜리스트 동기화 완료: " + favoriteData.getUserId());
     }
     

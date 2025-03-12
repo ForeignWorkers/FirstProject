@@ -33,6 +33,7 @@ public class ReviewPanel extends JPanel {
 	private CustomButton[] starButtons; // 별점 선택을 위한 버튼 배열
 	private JLabel starCountText;
 	private JLabel reviewTextCount;
+	private JLabel firstReview;
 
 	private int selectedRating = 0; // 기본 평점 0점
 	private ReviewDAO reviewDAO; // ReviewDAO 추가
@@ -79,7 +80,7 @@ public class ReviewPanel extends JPanel {
 			List<ReviewVO> findReview = DBDataManagers.getInstance().getContentReviewsData(contentId);
 
 			if(findReview.isEmpty()){
-				JLabel firstReview = setBaseReviewLabel("기념스러운 첫 리뷰를 작성해주세요!");
+				firstReview = setBaseReviewLabel("기념스러운 첫 리뷰를 작성해주세요!");
 				firstReview.setBounds((595 - 510) / 2, paddingY,510,126);
 				contentPanel.add(firstReview);
 			}
@@ -198,7 +199,7 @@ public class ReviewPanel extends JPanel {
 
 		reviewTextCount = new JLabel(String.format("0/%d", AppConstants.MAXIMUM_REVIEW_TEXT));
 		reviewTextCount.setFont(DataManagers.getInstance().getFont("bold", 15));
-		reviewTextCount.setBounds(400,104,50,25);
+		reviewTextCount.setBounds(395,104,50,25);
 		reviewTextCount.setForeground(Color.decode(AppConstants.UI_BACKGROUND_HEX));
 
 		// 입력 감지하여 버튼 활성화
@@ -290,6 +291,8 @@ public class ReviewPanel extends JPanel {
 				for (int i = 0; i < eventListener.size(); i++) {
 					eventListener.get(i).onReviewEvent();
 				}
+
+				contentPanel.remove(firstReview);
 			}
 		});
 
@@ -468,123 +471,5 @@ public class ReviewPanel extends JPanel {
 	// 등록 버튼 활성화 조건 메서드
 	private void toggleSubmitButton() {
 		submitButton.setEnabled(reviewInput.getText().length() >= AppConstants.MINUMUM_REVIEW_TEXT);
-	}
-
-	// 리뷰 추가 메서드
-	public void addReview(int contentId, String reviewerId, String content, double score) {
-
-		ReviewVO vo = new ReviewVO(contentId, reviewerId, content, score);
-		// ReviewDAO에 리뷰 추가
-		try {
-			reviewDAO.addReviewToJson(vo, AppConstants.REVIEW_FILE_NAME, AppConstants.FOLDER_ID);
-		} catch (Exception e) {
-			System.out.println("리뷰 등록을 실패 하였습니다." + e.getMessage());
-		}
-	}
-
-	private void displayReview(String contentName, String reviewerName, String content, double score,
-			String reviewDate) {
-		 //리뷰 목록이 비어 있을 때 표시된 문구 제거
-
-		int reviewCount = createdReiveContent.size(); // 현재 리뷰 개수
-		int yPosition = reviewCount * 146; // 각 리뷰의 Y 위치 (간격 포함)
-		
-		//리뷰 리스트에서 각각의 리뷰가 담길 칸 ( 이 목표임 )
-		JPanel reviewItem = new JPanel();
-		reviewItem.setLayout(null);
-		reviewItem.setBackground(Color.decode(AppConstants.UI_TEXT_BOX_HEX));
-		reviewItem.setBounds(0, yPosition, 510, 126);
-
-		// 프로필 이미지 담기 - OK
-		ImageIcon profileIcon = (DataManagers.getInstance().getIcon("profile01", "detail_review_Page"));
-		JLabel profileLabel = new JLabel(profileIcon);
-		profileLabel.setLayout(null);
-		profileLabel.setBounds(33, 14, 75, 75);
-		reviewItem.add(profileLabel);
-
-		// 이름과 날짜를 담을 패널
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(null);
-		topPanel.setBounds(144, 9, 337, 41);
-
-		// 사용자명
-		JLabel nameLabel = new JLabel(reviewerName);
-		nameLabel.setLayout(null);
-		nameLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
-		nameLabel.setBounds(2, 2, 333, 26);
-		nameLabel.setFont(DataManagers.getInstance().getFont("", 14));
-		topPanel.add(nameLabel);
-
-		// 날짜
-		JLabel dateLabel = new JLabel(reviewDate); // 리뷰 작성 날짜 표시
-		dateLabel.setLayout(null);
-		dateLabel.setForeground(Color.decode(AppConstants.UI_MAIN_TEXT_HEX));
-		dateLabel.setBounds(2, 24, 156, 16);
-		dateLabel.setFont(DataManagers.getInstance().getFont("bold", 10));
-		topPanel.add(dateLabel);
-
-		// 리뷰 내용 패널
-		JLabel contentLabel = new JLabel("<html>" + content + "</html>"); // 실제 리뷰 내용 3줄까진 날짜 표기 O 4줄에서 날짜 표기가 사라짐.
-		contentLabel.setLayout(null);
-		contentLabel.setForeground(Color.decode(AppConstants.UI_SUB_TEXT_HEX));
-		contentLabel.setBounds(144, 42, 347, 50);
-		contentLabel.setFont(DataManagers.getInstance().getFont("bold", 10));
-		reviewItem.add(contentLabel); // 리뷰내용 부착
-
-		// 컨텐츠이름
-		JLabel contentNameLabel = new JLabel("#" + contentName);
-		contentNameLabel.setLayout(null);
-		contentNameLabel.setBounds(144, 87, 270, 30);
-		contentNameLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
-		contentNameLabel.setFont(DataManagers.getInstance().getFont("bold", 10));
-		reviewItem.add(contentNameLabel);
-
-		// 별점 이미지
-		JLabel scoreImageLabel = new JLabel(DataManagers.getInstance().getIcon("ratingIcon", "detail_review_Page"));
-		scoreImageLabel.setLayout(null);
-		scoreImageLabel.setBounds(58, 91, 27, 27);
-		reviewItem.add(scoreImageLabel); // 별점 표시를 컨텐츠 패널에
-
-		// 별점 불러와서 점수화.
-		JLabel scoreTextLabel = new JLabel(String.valueOf(score));
-		scoreTextLabel.setLayout(null);
-		scoreTextLabel.setBounds(63, 110, 27, 27);
-		scoreTextLabel.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
-		scoreTextLabel.setFont(DataManagers.getInstance().getFont("", 10));
-		reviewItem.add(scoreTextLabel);
-
-		// 좋아요 버튼
-		CustomButton iineButton = new CustomButton(
-				DataManagers.getInstance().getIcon("thumbUpOff", "detail_review_Page"));
-		iineButton.addMouseListener(new MouseAdapter() {
-			private int iineCount = 0;
-			private boolean liked = false;
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (liked) {
-					iineCount--; // 이미 좋아요가 눌렸다면 카운트 감소
-					liked = false;
-					iineButton.setIcon(DataManagers.getInstance().getIcon("thumbUpOff", "detail_review_Page")); 
-																												
-				} else {
-					iineCount++; // 좋아요를 누르면 카운트 증가
-					liked = true;
-					iineButton.setIcon(DataManagers.getInstance().getIcon("thumbUpOn", "detail_review_Page")); 
-																																																	
-				}
-
-				// 좋아요 버튼에 좋아요 카운트를 텍스트로 표시
-				iineButton.setFont(DataManagers.getInstance().getFont("bold", 14));
-				iineButton.setForeground(Color.decode(AppConstants.UI_POINT_COLOR_HEX));
-				iineButton.setText("" + iineCount);
-			}
-		});
-		iineButton.setLayout(null);
-		iineButton.setBounds(433, 95, 71, 30);
-		reviewItem.add(iineButton); // 좋아요 버튼 추가
-
-		// 리뷰 아이템에 컴포넌트 추가
-		reviewItem.add(topPanel); // 이름과 날짜 패널
 	}
 }

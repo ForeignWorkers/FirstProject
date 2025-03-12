@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Data.GoogleDriveFileReader;
+import Frame.FrameBase;
 import Managers.DBDataManagers;
 import VO.ReviewVO;
 import VO.UserVO;
@@ -36,7 +37,7 @@ public class ReviewDAO{
 
         // 📤 기존 데이터를 유지하면서 새로운 JSON 업로드
         String updatedJson = new GsonBuilder().setPrettyPrinting().create().toJson(reviewList);
-        GoogleDriveFileReader.getInstance().uploadJson(fileName, updatedJson, folderId);
+        GoogleDriveFileReader.getInstance().uploadJsonWithLoading(fileName, updatedJson, folderId, FrameBase.getInstance());
 
         System.out.println("✅ 새로운 리뷰가 추가되었습니다: " + newReview.getReviewId());
 
