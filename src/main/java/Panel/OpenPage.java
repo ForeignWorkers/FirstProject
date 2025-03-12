@@ -11,14 +11,15 @@ import VO.ItemVO;
 
 public class OpenPage {
 
-	// 임시 마이페이지 이동 확인
+	// 마이페이지 이동 확인
 	public void openMyPage() throws IOException {
+		ImageHelper.clearImageCache(); //캐시 초기화
 		FrameBase.getInstance().setInnerPanel(new TopNavBar(), "up"); // 상단바 재로딩
 		FrameBase.getInstance().setInnerPanel(new MyPagePanel(), "mid");
 		FrameBase.getInstance().setInnerPanel(new BottomNavBar("mypage"), "down");
 	}
 
-	// 임시 로그인 페이지 이동 확인
+	// 로그인 페이지 이동 확인
 	public void openLoginPage() throws IOException {
 		FrameBase.getInstance().setInnerPanel(new LoginPanel(), "mid");
 		FrameBase.getInstance().setInnerPanel(new BottomNavBar("mypage"), "down");
@@ -32,6 +33,7 @@ public class OpenPage {
 
 	// 홈 페이지 이동 확인
 	public void openHomePage() throws IOException {
+		ImageHelper.clearImageCache(); //캐시 초기화
 		FrameBase.getInstance().setInnerPanel(new MainPagePanel(), "mid");
 		FrameBase.getInstance().setInnerPanel(new BottomNavBar("home"), "down");
 	}
@@ -44,7 +46,7 @@ public class OpenPage {
 		FrameBase.getInstance().setInnerPanel(new BottomNavBar("ranking"), "down");
 	}
 
-	// 임시 검색 페이지 이동 확인
+	// 검색 페이지 이동 확인
 	public void openSearchPage() throws IOException {
 		ImageHelper.clearImageCache(); //캐시 초기화
 		FrameBase.getInstance().setInnerPanel(new SearchMainPanel(), "mid");
@@ -52,11 +54,6 @@ public class OpenPage {
 	}
 
 	// 메인 컨텐츠 세부 페이지 이동 확인
-	public void openMainContentPage() {
-		JOptionPane.showMessageDialog(null, "메인 컨텐츠 세부 페이지 이동 확인");
-	}
-
-	// 임시 메인 컨텐츠 세부 페이지 이동 확인
 	public void openContentPage(ItemVO content) {
 		DataManagers.getInstance().clearIconCache();//아이콘 캐시 초기화
 		ImageHelper.clearImageCache(); //이미지 캐시 초기화
